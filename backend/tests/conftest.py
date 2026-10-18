@@ -10,6 +10,9 @@ os.environ["DATABASE_URL"] = os.environ.get(
 )
 os.environ["OPENAI_API_KEY"] = ""
 os.environ["BCRYPT_ROUNDS"] = "4"
+os.environ["LLM_PROVIDER"] = "fake"
+os.environ["EMBEDDING_PROVIDER"] = "fake"
+os.environ["RERANKER"] = "fake"
 os.environ["JWT_SECRET"] = "test-secret-that-is-at-least-32-bytes-long"
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -35,12 +38,47 @@ def _migrated_schema():
     yield
 
 
-@pytest.fixture(autouse=True)
-def _clean_tables():
+def _truncate():
     tables = ", ".join(t.name for t in Base.metadata.sorted_tables)
     with engine.begin() as conn:
         conn.execute(text(f"TRUNCATE {tables} RESTART IDENTITY CASCADE"))
+
+
+@pytest.fixture(autouse=True)
+def _clean_tables(request):
+    # Read-only tests marked `shared_seed` reuse one seeded + indexed database per module.
+    if request.node.get_closest_marker("shared_seed") is None:
+        _truncate()
     yield
+
+
+@pytest.fixture(scope="module")
+def _seeded_module(_migrated_schema):
+    """Full synthetic fixture set, indexed with the fake embedder, once per module."""
+    from rag.indexer import all_sources, index_source
+    from seed import seed
+    _truncate()
+    session = SessionLocal()
+    seed(session)
+    for kind, sid in all_sources(session):
+        index_source(session, kind, sid)
+    yield session
+    session.close()
+    _truncate()
+
+
+@pytest.fixture
+def seeded(request, _seeded_module, db):
+    """Seeded + indexed DB. Tests using it must be marked `shared_seed` and must not write."""
+    assert request.node.get_closest_marker("shared_seed"), "mark tests using `seeded` with @pytest.mark.shared_seed"
+    return db
+
+
+@pytest.fixture
+def needles():
+    import json
+    from seed import DATA
+    return json.loads((DATA / "needles.json").read_text())
 
 
 @pytest.fixture

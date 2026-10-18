@@ -2,6 +2,7 @@ from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from models import ForumComment, ForumPost, PostType
+from rag.indexer import enqueue_index
 from services.errors import NotFound
 
 
@@ -75,6 +76,8 @@ def get_post(db: Session, post_id: int) -> dict:
 def create_post(db: Session, **fields) -> dict:
     post = ForumPost(**fields)
     db.add(post)
+    db.flush()
+    enqueue_index(db, "post", post.id)
     db.commit()
     db.refresh(post)
     return post_to_dict(post, 0)
@@ -101,6 +104,8 @@ def add_comment(db: Session, post_id: int, **fields) -> dict:
     get_post_model(db, post_id)
     comment = ForumComment(post_id=post_id, **fields)
     db.add(comment)
+    db.flush()
+    enqueue_index(db, "comment", comment.id)
     db.commit()
     db.refresh(comment)
     return comment_to_dict(comment)

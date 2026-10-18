@@ -10,6 +10,8 @@ x-backend: &backend
     TEST_DATABASE_URL: postgresql+psycopg://bari:bari@db:5432/bari_test
   volumes:
     - ./backend:/app
+    - ./eval:/eval
+    - model_cache:/home/app/.cache
   extra_hosts:
     - "host.docker.internal:host-gateway"
   depends_on:
@@ -17,6 +19,22 @@ x-backend: &backend
       condition: service_healthy
 
 services:
+  # Local LLM + embeddings. Shares the host's existing `ollama` model volume, so models are not re-downloaded.
+  ollama:
+    image: ollama/ollama:0.12.6
+    environment:
+      OLLAMA_KEEP_ALIVE: 10m
+      OLLAMA_MAX_LOADED_MODELS: 2
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - "127.0.0.1:11435:11434"
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
   db:
     image: pgvector/pgvector:pg16
     environment:
@@ -40,5 +58,12 @@ services:
       - "8001:8001"
     command: sh -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8001 --reload"
 
+  worker:
+    <<: *backend
+    command: python -m jobs.worker
+
 volumes:
   pgdata:
+  model_cache:
+  ollama:
+    name: ollama

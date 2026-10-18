@@ -14,7 +14,9 @@ RUN if [ "$INSTALL_DEV" = "true" ]; then pip install -r requirements-dev.txt; el
 COPY . .
 
 # Run as a non-root user so files written to bind mounts stay owned by the host user.
-RUN useradd --create-home --uid 1000 app && mkdir -p /app/uploads && chown -R app /app
+RUN useradd --create-home --uid 1000 app \
+    && mkdir -p /app/uploads /home/app/.cache \
+    && chown -R app /app /home/app/.cache
 USER app
 
 EXPOSE 8001

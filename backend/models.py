@@ -1,5 +1,6 @@
-from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text, Enum
-from sqlalchemy.dialects.postgresql import JSONB
+from pgvector.sqlalchemy import Vector
+from sqlalchemy import Boolean, Column, Computed, DateTime, Enum, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy.dialects.postgresql import JSONB, TSVECTOR
 from sqlalchemy.sql import func
 import enum
 from database import Base
@@ -194,3 +195,79 @@ class ForumComment(Base):
     author_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     content = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+# ── LLM call log ──────────────────────────────────────────────────────────────
+
+class LLMCall(Base):
+    __tablename__ = "llm_calls"
+
+    id = Column(Integer, primary_key=True)
+    request_id = Column(String(64), nullable=False, index=True)
+    provider = Column(String(20), nullable=False)
+    model = Column(String(100), nullable=False)
+    purpose = Column(String(50), nullable=False)
+    prompt_tokens = Column(Integer, nullable=False, default=0)
+    completion_tokens = Column(Integer, nullable=False, default=0)
+    latency_ms = Column(Integer, nullable=False)
+    cost_usd = Column(Float, nullable=False, default=0)
+    status = Column(String(10), nullable=False)
+    error = Column(Text, nullable=True)
+    attempts = Column(Integer, nullable=False, default=1)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+
+
+# ── RAG documents (one row per chunk) ─────────────────────────────────────────
+
+EMBEDDING_DIM = 1024  # bge-m3
+
+
+class Document(Base):
+    __tablename__ = "documents"
+    __table_args__ = (
+        UniqueConstraint("source_type", "source_id", "chunk_index"),
+        Index("ix_documents_embedding_hnsw", "embedding", postgresql_using="hnsw",
+              postgresql_with={"m": 16, "ef_construction": 64}, postgresql_ops={"embedding": "vector_cosine_ops"}),
+        Index("ix_documents_tsv", "tsv", postgresql_using="gin"),
+        Index("ix_documents_content_trgm", "content", postgresql_using="gin", postgresql_ops={"content": "gin_trgm_ops"}),
+    )
+
+    id = Column(Integer, primary_key=True)
+    source_type = Column(String(20), nullable=False)       # listing | post | comment | safety
+    source_id = Column(Integer, nullable=False)
+    chunk_index = Column(Integer, nullable=False, default=0)
+    content = Column(Text, nullable=False)
+    tsv = Column(TSVECTOR, Computed("to_tsvector('simple', content)", persisted=True))
+    embedding = Column(Vector(EMBEDDING_DIM), nullable=True)
+    embedding_model = Column(String(100), nullable=True)
+    content_hash = Column(String(64), nullable=False)
+    # Metadata for filtering and citations
+    property_id = Column(Integer, nullable=True, index=True)
+    post_id = Column(Integer, nullable=True, index=True)
+    area = Column(String(100), nullable=True, index=True)
+    university = Column(String(200), nullable=True)
+    lang = Column(String(5), nullable=True)
+    source_created_at = Column(DateTime(timezone=True), nullable=True)
+    meta = Column(JSONB, default=dict)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+
+# ── Background jobs (Postgres queue, FOR UPDATE SKIP LOCKED) ─────────────────
+
+class Job(Base):
+    __tablename__ = "jobs"
+    __table_args__ = (Index("ix_jobs_pending", "status", "run_after"),)
+
+    id = Column(Integer, primary_key=True)
+    kind = Column(String(50), nullable=False)
+    payload = Column(JSONB, nullable=False, default=dict)
+    dedupe_key = Column(String(200), nullable=True, index=True)
+    status = Column(String(10), nullable=False, default="queued")   # queued | running | done | failed
+    attempts = Column(Integer, nullable=False, default=0)
+    max_attempts = Column(Integer, nullable=False, default=5)
+    last_error = Column(Text, nullable=True)
+    result = Column(JSONB, nullable=True)
+    run_after = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+

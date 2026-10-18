@@ -1,7 +1,8 @@
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import Session
 
-from models import ListingStatus, Property
+from models import Document, ListingStatus, Property, SafetyVote
+from rag.indexer import enqueue_index
 from schemas import PropertyCreate, PropertySearchParams, PropertyUpdate
 from services.errors import NotFound
 
@@ -78,6 +79,8 @@ def get_properties(db: Session, ids: list[int]) -> list[Property]:
 def create_property(db: Session, payload: PropertyCreate, **extra) -> Property:
     prop = Property(**payload.model_dump(), **extra)
     db.add(prop)
+    db.flush()
+    enqueue_index(db, "listing", prop.id)  # committed atomically with the listing (outbox)
     db.commit()
     db.refresh(prop)
     return prop
@@ -85,8 +88,14 @@ def create_property(db: Session, payload: PropertyCreate, **extra) -> Property:
 
 def update_property(db: Session, property_id: int, payload: PropertyUpdate) -> Property:
     prop = get_property(db, property_id)
-    for field, value in payload.model_dump(exclude_unset=True).items():
+    changes = payload.model_dump(exclude_unset=True)
+    for field, value in changes.items():
         setattr(prop, field, value)
+    enqueue_index(db, "listing", prop.id)
+    if {"title", "status"} & changes.keys():  # safety chunks quote the title and vanish with inactive listings
+        for (vote_id,) in db.query(SafetyVote.id).filter(SafetyVote.property_id == prop.id,
+                                                        SafetyVote.comment.isnot(None)):
+            enqueue_index(db, "safety", vote_id)
     db.commit()
     db.refresh(prop)
     return prop
@@ -94,6 +103,8 @@ def update_property(db: Session, property_id: int, payload: PropertyUpdate) -> P
 
 def delete_property(db: Session, property_id: int) -> None:
     prop = get_property(db, property_id)
+    db.query(Document).filter(Document.property_id == property_id,
+                              Document.source_type.in_(("listing", "safety"))).delete(synchronize_session=False)
     db.delete(prop)
     db.commit()
 
