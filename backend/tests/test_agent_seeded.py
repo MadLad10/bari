@@ -157,3 +157,20 @@ def test_sse_endpoint_streams_events(client, seeded):
     events = [line[7:] for line in res.text.splitlines() if line.startswith("event: ")]
     assert events[0] == "start" and events[-1] == "done"
     assert events.count("step") == 2 and "token" in events
+
+
+def test_guessed_filters_are_relaxed_transparently(seeded, needles):
+    """The model invents area=Banani for a listing that's in Aftabnagar: the tool drops the guess and says so."""
+    agent, provider = agent_with([call("semantic_search", query="rooftop garden solar backup", area="Banani",
+                                       nearby_university="East West University"), answer("ok")])
+    ask(agent, "Any flat with a rooftop garden and solar backup near East West University?")
+    [result] = tool_results(provider)
+    assert result["relaxed_filters"] == ["area"]
+    assert f"listing:{needles['listings']['ewu_rooftop_garden']}" in [r["ref"] for r in result["results"]]
+
+
+def test_hard_constraints_are_never_relaxed(seeded):
+    agent, provider = agent_with([call("search_properties", max_price=500, is_female_only=True), answer("none")])
+    ask(agent, "women-only room under 500 taka")
+    [result] = tool_results(provider)
+    assert result["results"] == [] and "relaxed_filters" not in result

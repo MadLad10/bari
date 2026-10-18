@@ -67,8 +67,10 @@ class Tool:
 
 
 def clean_schema(schema: dict) -> dict:
-    """Pydantic JSON schema → the plain subset every tool-calling API accepts (no $defs, titles or
-    anyOf-with-null)."""
+    """Pydantic JSON schema → the plain subset every tool-calling API accepts (no $defs or titles).
+
+    Optional fields stay nullable (`"type": ["string", "null"]`): providers such as Groq validate tool
+    arguments against the schema server-side, and models do send `null` for unused optional arguments."""
     defs = schema.get("$defs", {})
 
     def walk(node):
@@ -77,8 +79,14 @@ def clean_schema(schema: dict) -> dict:
                 return walk(defs[node["$ref"].split("/")[-1]])
             if "anyOf" in node:
                 options = [o for o in node["anyOf"] if o.get("type") != "null"]
+                nullable = len(options) < len(node["anyOf"])
                 if len(options) == 1:
-                    merged = {**{k: v for k, v in node.items() if k not in ("anyOf", "default")}, **options[0]}
+                    opt = walk(options[0])
+                    merged = {**{k: v for k, v in node.items() if k not in ("anyOf", "default")}, **opt}
+                    if nullable and isinstance(opt.get("type"), str):
+                        merged["type"] = [opt["type"], "null"]
+                        if "enum" in merged:
+                            merged["enum"] = [*merged["enum"], None]
                     return walk(merged)
             return {k: walk(v) for k, v in node.items() if k not in ("title", "$defs", "default")
                     or (k == "default" and v is not None)}
@@ -151,11 +159,26 @@ class SearchPropertiesArgs(ListingFilters):
     limit: int = Field(6, ge=1, le=10)
 
 
+# Filters a model tends to invent (the user rarely states them). Hard constraints the user gives (budget,
+# women-only, bedrooms, university) are never relaxed.
+GUESSABLE_FILTERS = ("area", "furnishing", "property_type", "max_university_distance_km", "listing_type")
+
+
+def _relaxed(a: ListingFilters) -> tuple[ListingFilters, list[str]] | None:
+    dropped = [f for f in GUESSABLE_FILTERS if getattr(a, f) is not None]
+    return (a.model_copy(update={f: None for f in dropped}), dropped) if dropped else None
+
+
 def search_properties(db: Session, ctx: ToolContext, a: SearchPropertiesArgs) -> dict:
     params = a.search_params(a.limit)
     props = property_svc.search_properties(db, params)
-    return {"total_matches": property_svc.count_properties(db, params),
-            "results": [_summary(ctx, p) for p in props],
+    out = {"total_matches": property_svc.count_properties(db, params)}
+    if not props and (relaxed := _relaxed(a)):
+        params = relaxed[0].search_params(a.limit)
+        props = property_svc.search_properties(db, params)
+        out = {"total_matches": property_svc.count_properties(db, params), "relaxed_filters": relaxed[1],
+               "warning": f"No exact matches. These filters were dropped: {', '.join(relaxed[1])}."}
+    return {**out, "results": [_summary(ctx, p) for p in props],
             "note": "Structured filter search. Use semantic_search for qualitative needs (quiet, rooftop, near lake…)."}
 
 
@@ -170,6 +193,12 @@ def semantic_search(db: Session, ctx: ToolContext, a: SemanticSearchArgs) -> dic
     filters = ListingFilters(**a.model_dump(include=set(ListingFilters.model_fields)))
     result = hybrid_search(db, a.query, sources=a.sources, listing_filters=filters.search_params(10),
                            university=a.nearby_university, k=a.k)
+    relaxed_note = {}
+    if not result.hits and (relaxed := _relaxed(filters)):
+        result = hybrid_search(db, a.query, sources=a.sources, listing_filters=relaxed[0].search_params(10),
+                               university=a.nearby_university, k=a.k)
+        relaxed_note = {"relaxed_filters": relaxed[1],
+                        "warning": f"No exact matches. These filters were dropped: {', '.join(relaxed[1])}."}
     props = {p.id: p for p in property_svc.get_properties(db, [h.property_id for h in result.hits if h.property_id])}
     out = []
     for h in result.hits:
@@ -183,7 +212,7 @@ def semantic_search(db: Session, ctx: ToolContext, a: SemanticSearchArgs) -> dic
         elif h.property_id:
             item["about_listing"] = f"listing:{h.property_id}"
         out.append(item)
-    return {"results": out}
+    return {**relaxed_note, "results": out}
 
 
 class PropertyIdArgs(BaseModel):

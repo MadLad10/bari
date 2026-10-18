@@ -129,7 +129,7 @@ listings 1–8), `admin@example.com` (admin → `/admin`). Promote any account w
 | Variable | Default | Meaning |
 |---|---|---|
 | `LLM_PROVIDER` | `api` | `api` (OpenAI-compatible endpoint) or `ollama` (local) |
-| `LLM_API_BASE_URL` / `LLM_API_KEY` / `LLM_API_MODEL` | Groq / – / `llama-3.3-70b-versatile` | Any OpenAI-compatible provider works |
+| `LLM_API_BASE_URL` / `LLM_API_KEY` / `LLM_API_MODEL` | Groq / – / `openai/gpt-oss-120b` | Any OpenAI-compatible provider works |
 | `OLLAMA_MODEL`, `OLLAMA_NUM_CTX` | `qwen2.5:7b-instruct`, `16384` | Local chat model and context window |
 | `EMBEDDING_MODEL` | `bge-m3` | Served by Ollama, 1024-d |
 | `RERANKER`, `RERANK_TOP` | `bge`, `10` | `bge` = bge-reranker-v2-m3 int8 ONNX; `none` disables it |

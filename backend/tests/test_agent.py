@@ -194,3 +194,10 @@ def test_unconfigured_provider_returns_error_event(client, monkeypatch):
     assert res.headers["access-control-allow-origin"] == "http://localhost:5173"
     res = client.post("/api/ai/chat", json={"messages": [{"role": "user", "content": "hi"}], "stream": False})
     assert res.status_code == 503
+
+
+def test_optional_tool_args_are_nullable_in_schema():
+    schemas = {s["function"]["name"]: s["function"]["parameters"] for s in agent_tools.tool_schemas()}
+    uni = schemas["search_forum"]["properties"]["university"]
+    assert uni["type"] == ["string", "null"] and None in uni["enum"]
+    assert schemas["search_forum"]["properties"]["query"]["type"] == "string"   # required: not nullable

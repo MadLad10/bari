@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     llm_provider: str = "api"
     llm_api_base_url: str = "https://api.groq.com/openai/v1"
     llm_api_key: str = ""
-    llm_api_model: str = "llama-3.3-70b-versatile"
+    llm_api_model: str = "openai/gpt-oss-120b"
     llm_timeout_s: float = 45
     llm_max_retries: int = 3
     llm_prices_json: str = ""
