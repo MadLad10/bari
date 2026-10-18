@@ -29,7 +29,8 @@ def template_description(f: dict) -> str:
     kind = "room" if f.get("property_type") == "room" else f"{f.get('bedrooms', 1)}-bedroom {f.get('property_type', 'flat')}"
     s = [f"{str(f.get('furnishing', '')).replace('_', '-').capitalize()} {kind} in {f.get('area', 'Dhaka')}".strip()]
     if f.get("nearby_university"):
-        s[0] += f", {f.get('university_distance_km', '?')} km from {f['nearby_university']}"
+        dist = f.get("university_distance_km")
+        s[0] += f", {dist} km from {f['nearby_university']}" if dist else f", near {f['nearby_university']}"
     s[0] += "."
     if f.get("is_female_only"):
         s.append("Reserved for female tenants.")

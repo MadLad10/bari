@@ -9,13 +9,12 @@ import "./Browse.css";
 const UNIVERSITIES = [
   "BRAC University",
   "North South University",
-  "BUET",
   "Dhaka University",
-  "Jahangirnagar University",
-  "IUT",
+  "BUET",
+  "IUB",
   "AIUB",
-  "BRAC",
-  "AUST",
+  "East West University",
+  "Jahangirnagar University",
 ];
 
 const PROPERTY_TYPES = ["apartment", "house", "office", "room"];

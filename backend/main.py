@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from config import settings
+from llm.base import LLMError
 from llm.context import request_id_var
 from routers import actions, admin, ai, auth, bookings, chat, forum, listing_assistant, properties, safety, search
 from services.errors import ServiceError
@@ -34,6 +35,11 @@ async def request_id_middleware(request: Request, call_next):
         request_id_var.reset(token)
     response.headers["X-Request-ID"] = rid[:64]
     return response
+
+
+@app.exception_handler(LLMError)
+async def llm_error_handler(_: Request, exc: LLMError):
+    return JSONResponse(status_code=503, content={"detail": f"AI provider unavailable: {exc}"})
 
 
 @app.exception_handler(ServiceError)

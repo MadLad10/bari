@@ -1,0 +1,34 @@
+.adm-layout { min-height: 100vh; background: #fafaf8; font-family: "Inter", sans-serif; }
+.adm-main { max-width: 1100px; margin: 0 auto; padding: 2rem 16px 4rem; }
+.adm-main h1 { font-size: 1.6rem; margin: 0 0 1rem; }
+.adm-main h3 { margin: 1.5rem 0 0.75rem; font-size: 1rem; }
+.adm-tabs { display: flex; gap: 0.25rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; overflow-x: auto; }
+.adm-tabs button { border: 0; background: none; padding: 0.6rem 0.9rem; cursor: pointer; font: inherit; color: #6b7280;
+  border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+.adm-tabs button.active { color: #111; border-bottom-color: #111; font-weight: 600; }
+.adm-muted { color: #6b7280; }
+.adm-error { color: #b91c1c; }
+.adm-item { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; margin-bottom: 0.75rem; }
+.adm-item header { display: flex; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; font-weight: 600; }
+.adm-item header a { color: #1d4ed8; text-decoration: none; }
+.adm-meta { color: #6b7280; font-size: 0.85rem; margin: 0.25rem 0; }
+.adm-reason { background: #fff7ed; border-radius: 8px; padding: 0.5rem 0.7rem; font-size: 0.88rem; margin: 0.5rem 0; }
+.adm-text { white-space: pre-wrap; font-size: 0.9rem; margin: 0.4rem 0; }
+.adm-item details { font-size: 0.85rem; margin: 0.3rem 0; }
+.adm-item pre { background: #f8fafc; padding: 0.6rem; border-radius: 8px; overflow-x: auto; font-size: 0.75rem; }
+.adm-actions { display: flex; gap: 0.5rem; margin-top: 0.6rem; }
+.adm-actions button { border: 0; border-radius: 8px; padding: 0.5rem 0.9rem; font-weight: 600; cursor: pointer; font: inherit; }
+.adm-actions .approve { background: #16a34a; color: #fff; }
+.adm-actions .reject { background: #f3f4f6; color: #991b1b; }
+.adm-actions button:disabled { opacity: 0.5; }
+.adm-labels { display: inline-flex; flex-wrap: wrap; gap: 0.25rem; }
+.adm-label { font-size: 0.7rem; font-weight: 600; border-radius: 999px; padding: 0.1rem 0.5rem; background: #eef2ff; color: #3730a3; }
+.adm-label.scam_text, .adm-label.price_anomaly, .adm-label.abuse, .adm-label.harassment { background: #fee2e2; color: #991b1b; }
+.adm-label.duplicate, .adm-label.spam { background: #fef3c7; color: #92400e; }
+.adm-table-wrap { overflow-x: auto; border: 1px solid #e5e7eb; border-radius: 12px; background: #fff; }
+.adm-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.adm-table th, .adm-table td { text-align: left; padding: 0.55rem 0.7rem; border-bottom: 1px solid #f1f1f1; vertical-align: top; }
+.adm-table th { background: #f9fafb; font-weight: 600; white-space: nowrap; }
+.adm-table td.flag, .adm-table td.error { color: #b91c1c; font-weight: 600; }
+.adm-table td.pass, .adm-table td.ok { color: #15803d; }
+.adm-reasons { max-width: 380px; }

@@ -179,3 +179,18 @@ def test_recommendations_violating_constraints_are_flagged(client, db, make_prop
     assert all(w["ref"] != f"listing:{cheap['id']}" for w in out["constraint_warnings"])
     card = next(c for c in out["listing_cards"]["cards"] if c["id"] == pricey["id"])
     assert len(card["warnings"]) == 2
+
+
+def test_unconfigured_provider_returns_error_event(client, monkeypatch):
+    import routers.ai as ai_router
+    from llm.base import LLMError
+
+    def boom(provider=None):
+        raise LLMError("LLM_API_KEY is not set")
+    monkeypatch.setattr(ai_router, "get_llm", boom)
+    res = client.post("/api/ai/chat", json={"messages": [{"role": "user", "content": "hi"}]},
+                      headers={"Origin": "http://localhost:5173"})
+    assert res.status_code == 200 and "event: error" in res.text and "isn't configured" in res.text
+    assert res.headers["access-control-allow-origin"] == "http://localhost:5173"
+    res = client.post("/api/ai/chat", json={"messages": [{"role": "user", "content": "hi"}], "stream": False})
+    assert res.status_code == 503

@@ -14,8 +14,8 @@ const TYPE_LABELS = {
 };
 
 const UNIVERSITIES = [
-  "BRAC University", "North South University", "BUET",
-  "Dhaka University", "Jahangirnagar University", "IUT", "AIUB", "AUST",
+  "BRAC University", "North South University", "Dhaka University", "BUET", "IUB",
+  "AIUB", "East West University", "Jahangirnagar University",
 ];
 
 function TypeBadge({ type }) {
@@ -212,7 +212,7 @@ export default function Forum() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ post_type: "", area: "", nearby_university: "", q: "" });
-  const [activePost, setActivePost] = useState(null);
+  const [activePost, setActivePost] = useState(() => Number(searchParams.get("post")) || null);
   const [showNewForm, setShowNewForm] = useState(
     searchParams.get("type") === "report" || searchParams.get("new") === "1"
   );

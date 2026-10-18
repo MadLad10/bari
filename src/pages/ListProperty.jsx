@@ -4,12 +4,12 @@ import { createProperty, uploadPhoto, uploadDocument } from "../api";
 import NavAuth from "../auth/NavAuth";
 import { useAuth } from "../auth/AuthContext";
 import { API_ROOT } from "../api";
+import ListingAssistant from "../components/ListingAssistant";
 import "./ListProperty.css";
 
 const UNIVERSITIES = [
-  "BRAC University", "North South University", "BUET",
-  "Dhaka University", "Jahangirnagar University", "IUT",
-  "AIUB", "AUST", "Other",
+  "BRAC University", "North South University", "Dhaka University", "BUET", "IUB",
+  "AIUB", "East West University", "Jahangirnagar University", "Other",
 ];
 
 const AMENITY_OPTIONS = [
@@ -188,6 +188,7 @@ export default function ListProperty() {
           ))}
         </div>
 
+        <div className={`lp-body${step < 4 ? " with-assistant" : ""}`}>
         <form onSubmit={handleSubmit} className="lp-form">
 
           {/* ── Step 1: Property Details ── */}
@@ -419,6 +420,10 @@ export default function ListProperty() {
                   <span>Now add photos and ownership documents to boost trust with renters.</span>
                 </div>
               </div>
+              <p className="lp-review-note">
+                Every new listing is automatically checked for duplicates and scam patterns. If something looks off,
+                it's held for a quick review and you'll see the reason under your listings.
+              </p>
 
               {/* Photos */}
               <h2>Property Photos</h2>
@@ -506,6 +511,11 @@ export default function ListProperty() {
           )}
 
         </form>
+        {step < 4 && (
+          <ListingAssistant form={form} photos={photos}
+            onUseDescription={(d) => { setForm((p) => ({ ...p, description: d })); setStep(1); }} />
+        )}
+        </div>
       </div>
     </div>
   );

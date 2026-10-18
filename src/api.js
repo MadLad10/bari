@@ -1,3 +1,5 @@
+import { streamSSE } from "./lib/sse";
+
 export const API_ROOT = import.meta.env.VITE_API_ROOT || "http://localhost:8001";
 const BASE = `${API_ROOT}/api`;
 const TOKEN_KEY = "bari_token";
@@ -88,9 +90,21 @@ export const getChatMessages = (propertyId, sessionToken) =>
   request(`/chat/${propertyId}/${sessionToken}`, { fallback: "Failed to load messages" });
 export const sendChatMessage = (data) => request("/chat/", { method: "POST", body: data, fallback: "Failed to send message" });
 
-// AI assistant
-export const aiChat = (messages, filters = {}) =>
-  request("/ai/chat", { method: "POST", body: { messages, ...filters }, fallback: "AI unavailable" });
+// AI assistant (SSE stream of agent events)
+export function streamAgent(messages, { provider, signal, onEvent }) {
+  return streamSSE(`${BASE}/ai/chat`, {
+    body: { messages, provider: provider || undefined },
+    headers: authHeaders(),
+    signal,
+    onEvent,
+  });
+}
+
+// Human-in-the-loop actions drafted by the agent
+export const getAction = (id) => request(`/actions/${id}`);
+export const confirmAction = (id, data = {}) =>
+  request(`/actions/${id}/confirm`, { method: "POST", body: data, fallback: "Could not confirm" });
+export const cancelAction = (id) => request(`/actions/${id}/cancel`, { method: "POST", fallback: "Could not cancel" });
 
 // Safety
 export const getSafety = (propertyId) => request(`/safety/${propertyId}`, { fallback: "Failed to fetch safety data" });
@@ -105,3 +119,15 @@ export const upvotePost = (postId) => request(`/forum/${postId}/upvote`, { metho
 export const getComments = (postId) => request(`/forum/${postId}/comments`, { fallback: "Failed to fetch comments" });
 export const addComment = (postId, data) =>
   request(`/forum/${postId}/comments`, { method: "POST", body: data, fallback: "Comment failed" });
+
+// Owner tools
+export const listingAssistant = (draft) =>
+  request("/listing-assistant", { method: "POST", body: draft, fallback: "Assistant unavailable" });
+export const fetchMyProperties = () => request("/properties/mine");
+
+// Admin
+export const adminQueue = () => request("/admin/queue");
+export const reviewListing = (id, verdict) => request(`/admin/listings/${id}/${verdict}`, { method: "POST" });
+export const reviewContent = (kind, id, verdict) => request(`/admin/content/${kind}/${id}/${verdict}`, { method: "POST" });
+export const adminDecisions = (limit = 100) => request(`/admin/decisions?limit=${limit}`);
+export const adminLLMUsage = () => request("/admin/llm-usage");

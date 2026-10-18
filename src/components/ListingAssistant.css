@@ -1,0 +1,31 @@
+.la-panel { border: 1px solid #e5e7eb; border-radius: 14px; padding: 1rem; background: #fcfcfd; display: flex;
+  flex-direction: column; gap: 0.75rem; font-size: 0.85rem; }
+.la-head { display: flex; gap: 0.6rem; align-items: center; }
+.la-icon { width: 30px; height: 30px; border-radius: 8px; background: #111; color: #fff; display: grid; place-items: center; }
+.la-title { font-weight: 700; }
+.la-sub { color: #6b7280; font-size: 0.75rem; }
+.la-controls { display: flex; gap: 0.5rem; }
+.la-controls select { border: 1px solid #d1d5db; border-radius: 8px; padding: 0.4rem; font-family: inherit; }
+.la-controls button, .la-use { flex: 1; border: 0; border-radius: 8px; background: #2563eb; color: #fff; font-weight: 600;
+  padding: 0.5rem 0.8rem; cursor: pointer; font-family: inherit; }
+.la-controls button:disabled { opacity: 0.6; }
+.la-use { flex: none; background: #111; margin-top: 0.4rem; }
+.la-section h4 { margin: 0 0 0.35rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: #374151; }
+.la-desc { margin: 0; white-space: pre-wrap; background: #fff; border: 1px solid #eef0f3; border-radius: 8px; padding: 0.6rem; line-height: 1.5; }
+.la-note { margin: 0.3rem 0 0; color: #6b7280; font-size: 0.75rem; }
+.la-error { color: #b91c1c; }
+.la-good { color: #15803d; margin: 0; }
+.la-missing { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+.la-missing li { display: flex; gap: 0.5rem; align-items: baseline; line-height: 1.4; }
+.la-missing li span { font-size: 0.65rem; font-weight: 700; border-radius: 999px; padding: 0.05rem 0.45rem; flex: none; }
+.la-missing li.required span { background: #fee2e2; color: #991b1b; }
+.la-missing li.recommended span { background: #eef2ff; color: #3730a3; }
+.la-verdict { display: inline-block; font-weight: 700; border-radius: 999px; padding: 0.15rem 0.6rem; font-size: 0.78rem; }
+.la-verdict.ok { background: #dcfce7; color: #166534; }
+.la-verdict.warn { background: #fee2e2; color: #991b1b; }
+.la-verdict.info { background: #f3f4f6; color: #374151; }
+.la-stats { margin: 0.35rem 0 0; }
+.la-comps { list-style: none; padding: 0; margin: 0.4rem 0 0; display: flex; flex-direction: column; gap: 0.3rem; }
+.la-comps li { display: flex; flex-direction: column; }
+.la-comps a { color: #1d4ed8; text-decoration: none; font-weight: 500; }
+.la-comps span { color: #6b7280; font-size: 0.75rem; }

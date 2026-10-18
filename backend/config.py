@@ -20,6 +20,7 @@ class Settings(BaseSettings):
         "http://localhost:5173",
         "http://localhost:3000",
         "http://localhost:8001",
+        "http://localhost:4173",
     ]
     upload_dir: str = "uploads"
 

@@ -3,11 +3,12 @@ import json
 from typing import Literal
 
 from fastapi import APIRouter, Depends
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from agent.loop import Agent, AgentEvent, run_to_completion
 from deps import get_current_user_optional
+from llm.base import LLMError
 from llm.client import get_llm
 from llm.context import request_id_var
 from models import User
@@ -32,7 +33,13 @@ def sse(event: AgentEvent) -> str:
 
 @router.post("/chat")
 def chat(payload: ChatRequest, user: User | None = Depends(get_current_user_optional)):
-    agent = Agent(get_llm(payload.provider))
+    try:
+        agent = Agent(get_llm(payload.provider))
+    except LLMError as e:  # e.g. no API key configured: tell the UI instead of failing the request
+        event = AgentEvent("error", {"message": "The assistant isn't configured on this server.", "detail": str(e)})
+        if not payload.stream:
+            return JSONResponse(status_code=503, content=event.data)
+        return StreamingResponse(iter([sse(event)]), media_type="text/event-stream")
     messages = [m.model_dump() for m in payload.messages]
     # Captured now: the streaming body runs after the request-ID middleware has reset its contextvar.
     kwargs = {"user_id": user.id if user else None, "request_id": request_id_var.get()}

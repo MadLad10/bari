@@ -304,3 +304,12 @@
   color: #991b1b;
   margin-bottom: 1rem;
 }
+
+.lp-container:has(.lp-body.with-assistant) { max-width: 1120px; }
+.lp-body.with-assistant { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 1.5rem; align-items: start; }
+.lp-body.with-assistant .la-panel { position: sticky; top: 1rem; }
+.lp-review-note { margin-top: 0.75rem; font-size: 0.85rem; color: #555; background: #f8fafc; border-radius: 8px; padding: 0.6rem 0.8rem; }
+@media (max-width: 900px) {
+  .lp-body.with-assistant { grid-template-columns: 1fr; }
+  .lp-body.with-assistant .la-panel { position: static; }
+}
