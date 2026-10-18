@@ -6,13 +6,14 @@ import aiofiles
 import os
 import uuid
 
+from config import settings
 from database import get_db
 from models import Property, ListingStatus, PropertyType, ListingType, RentalType, Furnishing
 from schemas import PropertyCreate, PropertyUpdate, PropertyOut, PropertyListOut
 
 router = APIRouter(prefix="/properties", tags=["properties"])
 
-UPLOAD_DIR = "uploads"
+UPLOAD_DIR = settings.upload_dir
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 

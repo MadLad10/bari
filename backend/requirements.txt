@@ -1,10 +1,12 @@
-fastapi==0.115.5
-uvicorn[standard]==0.32.1
-sqlalchemy==2.0.36
-alembic==1.14.0
-python-multipart==0.0.12
-python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
-pydantic[email]==2.10.3
-aiofiles==24.1.0
-Pillow==11.0.0
+# Runtime dependencies (Python 3.12). Pin every version.
+fastapi==0.143.5
+uvicorn[standard]==0.54.0
+starlette==1.8.0
+sqlalchemy==2.1.5
+alembic==1.20.0
+pydantic[email]==2.14.1
+pydantic-settings==2.16.0
+python-multipart==0.0.32
+aiofiles==25.1.0
+httpx==0.28.1
+openai==3.35.1

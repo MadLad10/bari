@@ -31,6 +31,7 @@ def submit_vote(property_id: int, payload: VoteIn, db: Session = Depends(get_db)
 
     vote = SafetyVote(property_id=property_id, **payload.model_dump())
     db.add(vote)
+    db.flush()  # session has autoflush=False; the new vote must count toward the average
 
     # update denormalised safety_score on the property
     result = db.query(func.avg(SafetyVote.rating)).filter(
@@ -52,14 +53,14 @@ def get_safety(property_id: int, db: Session = Depends(get_db)):
         .limit(20)
         .all()
     )
-    avg = db.query(func.avg(SafetyVote.rating)).filter(
+    avg, total = db.query(func.avg(SafetyVote.rating), func.count(SafetyVote.id)).filter(
         SafetyVote.property_id == property_id
-    ).scalar()
+    ).one()
 
     return {
         "property_id": property_id,
         "avg_score": round(float(avg), 2) if avg else None,
-        "vote_count": len(votes),
+        "vote_count": total,
         "votes": [
             {
                 "rating": v.rating,

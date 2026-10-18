@@ -3,14 +3,14 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional
 from openai import OpenAI
-import os
 
+from config import settings
 from database import get_db
 from models import Property, ListingStatus
 
 router = APIRouter(prefix="/ai", tags=["ai"])
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_API_KEY = settings.openai_api_key
 
 SYSTEM_PROMPT = """You are the bari.com AI property assistant — a helpful, friendly guide for finding rental properties and sublets in Bangladesh.
 

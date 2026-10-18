@@ -1,3 +1,27 @@
 node_modules/
 dist/
 /bs.mp4
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local data
+backend/bari.db
+*.db
+*.sqlite3
+backend/uploads/
+uploads/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
