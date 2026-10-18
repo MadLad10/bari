@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 
 from config import settings
 from models import Document, Property
+from rag.chunking import detect_lang
 from rag.embeddings import get_embedder
 from rag.indexer import SOURCE_TYPES
 from rag.rerank import get_reranker
@@ -20,6 +21,15 @@ from schemas import PropertySearchParams
 from services.properties import build_filters
 
 RRF_K = 60
+# Keyword search can't match across languages (a Bangla query vs an English listing), and equal-weight RRF then
+# buries a document that is #1 for vector search but absent from the keyword list. The eval showed Bangla hit@5
+# fall from 1.00 (vector only) to 0.50 (equal-weight hybrid), so Bangla-script queries get a smaller keyword weight.
+KEYWORD_WEIGHT_LATIN = 1.0
+KEYWORD_WEIGHT_BANGLA = 0.1  # swept 0.25 / 0.1 / 0 on the 7 Bangla eval queries (small: see README caveat)
+
+
+def keyword_weight_for(query: str) -> float:
+    return KEYWORD_WEIGHT_BANGLA if detect_lang(query) == "bn" else KEYWORD_WEIGHT_LATIN
 _TOKEN = re.compile(r"[\wঀ-৿]+", re.UNICODE)
 STOPWORDS = {
     # English
@@ -115,7 +125,7 @@ def hybrid_search(db: Session, query: str, *, sources: tuple[str, ...] | list[st
                   listing_filters: PropertySearchParams | None = None, area: str | None = None,
                   university: str | None = None, k: int = 8, candidates: int = 40, rerank_top: int | None = None,
                   use_vector: bool = True, use_keyword: bool = True, use_rerank: bool = True,
-                  one_per_source: bool = True) -> SearchResult:
+                  one_per_source: bool = True, keyword_weight: float | None = None) -> SearchResult:
     sources = tuple(s for s in sources if s in SOURCE_TYPES) or SOURCE_TYPES
     where = _where(sources, listing_filters, area, university)
     timings: dict[str, int] = {}
@@ -134,10 +144,11 @@ def hybrid_search(db: Session, query: str, *, sources: tuple[str, ...] | list[st
         timings["vector"] = int((time.perf_counter() - t) * 1000)
     if use_keyword:
         t = time.perf_counter()
+        w = keyword_weight_for(query) if keyword_weight is None else keyword_weight
         for rank, d in enumerate(_keyword(db, query, where, candidates), start=1):
             h = hits.setdefault(d.id, _to_hit(d))
             h.keyword_rank = rank
-            fused[d.id] = fused.get(d.id, 0) + 1 / (RRF_K + rank)
+            fused[d.id] = fused.get(d.id, 0) + w / (RRF_K + rank)
         timings["keyword"] = int((time.perf_counter() - t) * 1000)
 
     ranked = sorted(hits.values(), key=lambda h: fused[h.doc_id], reverse=True)

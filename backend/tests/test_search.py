@@ -67,3 +67,10 @@ def test_semantic_endpoint_returns_public_listing_summaries(client, seeded, need
     assert hits and all(h["listing"]["is_female_only"] for h in hits)
     assert f"listing:{needles['listings']['nsu_female_meals']}" in [h["ref"] for h in hits]
     assert "owner_phone" not in hits[0]["listing"] and "owner_email" not in hits[0]["listing"]
+
+
+def test_keyword_weight_depends_on_script():
+    from rag.hybrid import keyword_weight_for
+    assert keyword_weight_for("quiet room near BUET") == 1.0
+    assert keyword_weight_for("BRAC er kache meyeder jonno flat") == 1.0   # Banglish is Latin script
+    assert keyword_weight_for("বুয়েটের কাছে শান্ত রুম") < 1.0

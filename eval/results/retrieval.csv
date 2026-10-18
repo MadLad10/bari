@@ -1,0 +1,133 @@
+mode,id,lang,category,hit@1,hit@5,mrr@10,latency_ms,top5,expected
+vector only,q01,en,semantic,True,True,1.0,446,listing:9 listing:139 listing:146 listing:137 listing:135,listing:18 listing:9
+vector only,q02,en,semantic,True,True,1.0,254,listing:10 listing:8 listing:53 listing:126 listing:2,listing:10
+vector only,q03,en,structured,True,True,1.0,264,listing:11,listing:11
+vector only,q04,en,semantic,True,True,1.0,250,listing:12 listing:91 listing:94 listing:103 listing:50,listing:12
+vector only,q05,en,semantic,True,True,1.0,273,listing:13 listing:1 listing:11 listing:39 listing:20,listing:13
+vector only,q06,en,semantic,True,True,1.0,248,listing:14 listing:69 listing:67 listing:86 listing:7,listing:14
+vector only,q07,en,semantic,True,True,1.0,267,listing:16 listing:132 listing:124 listing:129 listing:120,listing:16
+vector only,q08,en,forum,True,True,1.0,235,post:1 comment:86 comment:87 comment:189 comment:191,post:1
+vector only,q09,en,forum,False,False,0.143,270,comment:356 post:96 comment:170 comment:31 post:102,post:4
+vector only,q10,en,forum,True,True,1.0,259,post:3 post:66 post:164 post:74 comment:160,post:3
+vector only,q11,en,forum,True,True,1.0,258,post:8 post:194 post:111 post:34 comment:369,post:8
+vector only,q12,en,forum,True,True,1.0,242,post:5 post:29 post:167 post:18 post:112,post:5
+vector only,q13,en,safety,True,True,1.0,246,post:6 comment:4 post:80 safety:3 safety:1,post:6 safety:607
+vector only,q14,en,safety,False,True,0.25,288,safety:46 safety:48 safety:49 safety:606 safety:534,safety:606
+vector only,q17,bn,semantic,True,True,1.0,254,listing:15 listing:81 listing:2 listing:142 listing:71,listing:15
+vector only,q18,bn,forum,True,True,1.0,232,post:2 post:199 post:139 comment:2 comment:249,post:2
+vector only,q19,bn,forum,True,True,1.0,237,post:7 post:157 post:49 post:110 post:142,post:7
+vector only,q20,bn,semantic,False,True,0.333,235,listing:45 listing:55 listing:10 listing:53 listing:57,listing:10
+vector only,q21,bn,semantic,True,True,1.0,227,listing:12 listing:102 listing:104 listing:93 listing:101,listing:12
+vector only,q22,bn,semantic,True,True,1.0,244,listing:9 listing:24 listing:134 listing:40 listing:145,listing:18 listing:9
+vector only,q23,bn,semantic,True,True,1.0,251,listing:16 listing:128 listing:108 listing:117 listing:129,listing:16
+vector only,q24,banglish,structured,True,True,1.0,279,listing:11 listing:118 listing:76 listing:101,listing:11
+keyword only,q01,en,semantic,True,True,1.0,23,listing:9 listing:146 listing:138 listing:148 listing:139,listing:18 listing:9
+keyword only,q02,en,semantic,True,True,1.0,21,listing:10 listing:126 listing:8 listing:109 listing:125,listing:10
+keyword only,q03,en,structured,True,True,1.0,5,listing:11,listing:11
+keyword only,q04,en,semantic,True,True,1.0,15,listing:12 listing:90 listing:73 listing:22 listing:92,listing:12
+keyword only,q05,en,semantic,True,True,1.0,14,listing:13 listing:11 listing:21 listing:1 listing:36,listing:13
+keyword only,q06,en,semantic,True,True,1.0,15,listing:14 listing:69 listing:74 listing:78 listing:73,listing:14
+keyword only,q07,en,semantic,True,True,1.0,15,listing:16 listing:120 listing:129 listing:121 listing:124,listing:16
+keyword only,q08,en,forum,True,True,1.0,14,post:1 post:183 post:51 post:105 post:145,post:1
+keyword only,q09,en,forum,False,True,0.25,17,post:189 post:96 post:102 post:4 post:111,post:4
+keyword only,q10,en,forum,False,True,0.2,16,post:135 post:164 post:66 post:30 post:3,post:3
+keyword only,q11,en,forum,True,True,1.0,15,post:8 post:194 post:111 post:34 post:164,post:8
+keyword only,q12,en,forum,True,True,1.0,16,post:5 post:29 post:20 post:92 post:26,post:5
+keyword only,q13,en,safety,True,True,1.0,20,post:6 post:102 post:33 comment:4 post:164,post:6 safety:607
+keyword only,q14,en,safety,False,True,0.5,21,safety:46 safety:606 safety:49 safety:48 safety:91,safety:606
+keyword only,q17,bn,semantic,True,True,1.0,11,listing:15 listing:81 listing:71 listing:104 listing:59,listing:15
+keyword only,q18,bn,forum,False,True,0.333,14,post:58 post:174 post:2 post:107 post:199,post:2
+keyword only,q19,bn,forum,True,True,1.0,9,post:7 post:73 post:28 post:75 post:196,post:7
+keyword only,q20,bn,semantic,False,False,0.0,6,listing:15 listing:19 listing:29 listing:40 listing:77,listing:10
+keyword only,q21,bn,semantic,False,False,0.0,9,listing:145 listing:104 listing:29 listing:40 listing:59,listing:12
+keyword only,q22,bn,semantic,False,False,0.0,9,listing:84 listing:134 listing:24 listing:33 listing:35,listing:18 listing:9
+keyword only,q23,bn,semantic,False,False,0.0,9,listing:128 listing:122 listing:104 listing:123 listing:62,listing:16
+keyword only,q24,banglish,structured,True,True,1.0,5,listing:11 listing:118 listing:76 listing:101,listing:11
+"hybrid, equal-weight RRF",q01,en,semantic,True,True,1.0,265,listing:9 listing:146 listing:139 listing:135 listing:136,listing:18 listing:9
+"hybrid, equal-weight RRF",q02,en,semantic,True,True,1.0,263,listing:10 listing:8 listing:126 listing:53 listing:111,listing:10
+"hybrid, equal-weight RRF",q03,en,structured,True,True,1.0,250,listing:11,listing:11
+"hybrid, equal-weight RRF",q04,en,semantic,True,True,1.0,258,listing:12 listing:90 listing:94 listing:91 listing:103,listing:12
+"hybrid, equal-weight RRF",q05,en,semantic,True,True,1.0,272,listing:13 listing:11 listing:1 listing:20 listing:36,listing:13
+"hybrid, equal-weight RRF",q06,en,semantic,True,True,1.0,255,listing:14 listing:69 listing:74 listing:86 listing:85,listing:14
+"hybrid, equal-weight RRF",q07,en,semantic,True,True,1.0,269,listing:16 listing:120 listing:129 listing:124 listing:121,listing:16
+"hybrid, equal-weight RRF",q08,en,forum,True,True,1.0,242,post:1 post:183 post:51 post:105 post:162,post:1
+"hybrid, equal-weight RRF",q09,en,forum,False,True,0.25,261,post:96 post:189 post:102 post:4 post:124,post:4
+"hybrid, equal-weight RRF",q10,en,forum,False,True,0.333,290,post:66 post:164 post:3 post:74 post:76,post:3
+"hybrid, equal-weight RRF",q11,en,forum,True,True,1.0,256,post:8 post:194 post:111 post:34 post:37,post:8
+"hybrid, equal-weight RRF",q12,en,forum,True,True,1.0,280,post:5 post:29 post:20 post:18 post:112,post:5
+"hybrid, equal-weight RRF",q13,en,safety,True,True,1.0,273,post:6 comment:4 post:80 post:129 safety:165,post:6 safety:607
+"hybrid, equal-weight RRF",q14,en,safety,False,True,0.333,299,safety:46 safety:48 safety:606 safety:49 safety:534,safety:606
+"hybrid, equal-weight RRF",q17,bn,semantic,True,True,1.0,262,listing:15 listing:81 listing:71 listing:142 listing:29,listing:15
+"hybrid, equal-weight RRF",q18,bn,forum,True,True,1.0,251,post:2 post:199 post:58 comment:2 post:139,post:2
+"hybrid, equal-weight RRF",q19,bn,forum,True,True,1.0,253,post:7 post:73 post:28 post:75 post:157,post:7
+"hybrid, equal-weight RRF",q20,bn,semantic,False,False,0.0,244,listing:15 listing:29 listing:19 listing:142 listing:93,listing:10
+"hybrid, equal-weight RRF",q21,bn,semantic,False,False,0.0,250,listing:104 listing:102 listing:29 listing:93 listing:77,listing:12
+"hybrid, equal-weight RRF",q22,bn,semantic,False,False,0.0,310,listing:24 listing:134 listing:61 listing:84 listing:60,listing:18 listing:9
+"hybrid, equal-weight RRF",q23,bn,semantic,False,False,0.0,282,listing:128 listing:122 listing:108 listing:117 listing:123,listing:16
+"hybrid, equal-weight RRF",q24,banglish,structured,True,True,1.0,278,listing:11 listing:118 listing:76 listing:101,listing:11
+"hybrid, equal-weight RRF + rerank",q01,en,semantic,True,True,1.0,5045,listing:9 listing:146 listing:138 listing:139 listing:141,listing:18 listing:9
+"hybrid, equal-weight RRF + rerank",q02,en,semantic,True,True,1.0,2150,listing:10 listing:8 listing:45 listing:53 listing:126,listing:10
+"hybrid, equal-weight RRF + rerank",q03,en,structured,True,True,1.0,504,listing:11,listing:11
+"hybrid, equal-weight RRF + rerank",q04,en,semantic,True,True,1.0,1887,listing:12 listing:90 listing:89 listing:22 listing:94,listing:12
+"hybrid, equal-weight RRF + rerank",q05,en,semantic,True,True,1.0,2062,listing:13 listing:1 listing:11 listing:20 listing:31,listing:13
+"hybrid, equal-weight RRF + rerank",q06,en,semantic,True,True,1.0,2067,listing:14 listing:69 listing:73 listing:74 listing:68,listing:14
+"hybrid, equal-weight RRF + rerank",q07,en,semantic,True,True,1.0,2639,listing:16 listing:124 listing:120 listing:129 listing:121,listing:16
+"hybrid, equal-weight RRF + rerank",q08,en,forum,True,True,1.0,2719,post:1 post:183 post:51 post:105 comment:191,post:1
+"hybrid, equal-weight RRF + rerank",q09,en,forum,False,True,0.25,3509,post:102 post:189 post:96 post:4 post:124,post:4
+"hybrid, equal-weight RRF + rerank",q10,en,forum,True,True,1.0,3781,post:3 post:66 post:164 post:74 post:135,post:3
+"hybrid, equal-weight RRF + rerank",q11,en,forum,True,True,1.0,3672,post:8 post:194 post:111 post:34 post:158,post:8
+"hybrid, equal-weight RRF + rerank",q12,en,forum,True,True,1.0,1889,post:5 post:20 post:29 post:92 post:172,post:5
+"hybrid, equal-weight RRF + rerank",q13,en,safety,True,True,1.0,2931,post:6 comment:4 post:80 post:102 safety:165,post:6 safety:607
+"hybrid, equal-weight RRF + rerank",q14,en,safety,False,True,0.5,1994,safety:49 safety:606 safety:48 safety:46 safety:535,safety:606
+"hybrid, equal-weight RRF + rerank",q17,bn,semantic,True,True,1.0,3333,listing:15 listing:81 listing:71 listing:19 listing:145,listing:15
+"hybrid, equal-weight RRF + rerank",q18,bn,forum,True,True,1.0,1771,post:2 post:199 comment:2 post:139 comment:252,post:2
+"hybrid, equal-weight RRF + rerank",q19,bn,forum,True,True,1.0,2734,post:7 post:28 post:75 post:73 post:49,post:7
+"hybrid, equal-weight RRF + rerank",q20,bn,semantic,False,False,0.0,4215,listing:93 listing:19 listing:145 listing:142 listing:122,listing:10
+"hybrid, equal-weight RRF + rerank",q21,bn,semantic,False,False,0.0,3951,listing:93 listing:104 listing:102 listing:101 listing:77,listing:12
+"hybrid, equal-weight RRF + rerank",q22,bn,semantic,False,False,0.0,3638,listing:134 listing:24 listing:40 listing:66 listing:61,listing:18 listing:9
+"hybrid, equal-weight RRF + rerank",q23,bn,semantic,False,False,0.0,4022,listing:117 listing:128 listing:114 listing:122 listing:108,listing:16
+"hybrid, equal-weight RRF + rerank",q24,banglish,structured,True,True,1.0,1969,listing:11 listing:118 listing:101 listing:76,listing:11
+"hybrid, script-aware RRF",q01,en,semantic,True,True,1.0,534,listing:9 listing:146 listing:139 listing:135 listing:136,listing:18 listing:9
+"hybrid, script-aware RRF",q02,en,semantic,True,True,1.0,366,listing:10 listing:8 listing:126 listing:53 listing:111,listing:10
+"hybrid, script-aware RRF",q03,en,structured,True,True,1.0,384,listing:11,listing:11
+"hybrid, script-aware RRF",q04,en,semantic,True,True,1.0,377,listing:12 listing:90 listing:94 listing:91 listing:103,listing:12
+"hybrid, script-aware RRF",q05,en,semantic,True,True,1.0,388,listing:13 listing:11 listing:1 listing:20 listing:36,listing:13
+"hybrid, script-aware RRF",q06,en,semantic,True,True,1.0,357,listing:14 listing:69 listing:74 listing:86 listing:85,listing:14
+"hybrid, script-aware RRF",q07,en,semantic,True,True,1.0,403,listing:16 listing:120 listing:129 listing:124 listing:121,listing:16
+"hybrid, script-aware RRF",q08,en,forum,True,True,1.0,344,post:1 post:183 post:51 post:105 post:162,post:1
+"hybrid, script-aware RRF",q09,en,forum,False,True,0.25,363,post:96 post:189 post:102 post:4 post:124,post:4
+"hybrid, script-aware RRF",q10,en,forum,False,True,0.333,404,post:66 post:164 post:3 post:74 post:76,post:3
+"hybrid, script-aware RRF",q11,en,forum,True,True,1.0,366,post:8 post:194 post:111 post:34 post:37,post:8
+"hybrid, script-aware RRF",q12,en,forum,True,True,1.0,354,post:5 post:29 post:20 post:18 post:112,post:5
+"hybrid, script-aware RRF",q13,en,safety,True,True,1.0,429,post:6 comment:4 post:80 post:129 safety:165,post:6 safety:607
+"hybrid, script-aware RRF",q14,en,safety,False,True,0.333,460,safety:46 safety:48 safety:606 safety:49 safety:534,safety:606
+"hybrid, script-aware RRF",q17,bn,semantic,True,True,1.0,404,listing:15 listing:81 listing:71 listing:142 listing:2,listing:15
+"hybrid, script-aware RRF",q18,bn,forum,True,True,1.0,378,post:2 post:199 post:139 comment:2 comment:249,post:2
+"hybrid, script-aware RRF",q19,bn,forum,True,True,1.0,377,post:7 post:73 post:157 post:28 post:49,post:7
+"hybrid, script-aware RRF",q20,bn,semantic,False,True,0.25,362,listing:45 listing:142 listing:55 listing:10 listing:29,listing:10
+"hybrid, script-aware RRF",q21,bn,semantic,False,False,0.167,376,listing:102 listing:104 listing:93 listing:77 listing:101,listing:12
+"hybrid, script-aware RRF",q22,bn,semantic,False,True,0.2,363,listing:24 listing:134 listing:40 listing:61 listing:9,listing:18 listing:9
+"hybrid, script-aware RRF",q23,bn,semantic,False,True,0.2,415,listing:128 listing:108 listing:117 listing:122 listing:16,listing:16
+"hybrid, script-aware RRF",q24,banglish,structured,True,True,1.0,398,listing:11 listing:118 listing:76 listing:101,listing:11
+"hybrid, script-aware RRF + rerank",q01,en,semantic,True,True,1.0,3536,listing:9 listing:146 listing:138 listing:139 listing:141,listing:18 listing:9
+"hybrid, script-aware RRF + rerank",q02,en,semantic,True,True,1.0,3525,listing:10 listing:8 listing:45 listing:53 listing:126,listing:10
+"hybrid, script-aware RRF + rerank",q03,en,structured,True,True,1.0,914,listing:11,listing:11
+"hybrid, script-aware RRF + rerank",q04,en,semantic,True,True,1.0,4797,listing:12 listing:90 listing:89 listing:22 listing:94,listing:12
+"hybrid, script-aware RRF + rerank",q05,en,semantic,True,True,1.0,5006,listing:13 listing:1 listing:11 listing:20 listing:31,listing:13
+"hybrid, script-aware RRF + rerank",q06,en,semantic,True,True,1.0,3489,listing:14 listing:69 listing:73 listing:74 listing:68,listing:14
+"hybrid, script-aware RRF + rerank",q07,en,semantic,True,True,1.0,3224,listing:16 listing:124 listing:120 listing:129 listing:121,listing:16
+"hybrid, script-aware RRF + rerank",q08,en,forum,True,True,1.0,2654,post:1 post:183 post:51 post:105 comment:191,post:1
+"hybrid, script-aware RRF + rerank",q09,en,forum,False,True,0.25,3040,post:102 post:189 post:96 post:4 post:124,post:4
+"hybrid, script-aware RRF + rerank",q10,en,forum,True,True,1.0,3261,post:3 post:66 post:164 post:74 post:135,post:3
+"hybrid, script-aware RRF + rerank",q11,en,forum,True,True,1.0,3384,post:8 post:194 post:111 post:34 post:158,post:8
+"hybrid, script-aware RRF + rerank",q12,en,forum,True,True,1.0,1848,post:5 post:20 post:29 post:92 post:172,post:5
+"hybrid, script-aware RRF + rerank",q13,en,safety,True,True,1.0,2994,post:6 comment:4 post:80 post:102 safety:165,post:6 safety:607
+"hybrid, script-aware RRF + rerank",q14,en,safety,False,True,0.5,1893,safety:49 safety:606 safety:48 safety:46 safety:535,safety:606
+"hybrid, script-aware RRF + rerank",q17,bn,semantic,True,True,1.0,3627,listing:15 listing:81 listing:85 listing:2 listing:111,listing:15
+"hybrid, script-aware RRF + rerank",q18,bn,forum,True,True,1.0,2069,post:2 post:199 comment:2 post:139 comment:252,post:2
+"hybrid, script-aware RRF + rerank",q19,bn,forum,True,True,1.0,3396,post:7 post:28 post:75 post:73 post:49,post:7
+"hybrid, script-aware RRF + rerank",q20,bn,semantic,True,True,1.0,3810,listing:10 listing:45 listing:8 listing:53 listing:55,listing:10
+"hybrid, script-aware RRF + rerank",q21,bn,semantic,True,True,1.0,3422,listing:12 listing:93 listing:104 listing:102 listing:101,listing:12
+"hybrid, script-aware RRF + rerank",q22,bn,semantic,True,True,1.0,2562,listing:9 listing:134 listing:141 listing:24 listing:145,listing:18 listing:9
+"hybrid, script-aware RRF + rerank",q23,bn,semantic,True,True,1.0,2519,listing:16 listing:117 listing:128 listing:129 listing:124,listing:16
+"hybrid, script-aware RRF + rerank",q24,banglish,structured,True,True,1.0,1340,listing:11 listing:118 listing:101 listing:76,listing:11

@@ -1,0 +1,19 @@
+mode,subset,n,hit@1,hit@5,mrr@10,p50_ms,p95_ms
+vector only,all,22,0.864,0.955,0.897,252,288
+vector only,en,14,0.857,0.929,0.885,258,343
+vector only,bn+banglish,8,0.875,1.0,0.917,240,270
+keyword only,all,22,0.636,0.818,0.695,14,21
+keyword only,en,14,0.786,1.0,0.854,16,22
+keyword only,bn+banglish,8,0.375,0.5,0.417,9,13
+"hybrid, equal-weight RRF",all,22,0.682,0.818,0.723,262,299
+"hybrid, equal-weight RRF",en,14,0.786,1.0,0.851,264,293
+"hybrid, equal-weight RRF",bn+banglish,8,0.5,0.5,0.5,258,300
+"hybrid, equal-weight RRF + rerank",all,22,0.727,0.818,0.761,2726,4205
+"hybrid, equal-weight RRF + rerank",en,14,0.857,1.0,0.911,2394,4223
+"hybrid, equal-weight RRF + rerank",bn+banglish,8,0.5,0.5,0.5,3486,4147
+"hybrid, script-aware RRF",all,22,0.682,0.955,0.761,378,458
+"hybrid, script-aware RRF",en,14,0.786,1.0,0.851,380,486
+"hybrid, script-aware RRF",bn+banglish,8,0.5,0.875,0.602,378,411
+"hybrid, script-aware RRF + rerank",all,22,0.909,1.0,0.943,3242,4748
+"hybrid, script-aware RRF + rerank",en,14,0.857,1.0,0.911,3242,4870
+"hybrid, script-aware RRF + rerank",bn+banglish,8,1.0,1.0,1.0,2979,3746
