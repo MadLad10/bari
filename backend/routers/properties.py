@@ -9,7 +9,8 @@ from sqlalchemy.orm import Session
 from config import settings
 from database import get_db
 from deps import get_current_user, require_role
-from models import User, UserRole
+from models import ListingStatus, User, UserRole
+from services.errors import Forbidden
 from schemas import PropertyCreate, PropertyListOut, PropertyOut, PropertySearchParams, PropertyUpdate
 from services import properties as svc
 from services.users import ensure_can_manage_property
@@ -33,6 +34,13 @@ def count_properties(params: Annotated[PropertySearchParams, Query()], db: Sessi
     return {"count": svc.count_properties(db, params)}
 
 
+@router.get("/mine")
+def my_properties(db: Session = Depends(get_db), user: User = Depends(require_role(UserRole.owner))):
+    """The owner's own listings, including ones held for review and why."""
+    return [{**PropertyOut.model_validate(p).model_dump(mode="json"), "moderation_reason": p.moderation_reason}
+            for p in svc.owner_properties(db, user.id)]
+
+
 @router.get("/{property_id}", response_model=PropertyOut)
 def get_property(property_id: int, db: Session = Depends(get_db)):
     return svc.get_property(db, property_id)
@@ -53,7 +61,10 @@ def _managed_property(db: Session, property_id: int, user: User):
 @router.put("/{property_id}", response_model=PropertyOut)
 def update_property(property_id: int, payload: PropertyUpdate, db: Session = Depends(get_db),
                     user: User = Depends(get_current_user)):
-    _managed_property(db, property_id, user)
+    prop = _managed_property(db, property_id, user)
+    if (payload.status is not None and prop.status == ListingStatus.pending and prop.moderation_reason
+            and user.role != UserRole.admin):
+        raise Forbidden("This listing is under review by bari moderators")
     return svc.update_property(db, property_id, payload)
 
 

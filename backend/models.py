@@ -93,6 +93,7 @@ class Property(Base):
     owner_phone = Column(String(20), nullable=False)
     owner_email = Column(String(150), nullable=True)
     owner_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    moderation_reason = Column(Text, nullable=True)   # set when screening moves a listing to `pending`
 
     status = Column(Enum(ListingStatus), default=ListingStatus.active, nullable=False, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -158,6 +159,8 @@ class SafetyVote(Base):
     comment = Column(String(300), nullable=True)
     voter_name = Column(String(100), nullable=True)
     voter_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    moderation_status = Column(String(10), nullable=False, default="visible", server_default="visible")
+    moderation_reason = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -181,6 +184,8 @@ class ForumPost(Base):
     nearby_university = Column(String(200), nullable=True)
     author_name = Column(String(100), nullable=False)
     author_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    moderation_status = Column(String(10), nullable=False, default="visible", server_default="visible")
+    moderation_reason = Column(Text, nullable=True)
     upvotes = Column(Integer, default=0, nullable=False)
     property_id = Column(Integer, ForeignKey("properties.id", ondelete="SET NULL"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -193,6 +198,8 @@ class ForumComment(Base):
     post_id = Column(Integer, ForeignKey("forum_posts.id", ondelete="CASCADE"), nullable=False, index=True)
     author_name = Column(String(100), nullable=False)
     author_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    moderation_status = Column(String(10), nullable=False, default="visible", server_default="visible")
+    moderation_reason = Column(Text, nullable=True)
     content = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -313,3 +320,26 @@ class AgentRun(Base):
     status = Column(String(15), nullable=False)                  # ok | error | limit
     error = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+
+
+# ── Moderation log ────────────────────────────────────────────────────────────
+
+class ModerationDecision(Base):
+    """Every automated screening/moderation decision, with its reasons, plus the admin's review."""
+    __tablename__ = "moderation_decisions"
+
+    id = Column(Integer, primary_key=True)
+    target_type = Column(String(20), nullable=False)          # listing | post | comment | safety
+    target_id = Column(Integer, nullable=False)
+    workflow = Column(String(30), nullable=False)             # listing_screen | moderation
+    decision = Column(String(10), nullable=False)             # flag | pass
+    labels = Column(JSONB, nullable=False, default=list)
+    reasons = Column(JSONB, nullable=False, default=list)
+    signals = Column(JSONB, nullable=False, default=dict)     # raw scores: similarity, price ratio, llm verdict…
+    llm_model = Column(String(100), nullable=True)
+    review_status = Column(String(10), nullable=True)         # approved | rejected | removed
+    reviewed_by = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    reviewed_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+
+    __table_args__ = (Index("ix_moderation_target", "target_type", "target_id"),)

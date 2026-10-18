@@ -2,6 +2,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from models import SafetyVote
+from jobs.queue import enqueue
 from rag.indexer import enqueue_index
 from services.properties import get_property
 
@@ -19,6 +20,7 @@ def submit_vote(db: Session, property_id: int, rating: int, comment: str | None 
     prop.safety_score = new_avg
     if comment:
         enqueue_index(db, "safety", vote.id)
+        enqueue(db, "moderate", {"kind": "safety", "id": vote.id}, dedupe_key=f"moderate:safety:{vote.id}")
     db.commit()
     db.refresh(vote)
     return vote, new_avg
@@ -43,7 +45,7 @@ def get_safety_stats(db: Session, property_id: int, limit: int = 20) -> dict:
             {
                 "id": v.id,
                 "rating": v.rating,
-                "comment": v.comment,
+                "comment": v.comment if v.moderation_status == "visible" else None,
                 "voter_name": v.voter_name or "Anonymous",
                 "created_at": v.created_at.isoformat() if v.created_at else "",
             }

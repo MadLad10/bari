@@ -19,7 +19,7 @@ def build_chunks(db: Session, source_type: str, source_id: int) -> list[Chunk]:
     if source_type == "safety":
         v = db.get(SafetyVote, source_id)
         prop = db.get(Property, v.property_id) if v else None
-        return safety_chunks(v, prop) if v and prop and prop.status == ListingStatus.active else []
+        return safety_chunks(v, prop) if v and prop and prop.status == ListingStatus.active and _visible(v) else []
     if source_type == "post":
         post = db.get(ForumPost, source_id)
         return post_chunks(post) if post and _visible(post) else []

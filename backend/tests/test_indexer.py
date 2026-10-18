@@ -12,9 +12,10 @@ def _docs(db, kind=None):
 
 def test_create_listing_enqueues_index_job_atomically(client, db, make_property):
     prop = make_property()
-    jobs = db.query(Job).all()
-    assert [(j.kind, j.payload) for j in jobs] == [("index", {"source_type": "listing", "source_id": prop["id"]})]
-    assert run_pending(db) == 1
+    jobs = db.query(Job).order_by(Job.id).all()
+    assert [(j.kind, j.payload) for j in jobs] == [("index", {"source_type": "listing", "source_id": prop["id"]}),
+                                                   ("screen_listing", {"property_id": prop["id"]})]
+    assert run_pending(db) == 2
     [doc] = _docs(db, "listing")
     assert doc.property_id == prop["id"] and doc.embedding is not None and len(doc.embedding) == 1024
 

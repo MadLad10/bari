@@ -2,6 +2,7 @@ from sqlalchemy import and_, or_
 from sqlalchemy.orm import Session
 
 from models import Document, ListingStatus, Property, SafetyVote
+from jobs.queue import enqueue
 from rag.indexer import enqueue_index
 from schemas import PropertyCreate, PropertySearchParams, PropertyUpdate
 from services.errors import NotFound
@@ -82,6 +83,10 @@ def get_property(db: Session, property_id: int) -> Property:
     return prop
 
 
+def owner_properties(db: Session, owner_id: int) -> list[Property]:
+    return db.query(Property).filter(Property.owner_id == owner_id).order_by(Property.created_at.desc()).all()
+
+
 def get_properties(db: Session, ids: list[int]) -> list[Property]:
     return db.query(Property).filter(Property.id.in_(ids)).all() if ids else []
 
@@ -91,6 +96,7 @@ def create_property(db: Session, payload: PropertyCreate, **extra) -> Property:
     db.add(prop)
     db.flush()
     enqueue_index(db, "listing", prop.id)  # committed atomically with the listing (outbox)
+    enqueue(db, "screen_listing", {"property_id": prop.id}, dedupe_key=f"screen:{prop.id}")
     db.commit()
     db.refresh(prop)
     return prop
@@ -102,6 +108,8 @@ def update_property(db: Session, property_id: int, payload: PropertyUpdate) -> P
     for field, value in changes.items():
         setattr(prop, field, value)
     enqueue_index(db, "listing", prop.id)
+    if {"title", "description", "price"} & changes.keys():  # scams are often edited in after approval
+        enqueue(db, "screen_listing", {"property_id": prop.id}, dedupe_key=f"screen:{prop.id}")
     if {"title", "status"} & changes.keys():  # safety chunks quote the title and vanish with inactive listings
         for (vote_id,) in db.query(SafetyVote.id).filter(SafetyVote.property_id == prop.id,
                                                         SafetyVote.comment.isnot(None)):

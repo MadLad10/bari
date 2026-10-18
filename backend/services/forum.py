@@ -2,6 +2,7 @@ from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from models import ForumComment, ForumPost, PostType
+from jobs.queue import enqueue
 from rag.indexer import enqueue_index
 from services.errors import NotFound
 
@@ -37,7 +38,7 @@ def _comment_counts(db: Session, post_ids: list[int]) -> dict[int, int]:
         return {}
     rows = (
         db.query(ForumComment.post_id, func.count(ForumComment.id))
-        .filter(ForumComment.post_id.in_(post_ids))
+        .filter(ForumComment.post_id.in_(post_ids), ForumComment.moderation_status == "visible")
         .group_by(ForumComment.post_id)
         .all()
     )
@@ -47,7 +48,7 @@ def _comment_counts(db: Session, post_ids: list[int]) -> dict[int, int]:
 def list_posts(db: Session, post_type: PostType | None = None, area: str | None = None,
                nearby_university: str | None = None, q: str | None = None,
                skip: int = 0, limit: int = 20) -> list[dict]:
-    query = db.query(ForumPost)
+    query = db.query(ForumPost).filter(ForumPost.moderation_status == "visible")
     if post_type:
         query = query.filter(ForumPost.post_type == post_type)
     if area:
@@ -61,9 +62,9 @@ def list_posts(db: Session, post_type: PostType | None = None, area: str | None 
     return [post_to_dict(p, counts.get(p.id, 0)) for p in posts]
 
 
-def get_post_model(db: Session, post_id: int) -> ForumPost:
+def get_post_model(db: Session, post_id: int, include_hidden: bool = False) -> ForumPost:
     post = db.get(ForumPost, post_id)
-    if not post:
+    if not post or (post.moderation_status != "visible" and not include_hidden):
         raise NotFound("Post not found")
     return post
 
@@ -78,6 +79,7 @@ def create_post(db: Session, **fields) -> dict:
     db.add(post)
     db.flush()
     enqueue_index(db, "post", post.id)
+    enqueue(db, "moderate", {"kind": "post", "id": post.id}, dedupe_key=f"moderate:post:{post.id}")
     db.commit()
     db.refresh(post)
     return post_to_dict(post, 0)
@@ -93,7 +95,7 @@ def upvote_post(db: Session, post_id: int) -> int:
 def list_comments(db: Session, post_id: int) -> list[dict]:
     comments = (
         db.query(ForumComment)
-        .filter(ForumComment.post_id == post_id)
+        .filter(ForumComment.post_id == post_id, ForumComment.moderation_status == "visible")
         .order_by(ForumComment.created_at, ForumComment.id)
         .all()
     )
@@ -106,6 +108,7 @@ def add_comment(db: Session, post_id: int, **fields) -> dict:
     db.add(comment)
     db.flush()
     enqueue_index(db, "comment", comment.id)
+    enqueue(db, "moderate", {"kind": "comment", "id": comment.id}, dedupe_key=f"moderate:comment:{comment.id}")
     db.commit()
     db.refresh(comment)
     return comment_to_dict(comment)
