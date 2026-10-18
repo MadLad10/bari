@@ -1,4 +1,5 @@
-from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text, JSON, Enum
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text, Enum
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.sql import func
 import enum
 from database import Base
@@ -53,7 +54,7 @@ class Property(Base):
     area_sqft = Column(Float, nullable=True)
 
     address = Column(String(300), nullable=False)
-    area = Column(String(100), nullable=False)
+    area = Column(String(100), nullable=False, index=True)
     city = Column(String(100), nullable=False, default="Dhaka")
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
@@ -64,16 +65,16 @@ class Property(Base):
     is_female_only = Column(Boolean, default=False, nullable=False)
     safety_score = Column(Float, nullable=True)
 
-    amenities = Column(JSON, default=list)
-    photos = Column(JSON, default=list)
-    documents = Column(JSON, default=list)
+    amenities = Column(JSONB, default=list)
+    photos = Column(JSONB, default=list)
+    documents = Column(JSONB, default=list)
     has_furniture_for_sale = Column(Boolean, default=False)
 
     owner_name = Column(String(100), nullable=False)
     owner_phone = Column(String(20), nullable=False)
     owner_email = Column(String(150), nullable=True)
 
-    status = Column(Enum(ListingStatus), default=ListingStatus.active, nullable=False)
+    status = Column(Enum(ListingStatus), default=ListingStatus.active, nullable=False, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
@@ -90,7 +91,7 @@ class Booking(Base):
     __tablename__ = "bookings"
 
     id = Column(Integer, primary_key=True, index=True)
-    property_id = Column(Integer, ForeignKey("properties.id", ondelete="CASCADE"), nullable=False)
+    property_id = Column(Integer, ForeignKey("properties.id", ondelete="CASCADE"), nullable=False, index=True)
 
     renter_name = Column(String(100), nullable=False)
     renter_phone = Column(String(20), nullable=False)
@@ -131,7 +132,7 @@ class SafetyVote(Base):
     __tablename__ = "safety_votes"
 
     id = Column(Integer, primary_key=True, index=True)
-    property_id = Column(Integer, ForeignKey("properties.id", ondelete="CASCADE"), nullable=False)
+    property_id = Column(Integer, ForeignKey("properties.id", ondelete="CASCADE"), nullable=False, index=True)
     rating = Column(Integer, nullable=False)           # 1–5
     comment = Column(String(300), nullable=True)
     voter_name = Column(String(100), nullable=True)
@@ -166,7 +167,7 @@ class ForumComment(Base):
     __tablename__ = "forum_comments"
 
     id = Column(Integer, primary_key=True, index=True)
-    post_id = Column(Integer, ForeignKey("forum_posts.id", ondelete="CASCADE"), nullable=False)
+    post_id = Column(Integer, ForeignKey("forum_posts.id", ondelete="CASCADE"), nullable=False, index=True)
     author_name = Column(String(100), nullable=False)
     content = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

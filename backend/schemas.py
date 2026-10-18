@@ -99,5 +99,5 @@ class PropertySearchParams(BaseModel):
     max_university_distance_km: Optional[float] = None
     is_female_only: Optional[bool] = None
     min_safety_score: Optional[float] = None
-    skip: int = 0
-    limit: int = Field(default=20, le=100)
+    skip: int = Field(default=0, ge=0)
+    limit: int = Field(default=20, ge=1, le=100)

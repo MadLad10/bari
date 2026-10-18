@@ -1,16 +1,16 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 import os
 
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+
 from config import settings
-from database import engine, Base
-import models as _models  # noqa: F401 — side-effect import, registers tables with Base.metadata
-from routers import properties, bookings, chat, ai, safety, forum
+from routers import ai, bookings, chat, forum, properties, safety
+from services.errors import ServiceError
 
-Base.metadata.create_all(bind=engine)
-
-app = FastAPI(title="bari.com API", version="0.1.0")
+# Schema is managed by Alembic (`alembic upgrade head`), not create_all.
+app = FastAPI(title="bari.com API", version="0.2.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,15 +20,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.exception_handler(ServiceError)
+async def service_error_handler(_: Request, exc: ServiceError):
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+
 os.makedirs(settings.upload_dir, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=settings.upload_dir), name="uploads")
 
-app.include_router(properties.router, prefix="/api")
-app.include_router(bookings.router, prefix="/api")
-app.include_router(chat.router, prefix="/api")
-app.include_router(ai.router, prefix="/api")
-app.include_router(safety.router, prefix="/api")
-app.include_router(forum.router, prefix="/api")
+for r in (properties, bookings, chat, ai, safety, forum):
+    app.include_router(r.router, prefix="/api")
 
 
 @app.get("/api/health")

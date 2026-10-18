@@ -1,220 +1,86 @@
-"""Run once to populate the DB with sample listings."""
-from database import engine, SessionLocal, Base
-from models import Property, PropertyType, ListingType, RentalType, Furnishing, ListingStatus
-import models  # noqa: ensure all models are registered
+"""Load the synthetic fixtures in seed_data/*.json into the database.
 
-Base.metadata.create_all(bind=engine)
+    python seed.py            # seed if the database is empty
+    python seed.py --reset    # wipe all app tables first
 
-SAMPLE = [
-    {
-        "title": "Furnished 2-bed flat near BRAC University",
-        "description": "Bright 2-bedroom apartment 8 minutes walk from BRAC University main gate. Fully furnished with AC, WiFi router included. Ground floor with separate entrance.",
-        "property_type": PropertyType.apartment,
-        "listing_type": ListingType.sublet,
-        "rental_type": RentalType.monthly,
-        "furnishing": Furnishing.furnished,
-        "price": 12000,
-        "bedrooms": 2,
-        "bathrooms": 1,
-        "area_sqft": 750,
-        "address": "Road 4, Block B, Niketan, Gulshan",
-        "area": "Gulshan",
-        "city": "Dhaka",
-        "nearby_university": "BRAC University",
-        "university_distance_km": 0.8,
-        "is_female_only": False,
-        "safety_score": 4.8,
-        "amenities": ["AC", "WiFi", "Gas", "Lift", "CCTV"],
-        "photos": [],
-        "has_furniture_for_sale": False,
-        "owner_name": "Karim Hossain",
-        "owner_phone": "01711000001",
-        "owner_email": "karim@example.com",
-        "status": ListingStatus.active,
-    },
-    {
-        "title": "Single room for female students – Dhanmondi",
-        "description": "Safe, clean single room in a shared apartment exclusively for female university students. Female-only building with security guard, CCTV, and iron gate. Close to NSU and Dhanmondi 27.",
-        "property_type": PropertyType.room,
-        "listing_type": ListingType.sublet,
-        "rental_type": RentalType.monthly,
-        "furnishing": Furnishing.semi_furnished,
-        "price": 7500,
-        "bedrooms": 1,
-        "bathrooms": 1,
-        "area_sqft": 200,
-        "address": "House 12, Road 7, Dhanmondi",
-        "area": "Dhanmondi",
-        "city": "Dhaka",
-        "nearby_university": "North South University",
-        "university_distance_km": 2.1,
-        "is_female_only": True,
-        "safety_score": 4.9,
-        "amenities": ["Security Guard", "CCTV", "Iron Gate", "Generator"],
-        "photos": [],
-        "has_furniture_for_sale": False,
-        "owner_name": "Nasrin Begum",
-        "owner_phone": "01911000002",
-        "status": ListingStatus.active,
-    },
-    {
-        "title": "Spacious 3-bed apartment – Mirpur 10",
-        "description": "Large unfurnished 3-bedroom flat ideal for a group of students or a family. Rooftop access, natural ventilation. 5 min auto-rickshaw to Mirpur 10 metro station.",
-        "property_type": PropertyType.apartment,
-        "listing_type": ListingType.rent,
-        "rental_type": RentalType.monthly,
-        "furnishing": Furnishing.unfurnished,
-        "price": 18000,
-        "bedrooms": 3,
-        "bathrooms": 2,
-        "area_sqft": 1200,
-        "address": "Section 11, Block D, Mirpur",
-        "area": "Mirpur",
-        "city": "Dhaka",
-        "nearby_university": "BUET",
-        "university_distance_km": 5.4,
-        "is_female_only": False,
-        "safety_score": 4.2,
-        "amenities": ["Rooftop", "Gas", "Generator", "Parking"],
-        "photos": [],
-        "has_furniture_for_sale": True,
-        "owner_name": "Rahim Uddin",
-        "owner_phone": "01811000003",
-        "status": ListingStatus.active,
-    },
-    {
-        "title": "Office space – Banani commercial area",
-        "description": "1000 sqft open-plan office on the 4th floor of a commercial building in Banani. Includes reception area, 2 cabins, server room provision, and fiber internet connection.",
-        "property_type": PropertyType.office,
-        "listing_type": ListingType.rent,
-        "rental_type": RentalType.monthly,
-        "furnishing": Furnishing.semi_furnished,
-        "price": 45000,
-        "bedrooms": 0,
-        "bathrooms": 2,
-        "area_sqft": 1000,
-        "address": "Road 11, Block C, Banani",
-        "area": "Banani",
-        "city": "Dhaka",
-        "is_female_only": False,
-        "safety_score": 4.6,
-        "amenities": ["Lift", "Generator", "Fiber Internet", "Parking", "CCTV"],
-        "photos": [],
-        "has_furniture_for_sale": False,
-        "owner_name": "Tania Chowdhury",
-        "owner_phone": "01611000004",
-        "status": ListingStatus.active,
-    },
-    {
-        "title": "2-bed house for sale – Uttara Sector 7",
-        "description": "Single-storey 2-bedroom house on 3 katha land in a quiet lane in Uttara Sector 7. New construction, ready for handover. Close to Uttara Model Town school and hospital.",
-        "property_type": PropertyType.house,
-        "listing_type": ListingType.sale,
-        "furnishing": Furnishing.unfurnished,
-        "price": 8500000,
-        "bedrooms": 2,
-        "bathrooms": 2,
-        "area_sqft": 900,
-        "address": "Lane 5, Sector 7, Uttara",
-        "area": "Uttara",
-        "city": "Dhaka",
-        "is_female_only": False,
-        "safety_score": 4.7,
-        "amenities": ["Parking", "Gas", "Water Reservoir"],
-        "photos": [],
-        "has_furniture_for_sale": False,
-        "owner_name": "Jabir Ahmed",
-        "owner_phone": "01511000005",
-        "status": ListingStatus.active,
-    },
-    {
-        "title": "Furnished room – daily rental near Shahjalal Airport",
-        "description": "Clean furnished room available for daily rental. Great for travelers, guests, or short business trips. 10 min from Hazrat Shahjalal International Airport.",
-        "property_type": PropertyType.room,
-        "listing_type": ListingType.rent,
-        "rental_type": RentalType.daily,
-        "furnishing": Furnishing.furnished,
-        "price": 1500,
-        "bedrooms": 1,
-        "bathrooms": 1,
-        "area_sqft": 180,
-        "address": "House 3, Road 2, Khilkhet",
-        "area": "Khilkhet",
-        "city": "Dhaka",
-        "is_female_only": False,
-        "safety_score": 4.3,
-        "amenities": ["AC", "WiFi", "Attached Bath", "Breakfast Optional"],
-        "photos": [],
-        "has_furniture_for_sale": False,
-        "owner_name": "Sadia Islam",
-        "owner_phone": "01711000006",
-        "status": ListingStatus.active,
-    },
-    {
-        "title": "Semi-furnished flat near Jahangirnagar University",
-        "description": "Comfortable 2-bedroom semi-furnished flat just 1.2 km from Jahangirnagar University gate. Ideal for students or faculty. Ground floor, peaceful neighborhood.",
-        "property_type": PropertyType.apartment,
-        "listing_type": ListingType.sublet,
-        "rental_type": RentalType.monthly,
-        "furnishing": Furnishing.semi_furnished,
-        "price": 9500,
-        "bedrooms": 2,
-        "bathrooms": 1,
-        "area_sqft": 680,
-        "address": "Ward 1, Savar",
-        "area": "Savar",
-        "city": "Dhaka",
-        "nearby_university": "Jahangirnagar University",
-        "university_distance_km": 1.2,
-        "is_female_only": False,
-        "safety_score": 4.0,
-        "amenities": ["Gas", "WiFi", "Fan", "Water"],
-        "photos": [],
-        "has_furniture_for_sale": True,
-        "owner_name": "Arif Billah",
-        "owner_phone": "01811000007",
-        "status": ListingStatus.active,
-    },
-    {
-        "title": "Female-only furnished hostel room – NSU area",
-        "description": "Verified female-only hostel room in a secure building near NSU Bashundhara campus. Meals optional. Common kitchen, study room, and lounge available.",
-        "property_type": PropertyType.room,
-        "listing_type": ListingType.sublet,
-        "rental_type": RentalType.monthly,
-        "furnishing": Furnishing.furnished,
-        "price": 6800,
-        "bedrooms": 1,
-        "bathrooms": 1,
-        "area_sqft": 160,
-        "address": "Block J, Bashundhara R/A",
-        "area": "Bashundhara",
-        "city": "Dhaka",
-        "nearby_university": "North South University",
-        "university_distance_km": 0.6,
-        "is_female_only": True,
-        "safety_score": 5.0,
-        "amenities": ["CCTV", "Security Guard", "Study Room", "Common Kitchen", "Generator"],
-        "photos": [],
-        "has_furniture_for_sale": False,
-        "owner_name": "Farida Khanam",
-        "owner_phone": "01611000008",
-        "status": ListingStatus.active,
-    },
-]
+Regenerate the fixtures with `python -m seed_data.generate` (deterministic).
+"""
+import argparse
+import json
+from datetime import datetime
+from pathlib import Path
+
+from sqlalchemy import text
+
+import models  # noqa: F401  registers tables
+from database import Base, SessionLocal, engine
+from models import Booking, ForumComment, ForumPost, Property, SafetyVote
+
+DATA = Path(__file__).resolve().parent / "seed_data"
+
+# Fixture-only keys that are not table columns.
+_META = {"lang", "needle", "available_from", "comments"}
 
 
-def seed():
-    db = SessionLocal()
-    if db.query(Property).count() > 0:
-        print("DB already seeded.")
-        db.close()
-        return
-    for data in SAMPLE:
-        db.add(Property(**data))
+def _load(name: str) -> list[dict]:
+    return json.loads((DATA / f"{name}.json").read_text())
+
+
+def _row(d: dict) -> dict:
+    row = {k: v for k, v in d.items() if k not in _META}
+    for k in ("created_at", "check_in", "check_out"):
+        if isinstance(row.get(k), str):
+            row[k] = datetime.fromisoformat(row[k])
+    return row
+
+
+def _reset_sequences(db) -> None:
+    for table in ("properties", "forum_posts", "forum_comments", "safety_votes", "bookings"):
+        db.execute(text(
+            f"SELECT setval(pg_get_serial_sequence('{table}', 'id'), COALESCE((SELECT MAX(id) FROM {table}), 0) + 1, false)"
+        ))
+
+
+def reset(db) -> None:
+    tables = ", ".join(t.name for t in Base.metadata.sorted_tables)
+    db.execute(text(f"TRUNCATE {tables} RESTART IDENTITY CASCADE"))
     db.commit()
-    db.close()
-    print(f"Seeded {len(SAMPLE)} properties.")
+
+
+def seed(db, force: bool = False) -> dict[str, int]:
+    if not force and db.query(Property).count() > 0:
+        return {}
+    listings, posts = _load("listings"), _load("posts")
+    votes, bookings = _load("safety_votes"), _load("bookings")
+
+    db.add_all(Property(**_row(l)) for l in listings)
+    db.flush()
+    db.add_all(ForumPost(**_row(p)) for p in posts)
+    db.flush()
+    db.add_all(ForumComment(**_row(c)) for p in posts for c in p["comments"])
+    db.add_all(SafetyVote(**_row(v)) for v in votes)
+    db.add_all(Booking(**_row(b)) for b in bookings)
+    db.flush()
+    _reset_sequences(db)
+    db.commit()
+    return {"properties": len(listings), "posts": len(posts),
+            "comments": sum(len(p["comments"]) for p in posts),
+            "safety_votes": len(votes), "bookings": len(bookings)}
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--reset", action="store_true", help="truncate all app tables before seeding")
+    args = ap.parse_args()
+    db = SessionLocal()
+    try:
+        if args.reset:
+            reset(db)
+        counts = seed(db, force=args.reset)
+        print(f"Seeded: {counts}" if counts else "Database already seeded (use --reset to reload).")
+    finally:
+        db.close()
 
 
 if __name__ == "__main__":
-    seed()
+    main()

@@ -1,0 +1,31 @@
+{
+ "listings": {
+  "ewu_rooftop_garden": 9,
+  "nsu_female_meals": 10,
+  "brac_2bed_women_safe": 11,
+  "buet_quiet_study": 12,
+  "banani_pet_friendly": 13,
+  "du_wheelchair": 14,
+  "du_lakeview_bn": 15,
+  "aiub_parents_daily": 16,
+  "gulshan_too_cheap_scam": 17,
+  "ewu_rooftop_duplicate": 18
+ },
+ "posts": {
+  "merul_badda_flooding": 1,
+  "bashundhara_women_night_bn": 2,
+  "azimpur_gas": 3,
+  "mohakhali_mugging": 4,
+  "nsu_female_roommate": 5,
+  "gulshan_scam_report": 6,
+  "rampura_noise_bn": 7,
+  "dhanmondi_rickshaw": 8,
+  "injection_book": 9,
+  "injection_phone": 10,
+  "injection_bn": 11
+ },
+ "safety_votes": {
+  "brac_female_guard": 606,
+  "gulshan_scam_vote": 607
+ }
+}

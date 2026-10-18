@@ -1,0 +1,4858 @@
+[
+ {
+  "id": 1,
+  "property_id": 1,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Tania",
+  "created_at": "2026-09-08T09:45:00+00:00"
+ },
+ {
+  "id": 2,
+  "property_id": 1,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Nafis",
+  "created_at": "2025-12-14T17:24:00+00:00"
+ },
+ {
+  "id": 3,
+  "property_id": 1,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Zarif",
+  "created_at": "2026-02-23T15:37:00+00:00"
+ },
+ {
+  "id": 4,
+  "property_id": 1,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-08-29T21:11:00+00:00"
+ },
+ {
+  "id": 5,
+  "property_id": 2,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-08-09T01:56:00+00:00"
+ },
+ {
+  "id": 6,
+  "property_id": 2,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Lamia",
+  "created_at": "2026-01-19T08:20:00+00:00"
+ },
+ {
+  "id": 7,
+  "property_id": 2,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Mim",
+  "created_at": "2026-08-14T17:56:00+00:00"
+ },
+ {
+  "id": 8,
+  "property_id": 2,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-07-05T21:56:00+00:00"
+ },
+ {
+  "id": 9,
+  "property_id": 2,
+  "rating": 5,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-07-13T11:16:00+00:00"
+ },
+ {
+  "id": 10,
+  "property_id": 3,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Tasnim",
+  "created_at": "2026-04-14T11:46:00+00:00"
+ },
+ {
+  "id": 11,
+  "property_id": 3,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Mim",
+  "created_at": "2026-03-09T01:36:00+00:00"
+ },
+ {
+  "id": 12,
+  "property_id": 3,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": null,
+  "created_at": "2026-03-12T05:19:00+00:00"
+ },
+ {
+  "id": 13,
+  "property_id": 3,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": null,
+  "created_at": "2026-06-01T14:48:00+00:00"
+ },
+ {
+  "id": 14,
+  "property_id": 3,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Mim",
+  "created_at": "2026-02-18T01:29:00+00:00"
+ },
+ {
+  "id": 15,
+  "property_id": 3,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": null,
+  "created_at": "2026-03-17T15:15:00+00:00"
+ },
+ {
+  "id": 16,
+  "property_id": 4,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Tania",
+  "created_at": "2026-04-05T04:45:00+00:00"
+ },
+ {
+  "id": 17,
+  "property_id": 4,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Raisa",
+  "created_at": "2025-12-24T15:02:00+00:00"
+ },
+ {
+  "id": 18,
+  "property_id": 4,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Sakib",
+  "created_at": "2026-02-22T08:28:00+00:00"
+ },
+ {
+  "id": 19,
+  "property_id": 4,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Imran",
+  "created_at": "2026-02-23T02:37:00+00:00"
+ },
+ {
+  "id": 20,
+  "property_id": 5,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-03-15T20:43:00+00:00"
+ },
+ {
+  "id": 21,
+  "property_id": 5,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Mim",
+  "created_at": "2025-12-13T09:21:00+00:00"
+ },
+ {
+  "id": 22,
+  "property_id": 6,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Rafi",
+  "created_at": "2026-05-18T20:18:00+00:00"
+ },
+ {
+  "id": 23,
+  "property_id": 6,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Siam",
+  "created_at": "2026-05-14T01:16:00+00:00"
+ },
+ {
+  "id": 24,
+  "property_id": 6,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Mim",
+  "created_at": "2026-07-18T00:55:00+00:00"
+ },
+ {
+  "id": 25,
+  "property_id": 6,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Lamia",
+  "created_at": "2026-04-07T22:21:00+00:00"
+ },
+ {
+  "id": 26,
+  "property_id": 7,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-03-04T02:55:00+00:00"
+ },
+ {
+  "id": 27,
+  "property_id": 7,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Tania",
+  "created_at": "2026-05-20T07:45:00+00:00"
+ },
+ {
+  "id": 28,
+  "property_id": 7,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Farzana",
+  "created_at": "2026-07-11T07:37:00+00:00"
+ },
+ {
+  "id": 29,
+  "property_id": 7,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Rifat",
+  "created_at": "2026-06-17T11:15:00+00:00"
+ },
+ {
+  "id": 30,
+  "property_id": 7,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Sakib",
+  "created_at": "2026-01-16T06:07:00+00:00"
+ },
+ {
+  "id": 31,
+  "property_id": 7,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Shuvo",
+  "created_at": "2026-08-26T19:06:00+00:00"
+ },
+ {
+  "id": 32,
+  "property_id": 8,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Rakib",
+  "created_at": "2026-09-08T01:55:00+00:00"
+ },
+ {
+  "id": 33,
+  "property_id": 8,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Anika",
+  "created_at": "2026-07-14T03:12:00+00:00"
+ },
+ {
+  "id": 34,
+  "property_id": 8,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Mim",
+  "created_at": "2026-05-19T05:40:00+00:00"
+ },
+ {
+  "id": 35,
+  "property_id": 8,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2026-03-12T20:04:00+00:00"
+ },
+ {
+  "id": 36,
+  "property_id": 8,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Lamia",
+  "created_at": "2026-08-02T23:08:00+00:00"
+ },
+ {
+  "id": 37,
+  "property_id": 8,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Fahim",
+  "created_at": "2026-09-02T22:51:00+00:00"
+ },
+ {
+  "id": 38,
+  "property_id": 9,
+  "rating": 2,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-08-10T20:34:00+00:00"
+ },
+ {
+  "id": 39,
+  "property_id": 9,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Sakib",
+  "created_at": "2026-03-22T23:49:00+00:00"
+ },
+ {
+  "id": 40,
+  "property_id": 9,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-05-26T02:55:00+00:00"
+ },
+ {
+  "id": 41,
+  "property_id": 10,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Farzana",
+  "created_at": "2026-03-05T06:26:00+00:00"
+ },
+ {
+  "id": 42,
+  "property_id": 10,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Rafi",
+  "created_at": "2026-08-28T02:57:00+00:00"
+ },
+ {
+  "id": 43,
+  "property_id": 10,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Rakib",
+  "created_at": "2026-04-08T18:26:00+00:00"
+ },
+ {
+  "id": 44,
+  "property_id": 10,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Lamia",
+  "created_at": "2025-12-10T12:40:00+00:00"
+ },
+ {
+  "id": 45,
+  "property_id": 11,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Mim",
+  "created_at": "2026-07-26T18:55:00+00:00"
+ },
+ {
+  "id": 46,
+  "property_id": 11,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-01-11T19:17:00+00:00"
+ },
+ {
+  "id": 47,
+  "property_id": 11,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-07-06T00:36:00+00:00"
+ },
+ {
+  "id": 48,
+  "property_id": 11,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2026-07-11T13:22:00+00:00"
+ },
+ {
+  "id": 49,
+  "property_id": 11,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Proma",
+  "created_at": "2026-02-26T14:48:00+00:00"
+ },
+ {
+  "id": 50,
+  "property_id": 11,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Rifat",
+  "created_at": "2026-06-24T00:04:00+00:00"
+ },
+ {
+  "id": 51,
+  "property_id": 12,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": null,
+  "created_at": "2026-09-10T21:15:00+00:00"
+ },
+ {
+  "id": 52,
+  "property_id": 12,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Mim",
+  "created_at": "2026-08-25T18:29:00+00:00"
+ },
+ {
+  "id": 53,
+  "property_id": 12,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2025-12-19T05:29:00+00:00"
+ },
+ {
+  "id": 54,
+  "property_id": 12,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Rafi",
+  "created_at": "2026-08-13T12:24:00+00:00"
+ },
+ {
+  "id": 55,
+  "property_id": 12,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Fahim",
+  "created_at": "2026-08-29T08:29:00+00:00"
+ },
+ {
+  "id": 56,
+  "property_id": 12,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Anika",
+  "created_at": "2026-02-09T04:50:00+00:00"
+ },
+ {
+  "id": 57,
+  "property_id": 13,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2025-12-27T20:42:00+00:00"
+ },
+ {
+  "id": 58,
+  "property_id": 13,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Mahin",
+  "created_at": "2026-09-26T08:23:00+00:00"
+ },
+ {
+  "id": 59,
+  "property_id": 13,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Farzana",
+  "created_at": "2026-04-06T11:00:00+00:00"
+ },
+ {
+  "id": 60,
+  "property_id": 13,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Shuvo",
+  "created_at": "2026-06-30T13:29:00+00:00"
+ },
+ {
+  "id": 61,
+  "property_id": 14,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Raisa",
+  "created_at": "2026-06-30T12:11:00+00:00"
+ },
+ {
+  "id": 62,
+  "property_id": 14,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Rakib",
+  "created_at": "2026-04-02T13:19:00+00:00"
+ },
+ {
+  "id": 63,
+  "property_id": 14,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Sumaiya",
+  "created_at": "2026-07-11T03:44:00+00:00"
+ },
+ {
+  "id": 64,
+  "property_id": 15,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Anika",
+  "created_at": "2026-06-19T15:45:00+00:00"
+ },
+ {
+  "id": 65,
+  "property_id": 15,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Zarif",
+  "created_at": "2026-01-01T16:25:00+00:00"
+ },
+ {
+  "id": 66,
+  "property_id": 15,
+  "rating": 5,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Lamia",
+  "created_at": "2026-07-23T12:43:00+00:00"
+ },
+ {
+  "id": 67,
+  "property_id": 15,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-05-10T17:39:00+00:00"
+ },
+ {
+  "id": 68,
+  "property_id": 15,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Lamia",
+  "created_at": "2026-07-03T18:07:00+00:00"
+ },
+ {
+  "id": 69,
+  "property_id": 15,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Imran",
+  "created_at": "2026-09-18T13:24:00+00:00"
+ },
+ {
+  "id": 70,
+  "property_id": 16,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Jannat",
+  "created_at": "2026-05-12T20:24:00+00:00"
+ },
+ {
+  "id": 71,
+  "property_id": 16,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Proma",
+  "created_at": "2026-09-06T22:13:00+00:00"
+ },
+ {
+  "id": 72,
+  "property_id": 16,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Siam",
+  "created_at": "2026-04-01T06:23:00+00:00"
+ },
+ {
+  "id": 73,
+  "property_id": 17,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Zarif",
+  "created_at": "2026-02-22T09:15:00+00:00"
+ },
+ {
+  "id": 74,
+  "property_id": 17,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": null,
+  "created_at": "2026-07-13T16:48:00+00:00"
+ },
+ {
+  "id": 75,
+  "property_id": 17,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Farzana",
+  "created_at": "2026-07-23T05:03:00+00:00"
+ },
+ {
+  "id": 76,
+  "property_id": 18,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-09-29T12:40:00+00:00"
+ },
+ {
+  "id": 77,
+  "property_id": 18,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-09-21T21:47:00+00:00"
+ },
+ {
+  "id": 78,
+  "property_id": 18,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Farzana",
+  "created_at": "2026-04-25T16:14:00+00:00"
+ },
+ {
+  "id": 79,
+  "property_id": 18,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-02-28T05:52:00+00:00"
+ },
+ {
+  "id": 80,
+  "property_id": 18,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Siam",
+  "created_at": "2026-07-14T10:24:00+00:00"
+ },
+ {
+  "id": 81,
+  "property_id": 18,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Adiba",
+  "created_at": "2026-07-23T23:47:00+00:00"
+ },
+ {
+  "id": 82,
+  "property_id": 19,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-09-17T00:08:00+00:00"
+ },
+ {
+  "id": 83,
+  "property_id": 19,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Asif",
+  "created_at": "2025-12-04T12:52:00+00:00"
+ },
+ {
+  "id": 84,
+  "property_id": 19,
+  "rating": 2,
+  "comment": "রাতে একা হাঁটবেন না।",
+  "voter_name": null,
+  "created_at": "2026-07-20T06:46:00+00:00"
+ },
+ {
+  "id": 85,
+  "property_id": 19,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Nabila",
+  "created_at": "2025-12-21T11:09:00+00:00"
+ },
+ {
+  "id": 86,
+  "property_id": 19,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Farzana",
+  "created_at": "2026-03-25T19:12:00+00:00"
+ },
+ {
+  "id": 87,
+  "property_id": 20,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Siam",
+  "created_at": "2025-12-22T10:26:00+00:00"
+ },
+ {
+  "id": 88,
+  "property_id": 20,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2025-12-14T03:28:00+00:00"
+ },
+ {
+  "id": 89,
+  "property_id": 21,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-08-22T09:50:00+00:00"
+ },
+ {
+  "id": 90,
+  "property_id": 21,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Mim",
+  "created_at": "2026-09-16T19:31:00+00:00"
+ },
+ {
+  "id": 91,
+  "property_id": 21,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Rakib",
+  "created_at": "2026-05-03T00:25:00+00:00"
+ },
+ {
+  "id": 92,
+  "property_id": 22,
+  "rating": 2,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-05-13T06:02:00+00:00"
+ },
+ {
+  "id": 93,
+  "property_id": 22,
+  "rating": 2,
+  "comment": "Phone snatching happened on this road.",
+  "voter_name": null,
+  "created_at": "2026-03-22T20:04:00+00:00"
+ },
+ {
+  "id": 94,
+  "property_id": 23,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Jannat",
+  "created_at": "2026-01-23T04:12:00+00:00"
+ },
+ {
+  "id": 95,
+  "property_id": 23,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Farzana",
+  "created_at": "2026-01-13T09:12:00+00:00"
+ },
+ {
+  "id": 96,
+  "property_id": 23,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-05-07T10:55:00+00:00"
+ },
+ {
+  "id": 97,
+  "property_id": 23,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Tania",
+  "created_at": "2026-07-09T23:40:00+00:00"
+ },
+ {
+  "id": 98,
+  "property_id": 23,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Mim",
+  "created_at": "2026-03-02T20:33:00+00:00"
+ },
+ {
+  "id": 99,
+  "property_id": 23,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-02-21T05:56:00+00:00"
+ },
+ {
+  "id": 100,
+  "property_id": 24,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Mim",
+  "created_at": "2025-12-15T21:24:00+00:00"
+ },
+ {
+  "id": 101,
+  "property_id": 24,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Tahsin",
+  "created_at": "2026-08-05T19:06:00+00:00"
+ },
+ {
+  "id": 102,
+  "property_id": 24,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Nafis",
+  "created_at": "2026-08-05T02:21:00+00:00"
+ },
+ {
+  "id": 103,
+  "property_id": 24,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Lamia",
+  "created_at": "2026-09-19T21:10:00+00:00"
+ },
+ {
+  "id": 104,
+  "property_id": 25,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Siam",
+  "created_at": "2026-08-23T03:07:00+00:00"
+ },
+ {
+  "id": 105,
+  "property_id": 25,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-05-07T15:08:00+00:00"
+ },
+ {
+  "id": 106,
+  "property_id": 26,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Lamia",
+  "created_at": "2026-09-17T03:16:00+00:00"
+ },
+ {
+  "id": 107,
+  "property_id": 26,
+  "rating": 2,
+  "comment": "Don't walk alone at night here.",
+  "voter_name": "Proma",
+  "created_at": "2026-01-26T08:41:00+00:00"
+ },
+ {
+  "id": 108,
+  "property_id": 26,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Rafi",
+  "created_at": "2026-03-01T23:31:00+00:00"
+ },
+ {
+  "id": 109,
+  "property_id": 26,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Nafis",
+  "created_at": "2026-01-13T05:59:00+00:00"
+ },
+ {
+  "id": 110,
+  "property_id": 26,
+  "rating": 2,
+  "comment": "Phone snatching happened on this road.",
+  "voter_name": "Mim",
+  "created_at": "2026-09-29T06:34:00+00:00"
+ },
+ {
+  "id": 111,
+  "property_id": 27,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Proma",
+  "created_at": "2026-02-01T13:40:00+00:00"
+ },
+ {
+  "id": 112,
+  "property_id": 27,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Siam",
+  "created_at": "2026-04-04T03:52:00+00:00"
+ },
+ {
+  "id": 113,
+  "property_id": 28,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Zarif",
+  "created_at": "2026-01-14T09:51:00+00:00"
+ },
+ {
+  "id": 114,
+  "property_id": 28,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Proma",
+  "created_at": "2026-09-24T16:01:00+00:00"
+ },
+ {
+  "id": 115,
+  "property_id": 28,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Anika",
+  "created_at": "2026-01-01T17:59:00+00:00"
+ },
+ {
+  "id": 116,
+  "property_id": 29,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Anika",
+  "created_at": "2026-02-05T14:16:00+00:00"
+ },
+ {
+  "id": 117,
+  "property_id": 29,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Siam",
+  "created_at": "2026-05-04T19:16:00+00:00"
+ },
+ {
+  "id": 118,
+  "property_id": 30,
+  "rating": 5,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Rifat",
+  "created_at": "2026-06-15T12:44:00+00:00"
+ },
+ {
+  "id": 119,
+  "property_id": 30,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Shuvo",
+  "created_at": "2026-07-17T02:10:00+00:00"
+ },
+ {
+  "id": 120,
+  "property_id": 30,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Orin",
+  "created_at": "2026-02-06T10:19:00+00:00"
+ },
+ {
+  "id": 121,
+  "property_id": 30,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Mahin",
+  "created_at": "2026-09-10T22:58:00+00:00"
+ },
+ {
+  "id": 122,
+  "property_id": 31,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Tania",
+  "created_at": "2026-03-05T10:15:00+00:00"
+ },
+ {
+  "id": 123,
+  "property_id": 31,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Rifat",
+  "created_at": "2026-02-07T02:08:00+00:00"
+ },
+ {
+  "id": 124,
+  "property_id": 31,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": null,
+  "created_at": "2026-06-17T03:07:00+00:00"
+ },
+ {
+  "id": 125,
+  "property_id": 31,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-05-11T04:37:00+00:00"
+ },
+ {
+  "id": 126,
+  "property_id": 31,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Farzana",
+  "created_at": "2026-04-15T17:25:00+00:00"
+ },
+ {
+  "id": 127,
+  "property_id": 32,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": null,
+  "created_at": "2026-01-04T06:30:00+00:00"
+ },
+ {
+  "id": 128,
+  "property_id": 32,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Mahin",
+  "created_at": "2026-05-07T11:06:00+00:00"
+ },
+ {
+  "id": 129,
+  "property_id": 32,
+  "rating": 2,
+  "comment": "Don't walk alone at night here.",
+  "voter_name": null,
+  "created_at": "2026-06-06T18:17:00+00:00"
+ },
+ {
+  "id": 130,
+  "property_id": 32,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Tahsin",
+  "created_at": "2026-06-01T06:55:00+00:00"
+ },
+ {
+  "id": 131,
+  "property_id": 32,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-06-14T13:36:00+00:00"
+ },
+ {
+  "id": 132,
+  "property_id": 33,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": null,
+  "created_at": "2026-04-01T11:12:00+00:00"
+ },
+ {
+  "id": 133,
+  "property_id": 33,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": null,
+  "created_at": "2026-04-20T23:15:00+00:00"
+ },
+ {
+  "id": 134,
+  "property_id": 33,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Tahsin",
+  "created_at": "2026-08-10T10:26:00+00:00"
+ },
+ {
+  "id": 135,
+  "property_id": 33,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Tahsin",
+  "created_at": "2026-04-29T14:43:00+00:00"
+ },
+ {
+  "id": 136,
+  "property_id": 34,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Nafis",
+  "created_at": "2026-06-23T14:21:00+00:00"
+ },
+ {
+  "id": 137,
+  "property_id": 34,
+  "rating": 5,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-01-02T11:39:00+00:00"
+ },
+ {
+  "id": 138,
+  "property_id": 34,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-03-26T00:59:00+00:00"
+ },
+ {
+  "id": 139,
+  "property_id": 34,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Anika",
+  "created_at": "2026-08-29T03:07:00+00:00"
+ },
+ {
+  "id": 140,
+  "property_id": 35,
+  "rating": 2,
+  "comment": null,
+  "voter_name": "Nusrat",
+  "created_at": "2026-05-10T22:48:00+00:00"
+ },
+ {
+  "id": 141,
+  "property_id": 35,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Tania",
+  "created_at": "2026-09-22T02:25:00+00:00"
+ },
+ {
+  "id": 142,
+  "property_id": 35,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": null,
+  "created_at": "2026-09-03T06:28:00+00:00"
+ },
+ {
+  "id": 143,
+  "property_id": 35,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Shuvo",
+  "created_at": "2026-03-29T03:42:00+00:00"
+ },
+ {
+  "id": 144,
+  "property_id": 35,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Nusrat",
+  "created_at": "2026-04-19T13:48:00+00:00"
+ },
+ {
+  "id": 145,
+  "property_id": 36,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Lamia",
+  "created_at": "2026-02-28T19:31:00+00:00"
+ },
+ {
+  "id": 146,
+  "property_id": 36,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": null,
+  "created_at": "2026-07-25T00:43:00+00:00"
+ },
+ {
+  "id": 147,
+  "property_id": 36,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-04-23T14:26:00+00:00"
+ },
+ {
+  "id": 148,
+  "property_id": 36,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Anika",
+  "created_at": "2026-05-10T20:45:00+00:00"
+ },
+ {
+  "id": 149,
+  "property_id": 36,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-02-06T23:45:00+00:00"
+ },
+ {
+  "id": 150,
+  "property_id": 37,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Lamia",
+  "created_at": "2026-04-13T09:35:00+00:00"
+ },
+ {
+  "id": 151,
+  "property_id": 37,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Tasnim",
+  "created_at": "2026-02-02T10:00:00+00:00"
+ },
+ {
+  "id": 152,
+  "property_id": 37,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Fahim",
+  "created_at": "2026-07-04T03:47:00+00:00"
+ },
+ {
+  "id": 153,
+  "property_id": 37,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Siam",
+  "created_at": "2026-03-10T19:58:00+00:00"
+ },
+ {
+  "id": 154,
+  "property_id": 38,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Arif",
+  "created_at": "2026-04-07T15:38:00+00:00"
+ },
+ {
+  "id": 155,
+  "property_id": 38,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Nafis",
+  "created_at": "2026-08-10T09:35:00+00:00"
+ },
+ {
+  "id": 156,
+  "property_id": 38,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Sakib",
+  "created_at": "2026-08-04T23:22:00+00:00"
+ },
+ {
+  "id": 157,
+  "property_id": 38,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-03-27T16:17:00+00:00"
+ },
+ {
+  "id": 158,
+  "property_id": 38,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Tanvir",
+  "created_at": "2026-07-13T17:47:00+00:00"
+ },
+ {
+  "id": 159,
+  "property_id": 38,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-09-14T11:41:00+00:00"
+ },
+ {
+  "id": 160,
+  "property_id": 39,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Tahsin",
+  "created_at": "2026-02-06T08:26:00+00:00"
+ },
+ {
+  "id": 161,
+  "property_id": 39,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Rafi",
+  "created_at": "2026-02-19T01:10:00+00:00"
+ },
+ {
+  "id": 162,
+  "property_id": 39,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Tanvir",
+  "created_at": "2026-02-22T01:03:00+00:00"
+ },
+ {
+  "id": 163,
+  "property_id": 39,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Mim",
+  "created_at": "2026-07-31T06:03:00+00:00"
+ },
+ {
+  "id": 164,
+  "property_id": 39,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Farzana",
+  "created_at": "2026-03-16T13:27:00+00:00"
+ },
+ {
+  "id": 165,
+  "property_id": 39,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Zarif",
+  "created_at": "2025-12-31T17:09:00+00:00"
+ },
+ {
+  "id": 166,
+  "property_id": 40,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Tania",
+  "created_at": "2025-12-19T08:15:00+00:00"
+ },
+ {
+  "id": 167,
+  "property_id": 40,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Imran",
+  "created_at": "2026-03-06T23:34:00+00:00"
+ },
+ {
+  "id": 168,
+  "property_id": 40,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-07-03T18:52:00+00:00"
+ },
+ {
+  "id": 169,
+  "property_id": 40,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Imran",
+  "created_at": "2025-12-26T07:25:00+00:00"
+ },
+ {
+  "id": 170,
+  "property_id": 40,
+  "rating": 5,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Imran",
+  "created_at": "2026-01-19T23:56:00+00:00"
+ },
+ {
+  "id": 171,
+  "property_id": 40,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": null,
+  "created_at": "2026-09-22T02:32:00+00:00"
+ },
+ {
+  "id": 172,
+  "property_id": 41,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Rifat",
+  "created_at": "2026-03-03T05:19:00+00:00"
+ },
+ {
+  "id": 173,
+  "property_id": 41,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Tania",
+  "created_at": "2026-02-15T11:23:00+00:00"
+ },
+ {
+  "id": 174,
+  "property_id": 42,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": null,
+  "created_at": "2026-06-22T05:34:00+00:00"
+ },
+ {
+  "id": 175,
+  "property_id": 42,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Sumaiya",
+  "created_at": "2026-05-20T10:06:00+00:00"
+ },
+ {
+  "id": 176,
+  "property_id": 42,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Sakib",
+  "created_at": "2026-03-07T12:06:00+00:00"
+ },
+ {
+  "id": 177,
+  "property_id": 42,
+  "rating": 2,
+  "comment": "Don't walk alone at night here.",
+  "voter_name": "Jannat",
+  "created_at": "2026-02-11T02:17:00+00:00"
+ },
+ {
+  "id": 178,
+  "property_id": 42,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Anika",
+  "created_at": "2026-04-26T17:54:00+00:00"
+ },
+ {
+  "id": 179,
+  "property_id": 42,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Fahim",
+  "created_at": "2026-08-12T12:55:00+00:00"
+ },
+ {
+  "id": 180,
+  "property_id": 43,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-04-14T07:38:00+00:00"
+ },
+ {
+  "id": 181,
+  "property_id": 43,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Asif",
+  "created_at": "2026-08-01T23:24:00+00:00"
+ },
+ {
+  "id": 182,
+  "property_id": 43,
+  "rating": 2,
+  "comment": "এই রাস্তায় ছিনতাই হয়েছে।",
+  "voter_name": "Rafi",
+  "created_at": "2026-05-11T00:10:00+00:00"
+ },
+ {
+  "id": 183,
+  "property_id": 43,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-08-30T14:43:00+00:00"
+ },
+ {
+  "id": 184,
+  "property_id": 44,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Rakib",
+  "created_at": "2026-01-09T07:54:00+00:00"
+ },
+ {
+  "id": 185,
+  "property_id": 44,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Lamia",
+  "created_at": "2026-07-18T23:44:00+00:00"
+ },
+ {
+  "id": 186,
+  "property_id": 44,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Sumaiya",
+  "created_at": "2025-12-05T21:57:00+00:00"
+ },
+ {
+  "id": 187,
+  "property_id": 44,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-05-04T01:39:00+00:00"
+ },
+ {
+  "id": 188,
+  "property_id": 44,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Mahin",
+  "created_at": "2026-05-28T05:58:00+00:00"
+ },
+ {
+  "id": 189,
+  "property_id": 44,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-08-06T03:41:00+00:00"
+ },
+ {
+  "id": 190,
+  "property_id": 45,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2026-04-02T00:43:00+00:00"
+ },
+ {
+  "id": 191,
+  "property_id": 45,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Mim",
+  "created_at": "2026-02-11T20:18:00+00:00"
+ },
+ {
+  "id": 192,
+  "property_id": 45,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-08-07T10:59:00+00:00"
+ },
+ {
+  "id": 193,
+  "property_id": 45,
+  "rating": 5,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-05-09T01:06:00+00:00"
+ },
+ {
+  "id": 194,
+  "property_id": 45,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-03-23T21:01:00+00:00"
+ },
+ {
+  "id": 195,
+  "property_id": 46,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Sumaiya",
+  "created_at": "2026-03-04T17:10:00+00:00"
+ },
+ {
+  "id": 196,
+  "property_id": 46,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Arif",
+  "created_at": "2026-07-09T01:47:00+00:00"
+ },
+ {
+  "id": 197,
+  "property_id": 46,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-08-12T05:52:00+00:00"
+ },
+ {
+  "id": 198,
+  "property_id": 46,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Proma",
+  "created_at": "2026-01-14T11:34:00+00:00"
+ },
+ {
+  "id": 199,
+  "property_id": 46,
+  "rating": 5,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Sakib",
+  "created_at": "2026-01-30T03:54:00+00:00"
+ },
+ {
+  "id": 200,
+  "property_id": 46,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": null,
+  "created_at": "2026-06-11T06:13:00+00:00"
+ },
+ {
+  "id": 201,
+  "property_id": 47,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Siam",
+  "created_at": "2026-02-26T19:17:00+00:00"
+ },
+ {
+  "id": 202,
+  "property_id": 47,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Tanvir",
+  "created_at": "2026-07-30T10:27:00+00:00"
+ },
+ {
+  "id": 203,
+  "property_id": 47,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Zarif",
+  "created_at": "2026-08-08T16:48:00+00:00"
+ },
+ {
+  "id": 204,
+  "property_id": 48,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Fahim",
+  "created_at": "2026-06-13T20:12:00+00:00"
+ },
+ {
+  "id": 205,
+  "property_id": 48,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Mim",
+  "created_at": "2026-08-13T16:41:00+00:00"
+ },
+ {
+  "id": 206,
+  "property_id": 48,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Proma",
+  "created_at": "2026-08-21T07:05:00+00:00"
+ },
+ {
+  "id": 207,
+  "property_id": 49,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Lamia",
+  "created_at": "2026-06-04T11:31:00+00:00"
+ },
+ {
+  "id": 208,
+  "property_id": 49,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Mim",
+  "created_at": "2026-01-11T08:31:00+00:00"
+ },
+ {
+  "id": 209,
+  "property_id": 49,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-05-15T14:08:00+00:00"
+ },
+ {
+  "id": 210,
+  "property_id": 49,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Raisa",
+  "created_at": "2026-09-12T12:22:00+00:00"
+ },
+ {
+  "id": 211,
+  "property_id": 49,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Nafis",
+  "created_at": "2026-07-12T07:37:00+00:00"
+ },
+ {
+  "id": 212,
+  "property_id": 49,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Tasnim",
+  "created_at": "2026-03-08T10:28:00+00:00"
+ },
+ {
+  "id": 213,
+  "property_id": 50,
+  "rating": 2,
+  "comment": "এই রাস্তায় ছিনতাই হয়েছে।",
+  "voter_name": "Imran",
+  "created_at": "2026-03-11T09:00:00+00:00"
+ },
+ {
+  "id": 214,
+  "property_id": 50,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Fahim",
+  "created_at": "2026-06-21T14:51:00+00:00"
+ },
+ {
+  "id": 215,
+  "property_id": 50,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Fahim",
+  "created_at": "2026-08-09T01:14:00+00:00"
+ },
+ {
+  "id": 216,
+  "property_id": 51,
+  "rating": 2,
+  "comment": "Don't walk alone at night here.",
+  "voter_name": "Imran",
+  "created_at": "2026-02-04T23:58:00+00:00"
+ },
+ {
+  "id": 217,
+  "property_id": 51,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Fahim",
+  "created_at": "2026-05-08T13:16:00+00:00"
+ },
+ {
+  "id": 218,
+  "property_id": 51,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Nabila",
+  "created_at": "2026-07-31T13:45:00+00:00"
+ },
+ {
+  "id": 219,
+  "property_id": 52,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": null,
+  "created_at": "2026-04-15T09:09:00+00:00"
+ },
+ {
+  "id": 220,
+  "property_id": 52,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Tasnim",
+  "created_at": "2026-02-19T12:13:00+00:00"
+ },
+ {
+  "id": 221,
+  "property_id": 52,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-06-17T02:41:00+00:00"
+ },
+ {
+  "id": 222,
+  "property_id": 52,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Rafi",
+  "created_at": "2026-02-22T22:12:00+00:00"
+ },
+ {
+  "id": 223,
+  "property_id": 53,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Asif",
+  "created_at": "2026-08-26T21:08:00+00:00"
+ },
+ {
+  "id": 224,
+  "property_id": 53,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Siam",
+  "created_at": "2026-06-26T04:08:00+00:00"
+ },
+ {
+  "id": 225,
+  "property_id": 54,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Rifat",
+  "created_at": "2026-02-06T09:47:00+00:00"
+ },
+ {
+  "id": 226,
+  "property_id": 54,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-04-27T15:50:00+00:00"
+ },
+ {
+  "id": 227,
+  "property_id": 54,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Orin",
+  "created_at": "2026-07-01T13:56:00+00:00"
+ },
+ {
+  "id": 228,
+  "property_id": 55,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Anika",
+  "created_at": "2026-05-13T16:26:00+00:00"
+ },
+ {
+  "id": 229,
+  "property_id": 55,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Rafi",
+  "created_at": "2026-09-26T14:51:00+00:00"
+ },
+ {
+  "id": 230,
+  "property_id": 55,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": null,
+  "created_at": "2026-09-20T00:04:00+00:00"
+ },
+ {
+  "id": 231,
+  "property_id": 55,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2026-06-05T12:50:00+00:00"
+ },
+ {
+  "id": 232,
+  "property_id": 55,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Siam",
+  "created_at": "2026-06-24T18:46:00+00:00"
+ },
+ {
+  "id": 233,
+  "property_id": 56,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Nafis",
+  "created_at": "2026-01-27T16:23:00+00:00"
+ },
+ {
+  "id": 234,
+  "property_id": 56,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Nafis",
+  "created_at": "2025-12-23T00:54:00+00:00"
+ },
+ {
+  "id": 235,
+  "property_id": 56,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-07-03T06:34:00+00:00"
+ },
+ {
+  "id": 236,
+  "property_id": 56,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Rafi",
+  "created_at": "2026-03-11T06:34:00+00:00"
+ },
+ {
+  "id": 237,
+  "property_id": 56,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Sumaiya",
+  "created_at": "2026-05-17T22:06:00+00:00"
+ },
+ {
+  "id": 238,
+  "property_id": 56,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Sakib",
+  "created_at": "2025-12-07T05:22:00+00:00"
+ },
+ {
+  "id": 239,
+  "property_id": 57,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-09-09T22:42:00+00:00"
+ },
+ {
+  "id": 240,
+  "property_id": 57,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Nusrat",
+  "created_at": "2026-09-29T08:39:00+00:00"
+ },
+ {
+  "id": 241,
+  "property_id": 57,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-01-10T14:21:00+00:00"
+ },
+ {
+  "id": 242,
+  "property_id": 57,
+  "rating": 5,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-01-03T09:26:00+00:00"
+ },
+ {
+  "id": 243,
+  "property_id": 58,
+  "rating": 5,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-09-12T15:58:00+00:00"
+ },
+ {
+  "id": 244,
+  "property_id": 58,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Proma",
+  "created_at": "2026-04-10T18:48:00+00:00"
+ },
+ {
+  "id": 245,
+  "property_id": 58,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Rafi",
+  "created_at": "2026-07-09T18:08:00+00:00"
+ },
+ {
+  "id": 246,
+  "property_id": 58,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Rakib",
+  "created_at": "2026-08-18T17:54:00+00:00"
+ },
+ {
+  "id": 247,
+  "property_id": 59,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-09-04T00:57:00+00:00"
+ },
+ {
+  "id": 248,
+  "property_id": 59,
+  "rating": 2,
+  "comment": null,
+  "voter_name": "Ishrat",
+  "created_at": "2026-09-08T11:35:00+00:00"
+ },
+ {
+  "id": 249,
+  "property_id": 59,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Tanvir",
+  "created_at": "2026-08-23T07:46:00+00:00"
+ },
+ {
+  "id": 250,
+  "property_id": 60,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Rafi",
+  "created_at": "2026-09-18T03:06:00+00:00"
+ },
+ {
+  "id": 251,
+  "property_id": 60,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Sakib",
+  "created_at": "2026-09-27T21:14:00+00:00"
+ },
+ {
+  "id": 252,
+  "property_id": 60,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Anika",
+  "created_at": "2026-09-05T04:33:00+00:00"
+ },
+ {
+  "id": 253,
+  "property_id": 60,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Adiba",
+  "created_at": "2026-02-10T04:49:00+00:00"
+ },
+ {
+  "id": 254,
+  "property_id": 61,
+  "rating": 5,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Arif",
+  "created_at": "2026-05-05T14:45:00+00:00"
+ },
+ {
+  "id": 255,
+  "property_id": 61,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Sakib",
+  "created_at": "2026-03-26T09:48:00+00:00"
+ },
+ {
+  "id": 256,
+  "property_id": 61,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Tanvir",
+  "created_at": "2026-08-27T01:08:00+00:00"
+ },
+ {
+  "id": 257,
+  "property_id": 61,
+  "rating": 5,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Rifat",
+  "created_at": "2026-04-19T22:45:00+00:00"
+ },
+ {
+  "id": 258,
+  "property_id": 62,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Zarif",
+  "created_at": "2026-09-05T19:05:00+00:00"
+ },
+ {
+  "id": 259,
+  "property_id": 62,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Mim",
+  "created_at": "2025-12-26T09:54:00+00:00"
+ },
+ {
+  "id": 260,
+  "property_id": 62,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Shuvo",
+  "created_at": "2026-06-20T14:56:00+00:00"
+ },
+ {
+  "id": 261,
+  "property_id": 62,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Mahin",
+  "created_at": "2026-05-04T04:11:00+00:00"
+ },
+ {
+  "id": 262,
+  "property_id": 63,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Tasnim",
+  "created_at": "2026-04-25T08:08:00+00:00"
+ },
+ {
+  "id": 263,
+  "property_id": 63,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": null,
+  "created_at": "2026-04-27T02:21:00+00:00"
+ },
+ {
+  "id": 264,
+  "property_id": 63,
+  "rating": 5,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-03-22T07:08:00+00:00"
+ },
+ {
+  "id": 265,
+  "property_id": 64,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Rafi",
+  "created_at": "2026-01-31T00:58:00+00:00"
+ },
+ {
+  "id": 266,
+  "property_id": 64,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-06-08T20:49:00+00:00"
+ },
+ {
+  "id": 267,
+  "property_id": 64,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Nafis",
+  "created_at": "2026-09-14T17:54:00+00:00"
+ },
+ {
+  "id": 268,
+  "property_id": 64,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Ishrat",
+  "created_at": "2026-02-09T23:09:00+00:00"
+ },
+ {
+  "id": 269,
+  "property_id": 64,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Mim",
+  "created_at": "2026-01-18T17:07:00+00:00"
+ },
+ {
+  "id": 270,
+  "property_id": 64,
+  "rating": 2,
+  "comment": "রাতে একা হাঁটবেন না।",
+  "voter_name": "Fahim",
+  "created_at": "2026-05-13T17:22:00+00:00"
+ },
+ {
+  "id": 271,
+  "property_id": 65,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2026-09-29T20:15:00+00:00"
+ },
+ {
+  "id": 272,
+  "property_id": 65,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-02-28T22:19:00+00:00"
+ },
+ {
+  "id": 273,
+  "property_id": 65,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Mim",
+  "created_at": "2026-04-14T09:38:00+00:00"
+ },
+ {
+  "id": 274,
+  "property_id": 65,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Mahin",
+  "created_at": "2026-01-01T01:16:00+00:00"
+ },
+ {
+  "id": 275,
+  "property_id": 65,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Arif",
+  "created_at": "2025-12-26T08:30:00+00:00"
+ },
+ {
+  "id": 276,
+  "property_id": 65,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Rifat",
+  "created_at": "2026-09-24T12:31:00+00:00"
+ },
+ {
+  "id": 277,
+  "property_id": 66,
+  "rating": 2,
+  "comment": null,
+  "voter_name": "Nabila",
+  "created_at": "2026-07-16T15:13:00+00:00"
+ },
+ {
+  "id": 278,
+  "property_id": 66,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Proma",
+  "created_at": "2026-05-25T13:52:00+00:00"
+ },
+ {
+  "id": 279,
+  "property_id": 66,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": null,
+  "created_at": "2026-04-09T05:08:00+00:00"
+ },
+ {
+  "id": 280,
+  "property_id": 66,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": null,
+  "created_at": "2026-03-02T21:48:00+00:00"
+ },
+ {
+  "id": 281,
+  "property_id": 66,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Rakib",
+  "created_at": "2026-04-24T04:11:00+00:00"
+ },
+ {
+  "id": 282,
+  "property_id": 67,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Asif",
+  "created_at": "2026-02-26T06:47:00+00:00"
+ },
+ {
+  "id": 283,
+  "property_id": 67,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Fahim",
+  "created_at": "2026-01-17T02:40:00+00:00"
+ },
+ {
+  "id": 284,
+  "property_id": 67,
+  "rating": 2,
+  "comment": null,
+  "voter_name": "Sakib",
+  "created_at": "2026-07-05T16:00:00+00:00"
+ },
+ {
+  "id": 285,
+  "property_id": 67,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Sumaiya",
+  "created_at": "2026-09-08T02:48:00+00:00"
+ },
+ {
+  "id": 286,
+  "property_id": 68,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Imran",
+  "created_at": "2026-08-10T14:13:00+00:00"
+ },
+ {
+  "id": 287,
+  "property_id": 68,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Adiba",
+  "created_at": "2026-01-30T23:00:00+00:00"
+ },
+ {
+  "id": 288,
+  "property_id": 68,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Orin",
+  "created_at": "2026-06-05T21:52:00+00:00"
+ },
+ {
+  "id": 289,
+  "property_id": 69,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Rifat",
+  "created_at": "2026-04-02T01:00:00+00:00"
+ },
+ {
+  "id": 290,
+  "property_id": 69,
+  "rating": 2,
+  "comment": null,
+  "voter_name": "Imran",
+  "created_at": "2026-04-26T09:42:00+00:00"
+ },
+ {
+  "id": 291,
+  "property_id": 69,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": null,
+  "created_at": "2026-03-22T14:11:00+00:00"
+ },
+ {
+  "id": 292,
+  "property_id": 69,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-01-02T07:02:00+00:00"
+ },
+ {
+  "id": 293,
+  "property_id": 69,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Zarif",
+  "created_at": "2026-07-31T13:55:00+00:00"
+ },
+ {
+  "id": 294,
+  "property_id": 69,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Proma",
+  "created_at": "2025-12-13T21:48:00+00:00"
+ },
+ {
+  "id": 295,
+  "property_id": 70,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Adiba",
+  "created_at": "2025-12-04T15:27:00+00:00"
+ },
+ {
+  "id": 296,
+  "property_id": 70,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-06-07T12:05:00+00:00"
+ },
+ {
+  "id": 297,
+  "property_id": 71,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Zarif",
+  "created_at": "2026-09-20T06:35:00+00:00"
+ },
+ {
+  "id": 298,
+  "property_id": 71,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-06-08T19:46:00+00:00"
+ },
+ {
+  "id": 299,
+  "property_id": 71,
+  "rating": 5,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Jannat",
+  "created_at": "2025-12-16T16:10:00+00:00"
+ },
+ {
+  "id": 300,
+  "property_id": 72,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Tanvir",
+  "created_at": "2026-09-06T12:49:00+00:00"
+ },
+ {
+  "id": 301,
+  "property_id": 72,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Adiba",
+  "created_at": "2026-08-22T02:04:00+00:00"
+ },
+ {
+  "id": 302,
+  "property_id": 72,
+  "rating": 2,
+  "comment": "এই রাস্তায় ছিনতাই হয়েছে।",
+  "voter_name": "Proma",
+  "created_at": "2026-06-17T08:46:00+00:00"
+ },
+ {
+  "id": 303,
+  "property_id": 73,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Sakib",
+  "created_at": "2026-03-31T20:55:00+00:00"
+ },
+ {
+  "id": 304,
+  "property_id": 73,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": null,
+  "created_at": "2026-01-17T05:11:00+00:00"
+ },
+ {
+  "id": 305,
+  "property_id": 73,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Lamia",
+  "created_at": "2026-07-23T11:06:00+00:00"
+ },
+ {
+  "id": 306,
+  "property_id": 73,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Anika",
+  "created_at": "2026-01-16T23:09:00+00:00"
+ },
+ {
+  "id": 307,
+  "property_id": 73,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Tahsin",
+  "created_at": "2026-08-07T13:06:00+00:00"
+ },
+ {
+  "id": 308,
+  "property_id": 73,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Anika",
+  "created_at": "2025-12-14T11:17:00+00:00"
+ },
+ {
+  "id": 309,
+  "property_id": 74,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-07-02T20:23:00+00:00"
+ },
+ {
+  "id": 310,
+  "property_id": 74,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": null,
+  "created_at": "2026-06-24T20:16:00+00:00"
+ },
+ {
+  "id": 311,
+  "property_id": 74,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Mahin",
+  "created_at": "2026-03-23T20:54:00+00:00"
+ },
+ {
+  "id": 312,
+  "property_id": 74,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Ishrat",
+  "created_at": "2026-07-13T21:40:00+00:00"
+ },
+ {
+  "id": 313,
+  "property_id": 75,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Adiba",
+  "created_at": "2026-01-02T17:36:00+00:00"
+ },
+ {
+  "id": 314,
+  "property_id": 75,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-02-12T11:40:00+00:00"
+ },
+ {
+  "id": 315,
+  "property_id": 75,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2026-09-14T02:17:00+00:00"
+ },
+ {
+  "id": 316,
+  "property_id": 75,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Jannat",
+  "created_at": "2026-04-17T06:50:00+00:00"
+ },
+ {
+  "id": 317,
+  "property_id": 75,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Rafi",
+  "created_at": "2026-04-09T20:39:00+00:00"
+ },
+ {
+  "id": 318,
+  "property_id": 76,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Rafi",
+  "created_at": "2026-03-30T14:15:00+00:00"
+ },
+ {
+  "id": 319,
+  "property_id": 76,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-04-02T10:55:00+00:00"
+ },
+ {
+  "id": 320,
+  "property_id": 77,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Farzana",
+  "created_at": "2026-03-21T03:07:00+00:00"
+ },
+ {
+  "id": 321,
+  "property_id": 77,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-03-31T09:06:00+00:00"
+ },
+ {
+  "id": 322,
+  "property_id": 77,
+  "rating": 2,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-08-04T16:13:00+00:00"
+ },
+ {
+  "id": 323,
+  "property_id": 77,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Nafis",
+  "created_at": "2026-05-11T16:09:00+00:00"
+ },
+ {
+  "id": 324,
+  "property_id": 77,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Sakib",
+  "created_at": "2026-07-12T06:19:00+00:00"
+ },
+ {
+  "id": 325,
+  "property_id": 78,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Rafi",
+  "created_at": "2026-06-09T18:34:00+00:00"
+ },
+ {
+  "id": 326,
+  "property_id": 78,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Nusrat",
+  "created_at": "2026-08-31T21:30:00+00:00"
+ },
+ {
+  "id": 327,
+  "property_id": 78,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Siam",
+  "created_at": "2026-02-06T05:13:00+00:00"
+ },
+ {
+  "id": 328,
+  "property_id": 78,
+  "rating": 2,
+  "comment": "Don't walk alone at night here.",
+  "voter_name": "Rifat",
+  "created_at": "2026-07-10T16:40:00+00:00"
+ },
+ {
+  "id": 329,
+  "property_id": 78,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": null,
+  "created_at": "2025-12-29T05:43:00+00:00"
+ },
+ {
+  "id": 330,
+  "property_id": 79,
+  "rating": 2,
+  "comment": null,
+  "voter_name": "Anika",
+  "created_at": "2026-04-26T11:07:00+00:00"
+ },
+ {
+  "id": 331,
+  "property_id": 79,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Tasnim",
+  "created_at": "2026-03-10T22:21:00+00:00"
+ },
+ {
+  "id": 332,
+  "property_id": 79,
+  "rating": 5,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": null,
+  "created_at": "2025-12-22T23:54:00+00:00"
+ },
+ {
+  "id": 333,
+  "property_id": 80,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Proma",
+  "created_at": "2026-07-10T19:51:00+00:00"
+ },
+ {
+  "id": 334,
+  "property_id": 80,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Tahsin",
+  "created_at": "2026-07-31T22:04:00+00:00"
+ },
+ {
+  "id": 335,
+  "property_id": 80,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Raisa",
+  "created_at": "2026-04-27T04:56:00+00:00"
+ },
+ {
+  "id": 336,
+  "property_id": 80,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-05-21T21:58:00+00:00"
+ },
+ {
+  "id": 337,
+  "property_id": 80,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Lamia",
+  "created_at": "2026-08-04T18:00:00+00:00"
+ },
+ {
+  "id": 338,
+  "property_id": 81,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Sakib",
+  "created_at": "2026-02-06T09:04:00+00:00"
+ },
+ {
+  "id": 339,
+  "property_id": 81,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Asif",
+  "created_at": "2026-04-29T03:02:00+00:00"
+ },
+ {
+  "id": 340,
+  "property_id": 81,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-02-17T06:19:00+00:00"
+ },
+ {
+  "id": 341,
+  "property_id": 82,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Sakib",
+  "created_at": "2026-03-26T23:25:00+00:00"
+ },
+ {
+  "id": 342,
+  "property_id": 82,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Asif",
+  "created_at": "2026-08-01T04:40:00+00:00"
+ },
+ {
+  "id": 343,
+  "property_id": 82,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Sakib",
+  "created_at": "2026-04-04T09:41:00+00:00"
+ },
+ {
+  "id": 344,
+  "property_id": 82,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-08-18T14:47:00+00:00"
+ },
+ {
+  "id": 345,
+  "property_id": 83,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Rafi",
+  "created_at": "2026-04-21T12:00:00+00:00"
+ },
+ {
+  "id": 346,
+  "property_id": 83,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Imran",
+  "created_at": "2026-07-29T12:24:00+00:00"
+ },
+ {
+  "id": 347,
+  "property_id": 83,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Proma",
+  "created_at": "2026-03-25T04:08:00+00:00"
+ },
+ {
+  "id": 348,
+  "property_id": 84,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Fahim",
+  "created_at": "2026-02-08T23:58:00+00:00"
+ },
+ {
+  "id": 349,
+  "property_id": 84,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Proma",
+  "created_at": "2026-05-02T00:15:00+00:00"
+ },
+ {
+  "id": 350,
+  "property_id": 84,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Shuvo",
+  "created_at": "2026-06-29T20:43:00+00:00"
+ },
+ {
+  "id": 351,
+  "property_id": 84,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-04-13T20:59:00+00:00"
+ },
+ {
+  "id": 352,
+  "property_id": 84,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Tahsin",
+  "created_at": "2026-08-19T07:48:00+00:00"
+ },
+ {
+  "id": 353,
+  "property_id": 84,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Zarif",
+  "created_at": "2025-12-29T08:44:00+00:00"
+ },
+ {
+  "id": 354,
+  "property_id": 85,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-04-06T09:33:00+00:00"
+ },
+ {
+  "id": 355,
+  "property_id": 85,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-04-12T18:03:00+00:00"
+ },
+ {
+  "id": 356,
+  "property_id": 85,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Farzana",
+  "created_at": "2026-06-12T02:50:00+00:00"
+ },
+ {
+  "id": 357,
+  "property_id": 86,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Tanvir",
+  "created_at": "2025-12-31T00:51:00+00:00"
+ },
+ {
+  "id": 358,
+  "property_id": 86,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Sakib",
+  "created_at": "2026-04-02T11:48:00+00:00"
+ },
+ {
+  "id": 359,
+  "property_id": 86,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Lamia",
+  "created_at": "2026-05-20T20:38:00+00:00"
+ },
+ {
+  "id": 360,
+  "property_id": 87,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Rafi",
+  "created_at": "2026-07-22T21:06:00+00:00"
+ },
+ {
+  "id": 361,
+  "property_id": 87,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Rakib",
+  "created_at": "2025-12-20T14:09:00+00:00"
+ },
+ {
+  "id": 362,
+  "property_id": 87,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Ishrat",
+  "created_at": "2026-09-05T05:34:00+00:00"
+ },
+ {
+  "id": 363,
+  "property_id": 87,
+  "rating": 2,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2025-12-31T16:54:00+00:00"
+ },
+ {
+  "id": 364,
+  "property_id": 87,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Fahim",
+  "created_at": "2026-07-17T00:43:00+00:00"
+ },
+ {
+  "id": 365,
+  "property_id": 88,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Jannat",
+  "created_at": "2025-12-06T20:54:00+00:00"
+ },
+ {
+  "id": 366,
+  "property_id": 88,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Anika",
+  "created_at": "2026-07-23T09:12:00+00:00"
+ },
+ {
+  "id": 367,
+  "property_id": 88,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Fahim",
+  "created_at": "2026-02-13T01:24:00+00:00"
+ },
+ {
+  "id": 368,
+  "property_id": 88,
+  "rating": 2,
+  "comment": null,
+  "voter_name": "Adiba",
+  "created_at": "2025-12-05T23:54:00+00:00"
+ },
+ {
+  "id": 369,
+  "property_id": 88,
+  "rating": 2,
+  "comment": "এই রাস্তায় ছিনতাই হয়েছে।",
+  "voter_name": null,
+  "created_at": "2026-01-24T05:28:00+00:00"
+ },
+ {
+  "id": 370,
+  "property_id": 88,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Anika",
+  "created_at": "2025-12-10T04:47:00+00:00"
+ },
+ {
+  "id": 371,
+  "property_id": 89,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-07-31T02:38:00+00:00"
+ },
+ {
+  "id": 372,
+  "property_id": 89,
+  "rating": 5,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Tasnim",
+  "created_at": "2026-04-10T12:46:00+00:00"
+ },
+ {
+  "id": 373,
+  "property_id": 89,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Farzana",
+  "created_at": "2026-03-04T22:43:00+00:00"
+ },
+ {
+  "id": 374,
+  "property_id": 89,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Tahsin",
+  "created_at": "2026-07-08T15:17:00+00:00"
+ },
+ {
+  "id": 375,
+  "property_id": 90,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Zarif",
+  "created_at": "2026-04-01T14:31:00+00:00"
+ },
+ {
+  "id": 376,
+  "property_id": 90,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Orin",
+  "created_at": "2026-03-03T01:20:00+00:00"
+ },
+ {
+  "id": 377,
+  "property_id": 91,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Tanvir",
+  "created_at": "2026-04-28T11:01:00+00:00"
+ },
+ {
+  "id": 378,
+  "property_id": 91,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Sakib",
+  "created_at": "2026-03-03T20:33:00+00:00"
+ },
+ {
+  "id": 379,
+  "property_id": 91,
+  "rating": 2,
+  "comment": "Phone snatching happened on this road.",
+  "voter_name": "Rafi",
+  "created_at": "2026-07-08T06:34:00+00:00"
+ },
+ {
+  "id": 380,
+  "property_id": 91,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Mim",
+  "created_at": "2026-02-24T13:48:00+00:00"
+ },
+ {
+  "id": 381,
+  "property_id": 92,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-07-19T17:30:00+00:00"
+ },
+ {
+  "id": 382,
+  "property_id": 92,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Shuvo",
+  "created_at": "2026-06-03T18:32:00+00:00"
+ },
+ {
+  "id": 383,
+  "property_id": 93,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Farzana",
+  "created_at": "2026-05-15T05:04:00+00:00"
+ },
+ {
+  "id": 384,
+  "property_id": 93,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Tanvir",
+  "created_at": "2026-01-10T17:28:00+00:00"
+ },
+ {
+  "id": 385,
+  "property_id": 93,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-01-17T02:17:00+00:00"
+ },
+ {
+  "id": 386,
+  "property_id": 93,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-01-29T20:10:00+00:00"
+ },
+ {
+  "id": 387,
+  "property_id": 93,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": null,
+  "created_at": "2026-04-30T23:03:00+00:00"
+ },
+ {
+  "id": 388,
+  "property_id": 93,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": null,
+  "created_at": "2026-08-02T18:48:00+00:00"
+ },
+ {
+  "id": 389,
+  "property_id": 94,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Mim",
+  "created_at": "2026-07-19T10:31:00+00:00"
+ },
+ {
+  "id": 390,
+  "property_id": 94,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Sumaiya",
+  "created_at": "2026-07-29T23:07:00+00:00"
+ },
+ {
+  "id": 391,
+  "property_id": 94,
+  "rating": 2,
+  "comment": null,
+  "voter_name": "Arif",
+  "created_at": "2026-02-07T00:04:00+00:00"
+ },
+ {
+  "id": 392,
+  "property_id": 95,
+  "rating": 2,
+  "comment": null,
+  "voter_name": "Nafis",
+  "created_at": "2026-04-05T04:17:00+00:00"
+ },
+ {
+  "id": 393,
+  "property_id": 95,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Siam",
+  "created_at": "2026-01-16T12:20:00+00:00"
+ },
+ {
+  "id": 394,
+  "property_id": 95,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Rifat",
+  "created_at": "2026-07-26T05:04:00+00:00"
+ },
+ {
+  "id": 395,
+  "property_id": 96,
+  "rating": 2,
+  "comment": "এই রাস্তায় ছিনতাই হয়েছে।",
+  "voter_name": null,
+  "created_at": "2026-08-07T07:29:00+00:00"
+ },
+ {
+  "id": 396,
+  "property_id": 96,
+  "rating": 2,
+  "comment": null,
+  "voter_name": "Orin",
+  "created_at": "2026-05-04T23:06:00+00:00"
+ },
+ {
+  "id": 397,
+  "property_id": 96,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Tasnim",
+  "created_at": "2026-01-12T06:38:00+00:00"
+ },
+ {
+  "id": 398,
+  "property_id": 96,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-01-24T03:53:00+00:00"
+ },
+ {
+  "id": 399,
+  "property_id": 97,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Rakib",
+  "created_at": "2026-02-08T16:22:00+00:00"
+ },
+ {
+  "id": 400,
+  "property_id": 97,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Shuvo",
+  "created_at": "2026-04-27T12:20:00+00:00"
+ },
+ {
+  "id": 401,
+  "property_id": 97,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": null,
+  "created_at": "2026-06-01T20:34:00+00:00"
+ },
+ {
+  "id": 402,
+  "property_id": 98,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Ishrat",
+  "created_at": "2026-04-15T13:18:00+00:00"
+ },
+ {
+  "id": 403,
+  "property_id": 98,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-02-04T19:29:00+00:00"
+ },
+ {
+  "id": 404,
+  "property_id": 98,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Shuvo",
+  "created_at": "2026-09-09T04:53:00+00:00"
+ },
+ {
+  "id": 405,
+  "property_id": 98,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Mahin",
+  "created_at": "2026-08-20T15:17:00+00:00"
+ },
+ {
+  "id": 406,
+  "property_id": 98,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Nusrat",
+  "created_at": "2026-05-25T19:55:00+00:00"
+ },
+ {
+  "id": 407,
+  "property_id": 98,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-09-26T16:45:00+00:00"
+ },
+ {
+  "id": 408,
+  "property_id": 99,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-05-09T07:55:00+00:00"
+ },
+ {
+  "id": 409,
+  "property_id": 99,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Arif",
+  "created_at": "2026-01-28T18:35:00+00:00"
+ },
+ {
+  "id": 410,
+  "property_id": 100,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Mim",
+  "created_at": "2026-01-12T08:49:00+00:00"
+ },
+ {
+  "id": 411,
+  "property_id": 100,
+  "rating": 5,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-03-30T06:55:00+00:00"
+ },
+ {
+  "id": 412,
+  "property_id": 101,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Asif",
+  "created_at": "2026-07-28T20:03:00+00:00"
+ },
+ {
+  "id": 413,
+  "property_id": 101,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": null,
+  "created_at": "2026-02-28T22:26:00+00:00"
+ },
+ {
+  "id": 414,
+  "property_id": 101,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Tanvir",
+  "created_at": "2026-05-19T03:23:00+00:00"
+ },
+ {
+  "id": 415,
+  "property_id": 101,
+  "rating": 5,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": null,
+  "created_at": "2026-02-14T03:04:00+00:00"
+ },
+ {
+  "id": 416,
+  "property_id": 102,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Sakib",
+  "created_at": "2026-02-27T23:37:00+00:00"
+ },
+ {
+  "id": 417,
+  "property_id": 102,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Mim",
+  "created_at": "2026-06-24T19:49:00+00:00"
+ },
+ {
+  "id": 418,
+  "property_id": 102,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": null,
+  "created_at": "2026-03-13T16:36:00+00:00"
+ },
+ {
+  "id": 419,
+  "property_id": 102,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": null,
+  "created_at": "2026-07-08T13:07:00+00:00"
+ },
+ {
+  "id": 420,
+  "property_id": 103,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Arif",
+  "created_at": "2026-03-07T15:14:00+00:00"
+ },
+ {
+  "id": 421,
+  "property_id": 103,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-09-01T17:58:00+00:00"
+ },
+ {
+  "id": 422,
+  "property_id": 104,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Arif",
+  "created_at": "2026-01-17T04:10:00+00:00"
+ },
+ {
+  "id": 423,
+  "property_id": 104,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Mahin",
+  "created_at": "2025-12-30T10:05:00+00:00"
+ },
+ {
+  "id": 424,
+  "property_id": 104,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Asif",
+  "created_at": "2026-08-31T13:22:00+00:00"
+ },
+ {
+  "id": 425,
+  "property_id": 104,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Arif",
+  "created_at": "2026-05-08T21:04:00+00:00"
+ },
+ {
+  "id": 426,
+  "property_id": 105,
+  "rating": 2,
+  "comment": "Phone snatching happened on this road.",
+  "voter_name": "Sumaiya",
+  "created_at": "2026-03-29T16:40:00+00:00"
+ },
+ {
+  "id": 427,
+  "property_id": 105,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2025-12-24T03:46:00+00:00"
+ },
+ {
+  "id": 428,
+  "property_id": 105,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Tanvir",
+  "created_at": "2026-08-14T00:50:00+00:00"
+ },
+ {
+  "id": 429,
+  "property_id": 105,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Rakib",
+  "created_at": "2026-09-06T11:28:00+00:00"
+ },
+ {
+  "id": 430,
+  "property_id": 105,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": null,
+  "created_at": "2026-07-15T04:05:00+00:00"
+ },
+ {
+  "id": 431,
+  "property_id": 106,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Tanvir",
+  "created_at": "2026-05-08T11:51:00+00:00"
+ },
+ {
+  "id": 432,
+  "property_id": 106,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Tasnim",
+  "created_at": "2026-06-30T04:49:00+00:00"
+ },
+ {
+  "id": 433,
+  "property_id": 106,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Siam",
+  "created_at": "2026-07-13T21:49:00+00:00"
+ },
+ {
+  "id": 434,
+  "property_id": 106,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Asif",
+  "created_at": "2026-02-08T18:36:00+00:00"
+ },
+ {
+  "id": 435,
+  "property_id": 107,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Adiba",
+  "created_at": "2026-09-05T00:31:00+00:00"
+ },
+ {
+  "id": 436,
+  "property_id": 107,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Lamia",
+  "created_at": "2026-06-22T17:50:00+00:00"
+ },
+ {
+  "id": 437,
+  "property_id": 107,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": null,
+  "created_at": "2026-09-18T09:07:00+00:00"
+ },
+ {
+  "id": 438,
+  "property_id": 108,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Sakib",
+  "created_at": "2026-07-02T23:48:00+00:00"
+ },
+ {
+  "id": 439,
+  "property_id": 108,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Raisa",
+  "created_at": "2026-04-22T17:17:00+00:00"
+ },
+ {
+  "id": 440,
+  "property_id": 108,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Sakib",
+  "created_at": "2026-04-08T04:15:00+00:00"
+ },
+ {
+  "id": 441,
+  "property_id": 108,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-04-17T15:02:00+00:00"
+ },
+ {
+  "id": 442,
+  "property_id": 108,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Lamia",
+  "created_at": "2026-06-26T15:25:00+00:00"
+ },
+ {
+  "id": 443,
+  "property_id": 109,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Lamia",
+  "created_at": "2026-03-15T22:12:00+00:00"
+ },
+ {
+  "id": 444,
+  "property_id": 109,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Jannat",
+  "created_at": "2026-08-27T03:57:00+00:00"
+ },
+ {
+  "id": 445,
+  "property_id": 110,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-06-28T21:40:00+00:00"
+ },
+ {
+  "id": 446,
+  "property_id": 110,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Imran",
+  "created_at": "2026-04-13T15:35:00+00:00"
+ },
+ {
+  "id": 447,
+  "property_id": 110,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Tahsin",
+  "created_at": "2026-07-24T09:06:00+00:00"
+ },
+ {
+  "id": 448,
+  "property_id": 111,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Zarif",
+  "created_at": "2026-05-23T13:36:00+00:00"
+ },
+ {
+  "id": 449,
+  "property_id": 111,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Sakib",
+  "created_at": "2026-08-31T10:11:00+00:00"
+ },
+ {
+  "id": 450,
+  "property_id": 111,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Tahsin",
+  "created_at": "2026-07-17T09:08:00+00:00"
+ },
+ {
+  "id": 451,
+  "property_id": 112,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Adiba",
+  "created_at": "2025-12-18T13:17:00+00:00"
+ },
+ {
+  "id": 452,
+  "property_id": 112,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Sakib",
+  "created_at": "2025-12-19T13:31:00+00:00"
+ },
+ {
+  "id": 453,
+  "property_id": 112,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Tania",
+  "created_at": "2026-07-04T16:28:00+00:00"
+ },
+ {
+  "id": 454,
+  "property_id": 112,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2025-12-07T05:42:00+00:00"
+ },
+ {
+  "id": 455,
+  "property_id": 112,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Rakib",
+  "created_at": "2026-07-02T12:33:00+00:00"
+ },
+ {
+  "id": 456,
+  "property_id": 113,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Jannat",
+  "created_at": "2026-07-19T13:51:00+00:00"
+ },
+ {
+  "id": 457,
+  "property_id": 113,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Proma",
+  "created_at": "2026-02-03T10:04:00+00:00"
+ },
+ {
+  "id": 458,
+  "property_id": 114,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Tanvir",
+  "created_at": "2026-02-21T01:16:00+00:00"
+ },
+ {
+  "id": 459,
+  "property_id": 114,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Sakib",
+  "created_at": "2026-09-25T22:54:00+00:00"
+ },
+ {
+  "id": 460,
+  "property_id": 114,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Anika",
+  "created_at": "2026-03-02T16:25:00+00:00"
+ },
+ {
+  "id": 461,
+  "property_id": 114,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Rafi",
+  "created_at": "2026-03-16T00:45:00+00:00"
+ },
+ {
+  "id": 462,
+  "property_id": 115,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Anika",
+  "created_at": "2026-01-27T19:04:00+00:00"
+ },
+ {
+  "id": 463,
+  "property_id": 115,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Lamia",
+  "created_at": "2026-07-02T16:40:00+00:00"
+ },
+ {
+  "id": 464,
+  "property_id": 115,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Asif",
+  "created_at": "2026-08-13T11:17:00+00:00"
+ },
+ {
+  "id": 465,
+  "property_id": 115,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": null,
+  "created_at": "2026-02-12T04:10:00+00:00"
+ },
+ {
+  "id": 466,
+  "property_id": 115,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Sumaiya",
+  "created_at": "2025-12-12T03:33:00+00:00"
+ },
+ {
+  "id": 467,
+  "property_id": 115,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Tasnim",
+  "created_at": "2026-05-31T21:15:00+00:00"
+ },
+ {
+  "id": 468,
+  "property_id": 116,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Mahin",
+  "created_at": "2026-05-21T18:59:00+00:00"
+ },
+ {
+  "id": 469,
+  "property_id": 116,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-07-06T22:25:00+00:00"
+ },
+ {
+  "id": 470,
+  "property_id": 116,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Nafis",
+  "created_at": "2026-02-23T02:57:00+00:00"
+ },
+ {
+  "id": 471,
+  "property_id": 116,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2026-03-28T17:19:00+00:00"
+ },
+ {
+  "id": 472,
+  "property_id": 117,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": null,
+  "created_at": "2026-09-27T11:41:00+00:00"
+ },
+ {
+  "id": 473,
+  "property_id": 117,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Sakib",
+  "created_at": "2026-01-05T09:07:00+00:00"
+ },
+ {
+  "id": 474,
+  "property_id": 117,
+  "rating": 2,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-08-19T10:25:00+00:00"
+ },
+ {
+  "id": 475,
+  "property_id": 117,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": null,
+  "created_at": "2026-07-02T16:56:00+00:00"
+ },
+ {
+  "id": 476,
+  "property_id": 118,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-08-15T05:24:00+00:00"
+ },
+ {
+  "id": 477,
+  "property_id": 118,
+  "rating": 2,
+  "comment": "Don't walk alone at night here.",
+  "voter_name": "Fahim",
+  "created_at": "2026-07-06T02:29:00+00:00"
+ },
+ {
+  "id": 478,
+  "property_id": 118,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Sakib",
+  "created_at": "2026-05-14T18:46:00+00:00"
+ },
+ {
+  "id": 479,
+  "property_id": 119,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Tahsin",
+  "created_at": "2026-05-10T06:31:00+00:00"
+ },
+ {
+  "id": 480,
+  "property_id": 119,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Tahsin",
+  "created_at": "2026-04-16T06:00:00+00:00"
+ },
+ {
+  "id": 481,
+  "property_id": 119,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Fahim",
+  "created_at": "2026-04-24T18:34:00+00:00"
+ },
+ {
+  "id": 482,
+  "property_id": 119,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-06-15T13:48:00+00:00"
+ },
+ {
+  "id": 483,
+  "property_id": 119,
+  "rating": 5,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-07-26T20:25:00+00:00"
+ },
+ {
+  "id": 484,
+  "property_id": 120,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Siam",
+  "created_at": "2026-08-02T19:34:00+00:00"
+ },
+ {
+  "id": 485,
+  "property_id": 120,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Tania",
+  "created_at": "2026-01-22T04:32:00+00:00"
+ },
+ {
+  "id": 486,
+  "property_id": 120,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Jannat",
+  "created_at": "2026-08-13T00:53:00+00:00"
+ },
+ {
+  "id": 487,
+  "property_id": 120,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Rifat",
+  "created_at": "2026-06-21T05:52:00+00:00"
+ },
+ {
+  "id": 488,
+  "property_id": 121,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Nafis",
+  "created_at": "2026-02-13T06:53:00+00:00"
+ },
+ {
+  "id": 489,
+  "property_id": 121,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Jannat",
+  "created_at": "2026-08-07T21:13:00+00:00"
+ },
+ {
+  "id": 490,
+  "property_id": 122,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": null,
+  "created_at": "2026-05-11T06:49:00+00:00"
+ },
+ {
+  "id": 491,
+  "property_id": 122,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-03-02T06:43:00+00:00"
+ },
+ {
+  "id": 492,
+  "property_id": 122,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Adiba",
+  "created_at": "2026-03-12T23:46:00+00:00"
+ },
+ {
+  "id": 493,
+  "property_id": 123,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Farzana",
+  "created_at": "2025-12-13T20:25:00+00:00"
+ },
+ {
+  "id": 494,
+  "property_id": 123,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Nusrat",
+  "created_at": "2026-07-09T18:16:00+00:00"
+ },
+ {
+  "id": 495,
+  "property_id": 123,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Farzana",
+  "created_at": "2026-06-02T23:50:00+00:00"
+ },
+ {
+  "id": 496,
+  "property_id": 123,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Orin",
+  "created_at": "2025-12-19T21:17:00+00:00"
+ },
+ {
+  "id": 497,
+  "property_id": 123,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Rakib",
+  "created_at": "2026-08-02T22:00:00+00:00"
+ },
+ {
+  "id": 498,
+  "property_id": 123,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Proma",
+  "created_at": "2026-04-06T00:43:00+00:00"
+ },
+ {
+  "id": 499,
+  "property_id": 124,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-07-03T10:25:00+00:00"
+ },
+ {
+  "id": 500,
+  "property_id": 124,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Nusrat",
+  "created_at": "2026-01-10T10:59:00+00:00"
+ },
+ {
+  "id": 501,
+  "property_id": 125,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2026-06-08T13:46:00+00:00"
+ },
+ {
+  "id": 502,
+  "property_id": 125,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Sumaiya",
+  "created_at": "2026-04-01T11:10:00+00:00"
+ },
+ {
+  "id": 503,
+  "property_id": 126,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2026-07-16T10:34:00+00:00"
+ },
+ {
+  "id": 504,
+  "property_id": 126,
+  "rating": 5,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": null,
+  "created_at": "2026-04-17T20:35:00+00:00"
+ },
+ {
+  "id": 505,
+  "property_id": 126,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Raisa",
+  "created_at": "2026-02-07T06:14:00+00:00"
+ },
+ {
+  "id": 506,
+  "property_id": 127,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Zarif",
+  "created_at": "2026-09-15T09:36:00+00:00"
+ },
+ {
+  "id": 507,
+  "property_id": 127,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Proma",
+  "created_at": "2026-02-18T22:35:00+00:00"
+ },
+ {
+  "id": 508,
+  "property_id": 127,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": null,
+  "created_at": "2026-03-20T15:29:00+00:00"
+ },
+ {
+  "id": 509,
+  "property_id": 127,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Rafi",
+  "created_at": "2025-12-18T03:30:00+00:00"
+ },
+ {
+  "id": 510,
+  "property_id": 128,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Lamia",
+  "created_at": "2026-08-07T14:17:00+00:00"
+ },
+ {
+  "id": 511,
+  "property_id": 128,
+  "rating": 5,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": null,
+  "created_at": "2026-09-26T08:10:00+00:00"
+ },
+ {
+  "id": 512,
+  "property_id": 128,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Adiba",
+  "created_at": "2026-08-30T17:15:00+00:00"
+ },
+ {
+  "id": 513,
+  "property_id": 128,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Sakib",
+  "created_at": "2026-09-25T05:55:00+00:00"
+ },
+ {
+  "id": 514,
+  "property_id": 128,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Proma",
+  "created_at": "2026-07-17T16:34:00+00:00"
+ },
+ {
+  "id": 515,
+  "property_id": 128,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-04-01T08:48:00+00:00"
+ },
+ {
+  "id": 516,
+  "property_id": 129,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2025-12-06T17:07:00+00:00"
+ },
+ {
+  "id": 517,
+  "property_id": 129,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Rakib",
+  "created_at": "2026-07-12T17:53:00+00:00"
+ },
+ {
+  "id": 518,
+  "property_id": 129,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Arif",
+  "created_at": "2026-07-04T20:20:00+00:00"
+ },
+ {
+  "id": 519,
+  "property_id": 129,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Proma",
+  "created_at": "2026-02-04T22:15:00+00:00"
+ },
+ {
+  "id": 520,
+  "property_id": 130,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": null,
+  "created_at": "2026-03-03T03:36:00+00:00"
+ },
+ {
+  "id": 521,
+  "property_id": 130,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-05-03T05:10:00+00:00"
+ },
+ {
+  "id": 522,
+  "property_id": 130,
+  "rating": 5,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-02-25T00:59:00+00:00"
+ },
+ {
+  "id": 523,
+  "property_id": 130,
+  "rating": 5,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-01-26T16:42:00+00:00"
+ },
+ {
+  "id": 524,
+  "property_id": 131,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2026-07-08T20:36:00+00:00"
+ },
+ {
+  "id": 525,
+  "property_id": 131,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Tahsin",
+  "created_at": "2026-09-20T08:30:00+00:00"
+ },
+ {
+  "id": 526,
+  "property_id": 131,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": null,
+  "created_at": "2026-04-03T23:46:00+00:00"
+ },
+ {
+  "id": 527,
+  "property_id": 131,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Asif",
+  "created_at": "2026-09-12T03:44:00+00:00"
+ },
+ {
+  "id": 528,
+  "property_id": 131,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Adiba",
+  "created_at": "2026-01-01T18:17:00+00:00"
+ },
+ {
+  "id": 529,
+  "property_id": 131,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Sakib",
+  "created_at": "2026-01-18T22:25:00+00:00"
+ },
+ {
+  "id": 530,
+  "property_id": 132,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": "Orin",
+  "created_at": "2026-04-19T11:15:00+00:00"
+ },
+ {
+  "id": 531,
+  "property_id": 132,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Siam",
+  "created_at": "2026-02-18T15:33:00+00:00"
+ },
+ {
+  "id": 532,
+  "property_id": 132,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Tanvir",
+  "created_at": "2026-02-26T05:05:00+00:00"
+ },
+ {
+  "id": 533,
+  "property_id": 133,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": null,
+  "created_at": "2026-07-05T21:13:00+00:00"
+ },
+ {
+  "id": 534,
+  "property_id": 133,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Rafi",
+  "created_at": "2026-07-01T02:35:00+00:00"
+ },
+ {
+  "id": 535,
+  "property_id": 133,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Orin",
+  "created_at": "2026-06-08T13:43:00+00:00"
+ },
+ {
+  "id": 536,
+  "property_id": 134,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Rakib",
+  "created_at": "2026-06-13T09:56:00+00:00"
+ },
+ {
+  "id": 537,
+  "property_id": 134,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Raisa",
+  "created_at": "2026-02-12T02:55:00+00:00"
+ },
+ {
+  "id": 538,
+  "property_id": 135,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Anika",
+  "created_at": "2026-03-16T04:51:00+00:00"
+ },
+ {
+  "id": 539,
+  "property_id": 135,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-03-10T11:08:00+00:00"
+ },
+ {
+  "id": 540,
+  "property_id": 135,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2026-07-07T22:57:00+00:00"
+ },
+ {
+  "id": 541,
+  "property_id": 135,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": null,
+  "created_at": "2026-03-02T16:09:00+00:00"
+ },
+ {
+  "id": 542,
+  "property_id": 135,
+  "rating": 5,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Mahin",
+  "created_at": "2026-09-29T05:25:00+00:00"
+ },
+ {
+  "id": 543,
+  "property_id": 135,
+  "rating": 5,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-09-03T21:44:00+00:00"
+ },
+ {
+  "id": 544,
+  "property_id": 136,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Mim",
+  "created_at": "2026-07-18T02:51:00+00:00"
+ },
+ {
+  "id": 545,
+  "property_id": 136,
+  "rating": 2,
+  "comment": null,
+  "voter_name": "Sumaiya",
+  "created_at": "2026-05-12T01:38:00+00:00"
+ },
+ {
+  "id": 546,
+  "property_id": 136,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Tania",
+  "created_at": "2026-03-28T04:34:00+00:00"
+ },
+ {
+  "id": 547,
+  "property_id": 137,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-06-10T22:07:00+00:00"
+ },
+ {
+  "id": 548,
+  "property_id": 137,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Rakib",
+  "created_at": "2026-01-30T02:04:00+00:00"
+ },
+ {
+  "id": 549,
+  "property_id": 138,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Rafi",
+  "created_at": "2026-02-13T01:57:00+00:00"
+ },
+ {
+  "id": 550,
+  "property_id": 138,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-03-26T11:36:00+00:00"
+ },
+ {
+  "id": 551,
+  "property_id": 138,
+  "rating": 5,
+  "comment": null,
+  "voter_name": "Raisa",
+  "created_at": "2026-06-22T21:15:00+00:00"
+ },
+ {
+  "id": 552,
+  "property_id": 138,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2026-07-17T03:49:00+00:00"
+ },
+ {
+  "id": 553,
+  "property_id": 138,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2025-12-12T13:17:00+00:00"
+ },
+ {
+  "id": 554,
+  "property_id": 139,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Rafi",
+  "created_at": "2026-09-29T05:35:00+00:00"
+ },
+ {
+  "id": 555,
+  "property_id": 139,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Lamia",
+  "created_at": "2026-06-01T05:59:00+00:00"
+ },
+ {
+  "id": 556,
+  "property_id": 139,
+  "rating": 2,
+  "comment": "Phone snatching happened on this road.",
+  "voter_name": "Tahsin",
+  "created_at": "2026-06-16T16:48:00+00:00"
+ },
+ {
+  "id": 557,
+  "property_id": 139,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Nafis",
+  "created_at": "2026-02-24T04:14:00+00:00"
+ },
+ {
+  "id": 558,
+  "property_id": 139,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": null,
+  "created_at": "2026-01-09T21:49:00+00:00"
+ },
+ {
+  "id": 559,
+  "property_id": 140,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Fahim",
+  "created_at": "2026-06-28T17:57:00+00:00"
+ },
+ {
+  "id": 560,
+  "property_id": 140,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-05-21T07:15:00+00:00"
+ },
+ {
+  "id": 561,
+  "property_id": 141,
+  "rating": 4,
+  "comment": "Guard at the gate 24/7, felt very safe.",
+  "voter_name": "Zarif",
+  "created_at": "2026-03-06T18:24:00+00:00"
+ },
+ {
+  "id": 562,
+  "property_id": 141,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Zarif",
+  "created_at": "2026-05-30T03:59:00+00:00"
+ },
+ {
+  "id": 563,
+  "property_id": 141,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Tahsin",
+  "created_at": "2026-04-03T00:31:00+00:00"
+ },
+ {
+  "id": 564,
+  "property_id": 142,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Arif",
+  "created_at": "2026-05-15T02:48:00+00:00"
+ },
+ {
+  "id": 565,
+  "property_id": 142,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Nabila",
+  "created_at": "2026-04-20T15:21:00+00:00"
+ },
+ {
+  "id": 566,
+  "property_id": 142,
+  "rating": 5,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-01-31T12:52:00+00:00"
+ },
+ {
+  "id": 567,
+  "property_id": 142,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Shuvo",
+  "created_at": "2025-12-18T01:24:00+00:00"
+ },
+ {
+  "id": 568,
+  "property_id": 143,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Farzana",
+  "created_at": "2026-04-25T06:21:00+00:00"
+ },
+ {
+  "id": 569,
+  "property_id": 143,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Adiba",
+  "created_at": "2026-09-23T22:55:00+00:00"
+ },
+ {
+  "id": 570,
+  "property_id": 143,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Tahsin",
+  "created_at": "2026-05-02T16:27:00+00:00"
+ },
+ {
+  "id": 571,
+  "property_id": 143,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Asif",
+  "created_at": "2026-03-29T12:39:00+00:00"
+ },
+ {
+  "id": 572,
+  "property_id": 143,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Rafi",
+  "created_at": "2026-01-02T04:15:00+00:00"
+ },
+ {
+  "id": 573,
+  "property_id": 143,
+  "rating": 3,
+  "comment": "Safe in daytime, a bit dark after 10pm.",
+  "voter_name": null,
+  "created_at": "2026-06-11T19:59:00+00:00"
+ },
+ {
+  "id": 574,
+  "property_id": 144,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Shuvo",
+  "created_at": "2026-01-25T08:30:00+00:00"
+ },
+ {
+  "id": 575,
+  "property_id": 144,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Nabila",
+  "created_at": "2026-07-25T23:42:00+00:00"
+ },
+ {
+  "id": 576,
+  "property_id": 144,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Ishrat",
+  "created_at": "2025-12-23T20:16:00+00:00"
+ },
+ {
+  "id": 577,
+  "property_id": 144,
+  "rating": 3,
+  "comment": "Building is secure, the lane outside is not great.",
+  "voter_name": "Imran",
+  "created_at": "2026-04-21T21:59:00+00:00"
+ },
+ {
+  "id": 578,
+  "property_id": 145,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-05-17T11:51:00+00:00"
+ },
+ {
+  "id": 579,
+  "property_id": 145,
+  "rating": 4,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": null,
+  "created_at": "2026-01-02T09:23:00+00:00"
+ },
+ {
+  "id": 580,
+  "property_id": 145,
+  "rating": 5,
+  "comment": "রাস্তায় যথেষ্ট আলো, রাতেও মানুষজন থাকে।",
+  "voter_name": "Tania",
+  "created_at": "2026-02-24T17:45:00+00:00"
+ },
+ {
+  "id": 581,
+  "property_id": 146,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Siam",
+  "created_at": "2026-07-28T17:48:00+00:00"
+ },
+ {
+  "id": 582,
+  "property_id": 146,
+  "rating": 5,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-02-05T11:08:00+00:00"
+ },
+ {
+  "id": 583,
+  "property_id": 146,
+  "rating": 4,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": "Tanvir",
+  "created_at": "2025-12-25T16:11:00+00:00"
+ },
+ {
+  "id": 584,
+  "property_id": 146,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-02-24T06:49:00+00:00"
+ },
+ {
+  "id": 585,
+  "property_id": 146,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": null,
+  "created_at": "2026-02-14T00:53:00+00:00"
+ },
+ {
+  "id": 586,
+  "property_id": 147,
+  "rating": 2,
+  "comment": null,
+  "voter_name": "Raisa",
+  "created_at": "2026-06-02T04:16:00+00:00"
+ },
+ {
+  "id": 587,
+  "property_id": 147,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Rifat",
+  "created_at": "2026-09-14T05:05:00+00:00"
+ },
+ {
+  "id": 588,
+  "property_id": 147,
+  "rating": 2,
+  "comment": null,
+  "voter_name": "Asif",
+  "created_at": "2026-08-27T23:12:00+00:00"
+ },
+ {
+  "id": 589,
+  "property_id": 147,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Nafis",
+  "created_at": "2026-06-14T23:24:00+00:00"
+ },
+ {
+  "id": 590,
+  "property_id": 148,
+  "rating": 3,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-04-29T04:00:00+00:00"
+ },
+ {
+  "id": 591,
+  "property_id": 148,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Lamia",
+  "created_at": "2025-12-19T19:20:00+00:00"
+ },
+ {
+  "id": 592,
+  "property_id": 148,
+  "rating": 4,
+  "comment": "গেটে ২৪ ঘণ্টা গার্ড, খুব নিরাপদ।",
+  "voter_name": "Mim",
+  "created_at": "2026-03-05T17:46:00+00:00"
+ },
+ {
+  "id": 593,
+  "property_id": 148,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Raisa",
+  "created_at": "2026-03-15T03:51:00+00:00"
+ },
+ {
+  "id": 594,
+  "property_id": 148,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Raisa",
+  "created_at": "2026-03-28T05:07:00+00:00"
+ },
+ {
+  "id": 595,
+  "property_id": 148,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Tasnim",
+  "created_at": "2026-02-03T00:55:00+00:00"
+ },
+ {
+  "id": 596,
+  "property_id": 149,
+  "rating": 3,
+  "comment": "দিনে নিরাপদ, রাত ১০টার পর একটু অন্ধকার।",
+  "voter_name": "Farzana",
+  "created_at": "2026-07-05T17:51:00+00:00"
+ },
+ {
+  "id": 597,
+  "property_id": 149,
+  "rating": 3,
+  "comment": null,
+  "voter_name": "Zarif",
+  "created_at": "2026-01-10T09:37:00+00:00"
+ },
+ {
+  "id": 598,
+  "property_id": 149,
+  "rating": 4,
+  "comment": null,
+  "voter_name": null,
+  "created_at": "2026-04-12T22:23:00+00:00"
+ },
+ {
+  "id": 599,
+  "property_id": 149,
+  "rating": 3,
+  "comment": "বিল্ডিং ভালো, তবে বাইরের গলি নির্জন।",
+  "voter_name": "Tanvir",
+  "created_at": "2026-04-09T00:49:00+00:00"
+ },
+ {
+  "id": 600,
+  "property_id": 150,
+  "rating": 3,
+  "comment": "Okay overall but take a rickshaw at night.",
+  "voter_name": "Jannat",
+  "created_at": "2026-08-18T12:24:00+00:00"
+ },
+ {
+  "id": 601,
+  "property_id": 150,
+  "rating": 4,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Sakib",
+  "created_at": "2026-06-16T14:26:00+00:00"
+ },
+ {
+  "id": 602,
+  "property_id": 150,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-06-06T06:21:00+00:00"
+ },
+ {
+  "id": 603,
+  "property_id": 150,
+  "rating": 4,
+  "comment": null,
+  "voter_name": "Tahsin",
+  "created_at": "2026-08-26T03:36:00+00:00"
+ },
+ {
+  "id": 604,
+  "property_id": 150,
+  "rating": 5,
+  "comment": "Well-lit street, lots of people around till late.",
+  "voter_name": null,
+  "created_at": "2026-01-04T10:23:00+00:00"
+ },
+ {
+  "id": 605,
+  "property_id": 150,
+  "rating": 5,
+  "comment": "CCTV in the stairwell and a strict caretaker.",
+  "voter_name": "Tahsin",
+  "created_at": "2026-05-11T17:14:00+00:00"
+ },
+ {
+  "id": 606,
+  "property_id": 11,
+  "rating": 5,
+  "comment": "There is a female guard at the gate every night and the CCTV covers the staircase. I come back from the BRAC library at 10pm and feel completely safe.",
+  "voter_name": "Ishrat",
+  "created_at": "2026-08-06T04:15:00+00:00"
+ },
+ {
+  "id": 607,
+  "property_id": 17,
+  "rating": 1,
+  "comment": "Owner never showed the flat and only wanted bKash advance. Scam.",
+  "voter_name": "Rifat",
+  "created_at": "2026-09-06T02:11:00+00:00"
+ }
+]

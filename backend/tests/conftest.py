@@ -1,27 +1,53 @@
 import os
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest
 
-# Point the app at a throwaway SQLite file before any app module is imported.
-_TMP = tempfile.mkdtemp(prefix="bari-test-")
-os.environ["DATABASE_URL"] = f"sqlite:///{_TMP}/test.db"
-os.environ.setdefault("OPENAI_API_KEY", "")
+# Point the app at the dedicated test database before any app module is imported.
+os.environ["DATABASE_URL"] = os.environ.get(
+    "TEST_DATABASE_URL", "postgresql+psycopg://bari:bari@localhost:5433/bari_test"
+)
+os.environ["OPENAI_API_KEY"] = ""
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from alembic import command  # noqa: E402
+from alembic.config import Config  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
+from sqlalchemy import text  # noqa: E402
 
-from database import Base, engine  # noqa: E402
+from database import Base, SessionLocal, engine  # noqa: E402
 from main import app  # noqa: E402
+
+BACKEND = Path(__file__).resolve().parent.parent
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _migrated_schema():
+    """Build the schema through the real Alembic migrations, so tests also cover them."""
+    with engine.begin() as conn:
+        conn.execute(text("DROP SCHEMA public CASCADE; CREATE SCHEMA public"))
+    cfg = Config(str(BACKEND / "alembic.ini"))
+    cfg.set_main_option("script_location", str(BACKEND / "alembic"))
+    command.upgrade(cfg, "head")
+    yield
 
 
 @pytest.fixture(autouse=True)
-def _fresh_db():
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
+def _clean_tables():
+    tables = ", ".join(t.name for t in Base.metadata.sorted_tables)
+    with engine.begin() as conn:
+        conn.execute(text(f"TRUNCATE {tables} RESTART IDENTITY CASCADE"))
     yield
+
+
+@pytest.fixture
+def db():
+    session = SessionLocal()
+    try:
+        yield session
+    finally:
+        session.close()
 
 
 @pytest.fixture
