@@ -3,7 +3,8 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from database import get_db
-from models import PostType
+from deps import get_current_user
+from models import PostType, User
 from services import forum as svc
 
 router = APIRouter(prefix="/forum", tags=["forum"])
@@ -15,7 +16,6 @@ class PostIn(BaseModel):
     post_type: PostType
     area: str | None = None
     nearby_university: str | None = None
-    author_name: str = Field(..., min_length=2)
     property_id: int | None = None
 
 
@@ -34,7 +34,6 @@ class PostOut(BaseModel):
 
 
 class CommentIn(BaseModel):
-    author_name: str = Field(..., min_length=2)
     content: str = Field(..., min_length=2)
 
 
@@ -60,8 +59,8 @@ def list_posts(
 
 
 @router.post("/", response_model=PostOut, status_code=201)
-def create_post(payload: PostIn, db: Session = Depends(get_db)):
-    return svc.create_post(db, **payload.model_dump())
+def create_post(payload: PostIn, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    return svc.create_post(db, **payload.model_dump(), author_name=user.name, author_id=user.id)
 
 
 @router.get("/{post_id}", response_model=PostOut)
@@ -70,7 +69,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/{post_id}/upvote")
-def upvote_post(post_id: int, db: Session = Depends(get_db)):
+def upvote_post(post_id: int, db: Session = Depends(get_db), _: User = Depends(get_current_user)):
     return {"upvotes": svc.upvote_post(db, post_id)}
 
 
@@ -80,5 +79,6 @@ def get_comments(post_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/{post_id}/comments", response_model=CommentOut, status_code=201)
-def add_comment(post_id: int, payload: CommentIn, db: Session = Depends(get_db)):
-    return svc.add_comment(db, post_id, **payload.model_dump())
+def add_comment(post_id: int, payload: CommentIn, db: Session = Depends(get_db),
+                user: User = Depends(get_current_user)):
+    return svc.add_comment(db, post_id, **payload.model_dump(), author_name=user.name, author_id=user.id)

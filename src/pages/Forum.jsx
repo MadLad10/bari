@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { fetchForumPosts, createForumPost, getComments, addComment, upvotePost } from "../api";
 import AIAssistant from "../components/AIAssistant";
+import NavAuth from "../auth/NavAuth";
+import { useAuth } from "../auth/AuthContext";
 import "./Forum.css";
 
 const TYPE_LABELS = {
@@ -54,7 +56,7 @@ function PostCard({ post, onUpvote }) {
 function PostModal({ postId, onClose }) {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
-  const [name, setName] = useState("");
+  const { user, openAuth } = useAuth();
   const [content, setContent] = useState("");
   const [sending, setSending] = useState(false);
 
@@ -67,10 +69,10 @@ function PostModal({ postId, onClose }) {
 
   async function handleComment(e) {
     e.preventDefault();
-    if (!name.trim() || !content.trim()) return;
+    if (!content.trim()) return;
     setSending(true);
     try {
-      const c = await addComment(postId, { author_name: name, content });
+      const c = await addComment(postId, { content });
       setComments((prev) => [...prev, c]);
       setContent("");
     } finally {
@@ -104,11 +106,16 @@ function PostModal({ postId, onClose }) {
                 </div>
               ))}
 
+              {!user ? (
+                <div className="auth-gate">
+                  <button onClick={() => openAuth({ reason: "Log in to join the conversation." })}>Log in to comment</button>
+                </div>
+              ) : (
               <form className="comment-form" onSubmit={handleComment}>
-                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" required />
                 <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Add a comment…" rows={3} required />
                 <button type="submit" disabled={sending}>{sending ? "Posting…" : "Post Comment"}</button>
               </form>
+              )}
             </div>
           </>
         )}
@@ -124,7 +131,6 @@ function NewPostForm({ initial, onCreated, onCancel }) {
     post_type: initial.type || "neighborhood",
     area: "",
     nearby_university: "",
-    author_name: "",
     property_id: initial.property_id ? parseInt(initial.property_id) : null,
   });
   const [submitting, setSubmitting] = useState(false);
@@ -190,10 +196,6 @@ function NewPostForm({ initial, onCreated, onCancel }) {
             </select>
           </div>
         </div>
-        <div className="npf-field">
-          <label>Your name *</label>
-          <input name="author_name" value={form.author_name} onChange={handleChange} required placeholder="Your name" />
-        </div>
         {error && <div className="npf-error">{error}</div>}
         <div className="npf-actions">
           <button type="button" className="npf-cancel" onClick={onCancel}>Cancel</button>
@@ -206,6 +208,7 @@ function NewPostForm({ initial, onCreated, onCancel }) {
 
 export default function Forum() {
   const [searchParams] = useSearchParams();
+  const { user, openAuth } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ post_type: "", area: "", nearby_university: "", q: "" });
@@ -229,6 +232,7 @@ export default function Forum() {
 
   async function handleUpvote(postId, action) {
     if (action === "open") { setActivePost(postId); return; }
+    if (!user) { openAuth({ reason: "Log in to upvote posts." }); return; }
     const result = await upvotePost(postId);
     setPosts((prev) => prev.map((p) => p.id === postId ? { ...p, upvotes: result.upvotes } : p));
   }
@@ -243,6 +247,7 @@ export default function Forum() {
       <nav className="browse-nav">
         <Link to="/" className="nav-logo">bari<span>.com</span></Link>
         <div className="browse-nav-right">
+          <NavAuth />
           <Link to="/browse" className="back-link">Browse listings</Link>
           <button className="nav-cta" onClick={() => setShowNewForm(true)}>+ New Post</button>
         </div>
@@ -292,7 +297,19 @@ export default function Forum() {
         )}
       </div>
 
-      {showNewForm && (
+      {showNewForm && !user && (
+        <div className="modal-overlay" onClick={() => setShowNewForm(false)}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+            <div className="auth-gate">
+              Posting needs an account so the community knows who's talking.
+              <br />
+              <button onClick={() => { setShowNewForm(false); openAuth({ reason: "Log in to post in the forum." }); }}>Log in</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showNewForm && user && (
         <div className="modal-overlay" onClick={() => setShowNewForm(false)}>
           <div className="modal-box" onClick={(e) => e.stopPropagation()}>
             <NewPostForm initial={initialForm} onCreated={handleCreated} onCancel={() => setShowNewForm(false)} />

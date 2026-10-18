@@ -14,9 +14,19 @@ from sqlalchemy import text
 
 import models  # noqa: F401  registers tables
 from database import Base, SessionLocal, engine
-from models import Booking, ForumComment, ForumPost, Property, SafetyVote
+from models import Booking, ForumComment, ForumPost, Property, SafetyVote, User, UserRole
+from services.users import hash_password
 
 DATA = Path(__file__).resolve().parent / "seed_data"
+
+# Demo accounts for local development. Documented in README; never use in production.
+DEMO_PASSWORD = "bari-demo-123"
+DEMO_USERS = [
+    {"email": "student@example.com", "name": "Nusrat Jahan", "phone": "01700000001", "role": UserRole.renter},
+    {"email": "owner@example.com", "name": "Karim Hossain", "phone": "01711000001", "role": UserRole.owner},
+    {"email": "admin@example.com", "name": "bari admin", "phone": None, "role": UserRole.admin},
+]
+DEMO_OWNER_LISTINGS = range(1, 9)  # the original 8 sample listings
 
 # Fixture-only keys that are not table columns.
 _META = {"lang", "needle", "available_from", "comments"}
@@ -35,7 +45,7 @@ def _row(d: dict) -> dict:
 
 
 def _reset_sequences(db) -> None:
-    for table in ("properties", "forum_posts", "forum_comments", "safety_votes", "bookings"):
+    for table in ("users", "properties", "forum_posts", "forum_comments", "safety_votes", "bookings"):
         db.execute(text(
             f"SELECT setval(pg_get_serial_sequence('{table}', 'id'), COALESCE((SELECT MAX(id) FROM {table}), 0) + 1, false)"
         ))
@@ -53,7 +63,14 @@ def seed(db, force: bool = False) -> dict[str, int]:
     listings, posts = _load("listings"), _load("posts")
     votes, bookings = _load("safety_votes"), _load("bookings")
 
-    db.add_all(Property(**_row(l)) for l in listings)
+    pw = hash_password(DEMO_PASSWORD)
+    users = [User(password_hash=pw, **u) for u in DEMO_USERS]
+    db.add_all(users)
+    db.flush()
+    owner = next(u for u in users if u.role == UserRole.owner)
+
+    db.add_all(Property(**_row(l), owner_id=owner.id if l["id"] in DEMO_OWNER_LISTINGS else None)
+               for l in listings)
     db.flush()
     db.add_all(ForumPost(**_row(p)) for p in posts)
     db.flush()
@@ -63,7 +80,7 @@ def seed(db, force: bool = False) -> dict[str, int]:
     db.flush()
     _reset_sequences(db)
     db.commit()
-    return {"properties": len(listings), "posts": len(posts),
+    return {"users": len(users), "properties": len(listings), "posts": len(posts),
             "comments": sum(len(p["comments"]) for p in posts),
             "safety_votes": len(votes), "bookings": len(bookings)}
 

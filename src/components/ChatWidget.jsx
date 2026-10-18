@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { getChatMessages } from "../api";
+import { getChatMessages, API_ROOT } from "../api";
 import "./ChatWidget.css";
 
 function getOrCreateSession(propertyId) {
@@ -34,7 +34,7 @@ export default function ChatWidget({ property }) {
     if (!open || !nameSet) return;
 
     const socket = new WebSocket(
-      `ws://localhost:8001/api/chat/ws/${propertyId}/${sessionToken}`
+      `${API_ROOT.replace(/^http/, "ws")}/api/chat/ws/${propertyId}/${sessionToken}`
     );
     socket.onopen = () => setConnected(true);
     socket.onclose = () => setConnected(false);

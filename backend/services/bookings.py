@@ -78,6 +78,10 @@ def list_property_bookings(db: Session, property_id: int) -> list[Booking]:
     )
 
 
+def list_user_bookings(db: Session, user_id: int) -> list[Booking]:
+    return db.query(Booking).filter(Booking.renter_id == user_id).order_by(Booking.created_at.desc()).all()
+
+
 def upcoming_bookings(db: Session, property_id: int) -> list[Booking]:
     return (
         db.query(Booking)

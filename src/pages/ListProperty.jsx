@@ -1,6 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createProperty, uploadPhoto, uploadDocument } from "../api";
+import NavAuth from "../auth/NavAuth";
+import { useAuth } from "../auth/AuthContext";
+import { API_ROOT } from "../api";
 import "./ListProperty.css";
 
 const UNIVERSITIES = [
@@ -44,6 +47,7 @@ const INITIAL = {
 
 export default function ListProperty() {
   const navigate = useNavigate();
+  const { user, ready, openAuth } = useAuth();
   const [form, setForm] = useState(INITIAL);
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
@@ -54,6 +58,16 @@ export default function ListProperty() {
   const [uploading, setUploading] = useState(false);
   const photoInputRef = useRef(null);
   const docInputRef = useRef(null);
+
+  useEffect(() => {
+    if (!user) return;
+    setForm((p) => ({
+      ...p,
+      owner_name: p.owner_name || user.name,
+      owner_phone: p.owner_phone || user.phone || "",
+      owner_email: p.owner_email || user.email,
+    }));
+  }, [user]);
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
@@ -104,7 +118,7 @@ export default function ListProperty() {
     for (const file of Array.from(files)) {
       try {
         const result = await uploadPhoto(createdId, file);
-        setPhotos((prev) => [...prev, { url: `http://localhost:8001${result.url}`, name: file.name }]);
+        setPhotos((prev) => [...prev, { url: `${API_ROOT}${result.url}`, name: file.name }]);
       } catch {
         // skip failed uploads silently — user can retry
       }
@@ -118,7 +132,7 @@ export default function ListProperty() {
     for (const file of Array.from(files)) {
       try {
         const result = await uploadDocument(createdId, file);
-        setDocuments((prev) => [...prev, { url: `http://localhost:8001${result.url}`, name: result.name }]);
+        setDocuments((prev) => [...prev, { url: `${API_ROOT}${result.url}`, name: result.name }]);
       } catch {
         // skip failed uploads silently — user can retry
       }
@@ -139,6 +153,7 @@ export default function ListProperty() {
       <nav className="browse-nav">
         <Link to="/" className="nav-logo">bari<span>.com</span></Link>
         <div className="browse-nav-right">
+          <NavAuth />
           <Link to="/browse" className="back-link">← Browse listings</Link>
         </div>
       </nav>
@@ -148,6 +163,15 @@ export default function ListProperty() {
           <h1>List Your Property</h1>
           <p>Fill in the details below and your listing will appear on bari.com within minutes.</p>
         </div>
+        {ready && (!user || !["owner", "admin"].includes(user.role)) && (
+          <div className="auth-gate" style={{ marginBottom: "1.5rem" }}>
+            {user ? "Your account is a renter account. Listing a property needs an owner account." : "Log in with an owner account to list a property."}
+            <br />
+            <button onClick={() => openAuth({ mode: user ? "signup" : "login", role: "owner", reason: "Owner accounts can list properties." })}>
+              {user ? "Create an owner account" : "Log in"}
+            </button>
+          </div>
+        )}
 
         <div className="lp-steps">
           {STEPS.map((label, i) => (

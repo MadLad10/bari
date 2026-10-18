@@ -9,6 +9,8 @@ os.environ["DATABASE_URL"] = os.environ.get(
     "TEST_DATABASE_URL", "postgresql+psycopg://bari:bari@localhost:5433/bari_test"
 )
 os.environ["OPENAI_API_KEY"] = ""
+os.environ["BCRYPT_ROUNDS"] = "4"
+os.environ["JWT_SECRET"] = "test-secret-that-is-at-least-32-bytes-long"
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from alembic import command  # noqa: E402
@@ -82,10 +84,37 @@ def property_payload(**overrides):
     return data
 
 
+def make_user(db, role="renter", email=None, name="Test User"):
+    from models import UserRole
+    from services.users import create_token, create_user
+    email = email or f"{role}{make_user.counter}@example.com"
+    make_user.counter += 1
+    user = create_user(db, email=email, password="password123", name=name, role=UserRole(role))
+    return user, {"Authorization": f"Bearer {create_token(user)}"}
+
+
+make_user.counter = 0
+
+
 @pytest.fixture
-def make_property(client):
-    def _make(**overrides):
-        res = client.post("/api/properties/", json=property_payload(**overrides))
+def owner(db):
+    return make_user(db, "owner", name="Karim Owner")[1]
+
+
+@pytest.fixture
+def renter(db):
+    return make_user(db, "renter", name="Rafi Renter")[1]
+
+
+@pytest.fixture
+def admin(db):
+    return make_user(db, "admin", name="Admin")[1]
+
+
+@pytest.fixture
+def make_property(client, owner):
+    def _make(headers=None, **overrides):
+        res = client.post("/api/properties/", json=property_payload(**overrides), headers=headers or owner)
         assert res.status_code == 201, res.text
         return res.json()
     return _make

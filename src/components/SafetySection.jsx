@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getSafety, submitSafetyVote } from "../api";
+import { useAuth } from "../auth/AuthContext";
 import "./SafetySection.css";
 
 const STARS = [1, 2, 3, 4, 5];
@@ -25,6 +26,7 @@ function StarRating({ value, onChange, readonly = false }) {
 
 export default function SafetySection({ property }) {
   const { id, address, latitude, longitude } = property;
+  const { user, openAuth } = useAuth();
 
   const [safety, setSafety] = useState(null);
   const [rating, setRating] = useState(0);
@@ -133,14 +135,20 @@ export default function SafetySection({ property }) {
         )}
 
         {/* Vote form */}
-        {!submitted ? (
+        {!user ? (
+          <div className="auth-gate">
+            Ratings come from logged-in students only.
+            <br />
+            <button onClick={() => openAuth({ reason: "Log in to rate this area's safety." })}>Log in to rate</button>
+          </div>
+        ) : !submitted ? (
           <form className="safety-vote-form" onSubmit={handleVote}>
             <p className="vote-form-label">Rate this area's safety</p>
             <StarRating value={rating} onChange={setRating} />
             <input
               value={voterName}
               onChange={(e) => setVoterName(e.target.value)}
-              placeholder="Your name (optional)"
+              placeholder="Display name (leave blank to stay anonymous)"
             />
             <textarea
               value={comment}

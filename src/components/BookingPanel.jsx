@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getAvailability, createBooking } from "../api";
+import { useAuth } from "../auth/AuthContext";
 import "./BookingPanel.css";
 
 const PAD = (n) => String(n).padStart(2, "0");
@@ -17,6 +18,7 @@ function computePrice(price, rentalType, checkIn, checkOut) {
 
 export default function BookingPanel({ property }) {
   const { id, price, rental_type, listing_type } = property;
+  const { user, openAuth } = useAuth();
 
   const now = new Date();
   const tomorrow = new Date(now);
@@ -31,6 +33,10 @@ export default function BookingPanel({ property }) {
   const [error, setError] = useState(null);
 
   const rentalType = rental_type || "daily";
+
+  useEffect(() => {
+    if (user) setForm((p) => ({ ...p, renter_name: p.renter_name || user.name, renter_phone: p.renter_phone || user.phone || "" }));
+  }, [user]);
 
   useEffect(() => {
     if (listing_type === "sale") return;
@@ -138,9 +144,15 @@ export default function BookingPanel({ property }) {
 
         {error && <div className="bp-error">{error}</div>}
 
-        <button type="submit" className="bp-submit" disabled={submitting}>
-          {submitting ? "Booking…" : "Confirm Booking"}
-        </button>
+        {user ? (
+          <button type="submit" className="bp-submit" disabled={submitting}>
+            {submitting ? "Booking…" : "Confirm Booking"}
+          </button>
+        ) : (
+          <button type="button" className="bp-submit" onClick={() => openAuth({ reason: "Log in to book this place." })}>
+            Log in to book
+          </button>
+        )}
         <p className="bp-hint">No payment collected yet — bKash payment coming soon.</p>
       </form>
     </div>

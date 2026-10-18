@@ -3,6 +3,8 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from database import get_db
+from deps import get_current_user
+from models import User
 from services import safety as svc
 
 router = APIRouter(prefix="/safety", tags=["safety"])
@@ -22,8 +24,9 @@ class SafetyStats(BaseModel):
 
 
 @router.post("/{property_id}/vote", status_code=201)
-def submit_vote(property_id: int, payload: VoteIn, db: Session = Depends(get_db)):
-    _, avg = svc.submit_vote(db, property_id, **payload.model_dump())
+def submit_vote(property_id: int, payload: VoteIn, db: Session = Depends(get_db),
+                user: User = Depends(get_current_user)):
+    _, avg = svc.submit_vote(db, property_id, **payload.model_dump(), voter_id=user.id)
     return {"avg_score": avg}
 
 

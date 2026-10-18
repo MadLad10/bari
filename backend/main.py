@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from config import settings
-from routers import ai, bookings, chat, forum, properties, safety
+from routers import ai, auth, bookings, chat, forum, properties, safety
 from services.errors import ServiceError
 
 # Schema is managed by Alembic (`alembic upgrade head`), not create_all.
@@ -29,7 +29,7 @@ async def service_error_handler(_: Request, exc: ServiceError):
 os.makedirs(settings.upload_dir, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=settings.upload_dir), name="uploads")
 
-for r in (properties, bookings, chat, ai, safety, forum):
+for r in (auth, properties, bookings, chat, ai, safety, forum):
     app.include_router(r.router, prefix="/api")
 
 

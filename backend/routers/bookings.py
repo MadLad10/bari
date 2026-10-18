@@ -5,9 +5,12 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from database import get_db
-from models import BookingStatus, RentalType
+from deps import get_current_user
+from models import BookingStatus, RentalType, User
 from services import bookings as svc
 from services.bookings import BookingCreate
+from services.properties import get_property
+from services.users import ensure_can_cancel_booking, ensure_can_manage_property, ensure_can_view_booking
 
 router = APIRouter(prefix="/bookings", tags=["bookings"])
 
@@ -30,12 +33,20 @@ class BookingOut(BaseModel):
 
 
 @router.post("/", response_model=BookingOut, status_code=201)
-def create_booking(payload: BookingCreate, db: Session = Depends(get_db)):
-    return svc.create_booking(db, payload)
+def create_booking(payload: BookingCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    return svc.create_booking(db, payload, renter_id=user.id)
+
+
+@router.get("/mine", response_model=list[BookingOut])
+def my_bookings(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    return svc.list_user_bookings(db, user.id)
 
 
 @router.get("/property/{property_id}", response_model=list[BookingOut])
-def get_property_bookings(property_id: int, db: Session = Depends(get_db)):
+def get_property_bookings(property_id: int, db: Session = Depends(get_db),
+                          user: User = Depends(get_current_user)):
+    # Includes renter contact details, so only the listing owner (or an admin) may see it.
+    ensure_can_manage_property(user, get_property(db, property_id))
     return svc.list_property_bookings(db, property_id)
 
 
@@ -48,10 +59,14 @@ def get_availability(property_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{booking_id}", response_model=BookingOut)
-def get_booking(booking_id: int, db: Session = Depends(get_db)):
-    return svc.get_booking(db, booking_id)
+def get_booking(booking_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    b = svc.get_booking(db, booking_id)
+    ensure_can_view_booking(user, b, get_property(db, b.property_id))
+    return b
 
 
 @router.patch("/{booking_id}/cancel", response_model=BookingOut)
-def cancel_booking(booking_id: int, db: Session = Depends(get_db)):
+def cancel_booking(booking_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    b = svc.get_booking(db, booking_id)
+    ensure_can_cancel_booking(user, b, get_property(db, b.property_id))
     return svc.cancel_booking(db, booking_id)

@@ -4,6 +4,8 @@ import { fetchProperty } from "../api";
 import BookingPanel from "../components/BookingPanel";
 import ChatWidget from "../components/ChatWidget";
 import SafetySection from "../components/SafetySection";
+import NavAuth from "../auth/NavAuth";
+import { API_ROOT } from "../api";
 import "./PropertyDetail.css";
 
 const LABEL = {
@@ -60,6 +62,7 @@ export default function PropertyDetail() {
       <nav className="browse-nav">
         <Link to="/" className="nav-logo">bari<span>.com</span></Link>
         <div className="browse-nav-right">
+          <NavAuth />
           <Link to="/browse" className="back-link">← Back to listings</Link>
           <Link to="/list-property" className="nav-cta">List Your Property</Link>
         </div>
@@ -70,7 +73,7 @@ export default function PropertyDetail() {
         <div className="detail-photos">
           <div className="photo-main">
             {photos.length > 0 ? (
-              <img src={`http://localhost:8001${photos[activePhoto]}`} alt={title} />
+              <img src={`${API_ROOT}${photos[activePhoto]}`} alt={title} />
             ) : (
               <div className="photo-placeholder">
                 <span>{LABEL[property_type]}</span>
@@ -82,7 +85,7 @@ export default function PropertyDetail() {
               {photos.map((p, i) => (
                 <button key={i} className={`photo-thumb${activePhoto === i ? " active" : ""}`}
                   onClick={() => setActivePhoto(i)}>
-                  <img src={`http://localhost:8001${p}`} alt={`Photo ${i + 1}`} />
+                  <img src={`${API_ROOT}${p}`} alt={`Photo ${i + 1}`} />
                 </button>
               ))}
             </div>
@@ -191,7 +194,7 @@ export default function PropertyDetail() {
 
             {/* Report */}
             <div className="detail-section">
-              <Link to={`/forum/new?type=report&property_id=${property.id}&title=Report: ${encodeURIComponent(title)}`} className="report-link">
+              <Link to={`/forum?type=report&property_id=${property.id}&title=Report: ${encodeURIComponent(title)}`} className="report-link">
                 ⚑ Report this listing as unsafe
               </Link>
             </div>

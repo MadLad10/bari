@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { fetchProperties } from "../api";
 import AIAssistant from "../components/AIAssistant";
+import NavAuth from "../auth/NavAuth";
+import { API_ROOT } from "../api";
 import "./Browse.css";
 
 const UNIVERSITIES = [
@@ -35,7 +37,7 @@ function PropertyCard({ property }) {
     <Link to={`/property/${property.id}`} className="prop-card">
       <div className="prop-card-img">
         {photo ? (
-          <img src={`http://localhost:8001${photo}`} alt={property.title} />
+          <img src={`${API_ROOT}${photo}`} alt={property.title} />
         ) : (
           <div className="prop-card-img-placeholder">
             <span>{property.property_type}</span>
@@ -141,6 +143,7 @@ export default function Browse() {
       <nav className="browse-nav">
         <Link to="/" className="nav-logo">bari<span>.com</span></Link>
         <div className="browse-nav-right">
+          <NavAuth />
           <Link to="/list-property" className="nav-cta">List Your Property</Link>
         </div>
       </nav>

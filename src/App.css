@@ -953,3 +953,9 @@ footer {
     padding: 0 6vw;
   }
 }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}

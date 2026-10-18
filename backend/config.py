@@ -23,6 +23,12 @@ class Settings(BaseSettings):
     ]
     upload_dir: str = "uploads"
 
+    # Auth
+    jwt_secret: str = "dev-only-insecure-secret-change-me-in-env"
+    jwt_algorithm: str = "HS256"
+    jwt_expire_minutes: int = 60 * 24 * 7
+    bcrypt_rounds: int = 12
+
     # Legacy prompt-stuffing assistant (replaced by the agent in M6).
     openai_api_key: str = ""
 

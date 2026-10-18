@@ -5,6 +5,24 @@ import enum
 from database import Base
 
 
+class UserRole(str, enum.Enum):
+    renter = "renter"
+    owner = "owner"
+    admin = "admin"
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(150), nullable=False, unique=True, index=True)
+    password_hash = Column(String(100), nullable=False)
+    name = Column(String(100), nullable=False)
+    phone = Column(String(20), nullable=True)
+    role = Column(Enum(UserRole), nullable=False, default=UserRole.renter)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
 class PropertyType(str, enum.Enum):
     apartment = "apartment"
     house = "house"
@@ -73,6 +91,7 @@ class Property(Base):
     owner_name = Column(String(100), nullable=False)
     owner_phone = Column(String(20), nullable=False)
     owner_email = Column(String(150), nullable=True)
+    owner_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
 
     status = Column(Enum(ListingStatus), default=ListingStatus.active, nullable=False, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -96,6 +115,7 @@ class Booking(Base):
     renter_name = Column(String(100), nullable=False)
     renter_phone = Column(String(20), nullable=False)
     renter_email = Column(String(150), nullable=True)
+    renter_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
 
     check_in = Column(DateTime(timezone=True), nullable=False)
     check_out = Column(DateTime(timezone=True), nullable=False)
@@ -136,6 +156,7 @@ class SafetyVote(Base):
     rating = Column(Integer, nullable=False)           # 1–5
     comment = Column(String(300), nullable=True)
     voter_name = Column(String(100), nullable=True)
+    voter_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -158,6 +179,7 @@ class ForumPost(Base):
     area = Column(String(100), nullable=True)
     nearby_university = Column(String(200), nullable=True)
     author_name = Column(String(100), nullable=False)
+    author_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     upvotes = Column(Integer, default=0, nullable=False)
     property_id = Column(Integer, ForeignKey("properties.id", ondelete="SET NULL"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -169,5 +191,6 @@ class ForumComment(Base):
     id = Column(Integer, primary_key=True, index=True)
     post_id = Column(Integer, ForeignKey("forum_posts.id", ondelete="CASCADE"), nullable=False, index=True)
     author_name = Column(String(100), nullable=False)
+    author_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     content = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

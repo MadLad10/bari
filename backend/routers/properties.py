@@ -8,8 +8,11 @@ from sqlalchemy.orm import Session
 
 from config import settings
 from database import get_db
+from deps import get_current_user, require_role
+from models import User, UserRole
 from schemas import PropertyCreate, PropertyListOut, PropertyOut, PropertySearchParams, PropertyUpdate
 from services import properties as svc
+from services.users import ensure_can_manage_property
 
 router = APIRouter(prefix="/properties", tags=["properties"])
 
@@ -36,17 +39,27 @@ def get_property(property_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=PropertyOut, status_code=201)
-def create_property(payload: PropertyCreate, db: Session = Depends(get_db)):
-    return svc.create_property(db, payload)
+def create_property(payload: PropertyCreate, db: Session = Depends(get_db),
+                    user: User = Depends(require_role(UserRole.owner))):
+    return svc.create_property(db, payload, owner_id=user.id)
+
+
+def _managed_property(db: Session, property_id: int, user: User):
+    prop = svc.get_property(db, property_id)
+    ensure_can_manage_property(user, prop)
+    return prop
 
 
 @router.put("/{property_id}", response_model=PropertyOut)
-def update_property(property_id: int, payload: PropertyUpdate, db: Session = Depends(get_db)):
+def update_property(property_id: int, payload: PropertyUpdate, db: Session = Depends(get_db),
+                    user: User = Depends(get_current_user)):
+    _managed_property(db, property_id, user)
     return svc.update_property(db, property_id, payload)
 
 
 @router.delete("/{property_id}", status_code=204)
-def delete_property(property_id: int, db: Session = Depends(get_db)):
+def delete_property(property_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    _managed_property(db, property_id, user)
     svc.delete_property(db, property_id)
 
 
@@ -61,16 +74,18 @@ async def _save_upload(file: UploadFile, allowed: set[str], prefix: str, default
 
 
 @router.post("/{property_id}/photos")
-async def upload_photo(property_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
-    svc.get_property(db, property_id)
+async def upload_photo(property_id: int, file: UploadFile = File(...), db: Session = Depends(get_db),
+                       user: User = Depends(get_current_user)):
+    _managed_property(db, property_id, user)
     url = await _save_upload(file, PHOTO_TYPES, "", "jpg")
     svc.append_file(db, property_id, "photos", url)
     return {"url": url}
 
 
 @router.post("/{property_id}/documents")
-async def upload_document(property_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
-    svc.get_property(db, property_id)
+async def upload_document(property_id: int, file: UploadFile = File(...), db: Session = Depends(get_db),
+                          user: User = Depends(get_current_user)):
+    _managed_property(db, property_id, user)
     url = await _save_upload(file, DOCUMENT_TYPES, "doc_", "pdf")
     svc.append_file(db, property_id, "documents", url)
     return {"url": url, "name": file.filename}

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import AIAssistant from "./components/AIAssistant";
+import NavAuth from "./auth/NavAuth";
 import "./App.css";
 
 const stepItems = [
@@ -166,9 +167,12 @@ function App() {
             <a href="#contact">Contact</a>
           </li>
         </ul>
-        <Link to="/list-property" className="nav-cta">
-          List Your Property
-        </Link>
+        <div className="nav-right">
+          <NavAuth />
+          <Link to="/list-property" className="nav-cta">
+            List Your Property
+          </Link>
+        </div>
       </nav>
 
       <main id="top">
