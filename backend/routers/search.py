@@ -7,19 +7,9 @@ from database import get_db
 from rag.hybrid import hybrid_search
 from rag.indexer import SOURCE_TYPES
 from schemas import PropertySearchParams
-from services.properties import get_properties
+from services.properties import get_properties, public_summary
 
 router = APIRouter(prefix="/search", tags=["search"])
-
-LISTING_SUMMARY_FIELDS = ("id", "title", "area", "price", "rental_type", "bedrooms", "property_type", "listing_type",
-                          "furnishing", "is_female_only", "safety_score", "nearby_university",
-                          "university_distance_km", "photos")
-
-
-def listing_summary(p) -> dict:
-    """Public listing fields only. Owner phone/email are deliberately excluded."""
-    return {f: getattr(getattr(p, f), "value", getattr(p, f)) for f in LISTING_SUMMARY_FIELDS}
-
 
 @router.get("/semantic")
 def semantic_search(
@@ -45,7 +35,7 @@ def semantic_search(
         "timings_ms": result.timings_ms,
         "hits": [
             {**{k: v for k, v in h.to_dict().items() if k != "meta"},
-             "listing": listing_summary(props[h.property_id]) if h.property_id in props else None}
+             "listing": public_summary(props[h.property_id]) if h.property_id in props else None}
             for h in result.hits
         ],
     }

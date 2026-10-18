@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
-from models import Booking, BookingStatus, Property, RentalType
+from models import Booking, BookingStatus, ListingStatus, Property, RentalType
 from services.errors import BadRequest, Conflict, NotFound
 from services.properties import get_property
 
@@ -50,22 +50,30 @@ def has_overlap(db: Session, property_id: int, check_in: datetime, check_out: da
     return bool(overlapping_bookings(db, property_id, check_in, check_out, exclude_id))
 
 
-def validate_booking(db: Session, payload: BookingCreate) -> tuple[Property, float]:
-    """All checks that must pass before a booking can exist. Returns the property and total price."""
-    if payload.check_out <= payload.check_in:
+def validate_booking(db: Session, property_id: int, check_in: datetime, check_out: datetime,
+                     rental_type: RentalType) -> tuple[Property, float]:
+    """All checks that must pass before a booking can exist. Returns the property and total price.
+
+    Shared by the booking endpoint, the agent's draft_booking tool and the confirm endpoint."""
+    if check_out <= check_in:
         raise BadRequest("check_out must be after check_in")
-    prop = get_property(db, payload.property_id)
-    if has_overlap(db, payload.property_id, payload.check_in, payload.check_out):
+    prop = get_property(db, property_id)
+    if prop.status != ListingStatus.active:
+        raise Conflict("This listing is not available for booking")
+    if has_overlap(db, property_id, check_in, check_out):
         raise Conflict("Property is already booked for the selected dates")
-    return prop, compute_price(prop, payload.check_in, payload.check_out, payload.rental_type)
+    return prop, compute_price(prop, check_in, check_out, rental_type)
 
 
-def create_booking(db: Session, payload: BookingCreate, **extra) -> Booking:
-    _, total = validate_booking(db, payload)
+def create_booking(db: Session, payload: BookingCreate, *, commit: bool = True, **extra) -> Booking:
+    _, total = validate_booking(db, payload.property_id, payload.check_in, payload.check_out, payload.rental_type)
     booking = Booking(**payload.model_dump(), total_price=total, **extra)
     db.add(booking)
-    db.commit()
-    db.refresh(booking)
+    if commit:
+        db.commit()
+        db.refresh(booking)
+    else:
+        db.flush()
     return booking
 
 

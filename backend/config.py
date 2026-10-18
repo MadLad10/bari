@@ -52,8 +52,13 @@ class Settings(BaseSettings):
     # Cross-encoder cost is ~0.3–0.5 s per pair on a shared laptop CPU, so only the top fused candidates are reranked.
     rerank_top: int = 10
 
-    # Legacy prompt-stuffing assistant (replaced by the agent in M6).
-    openai_api_key: str = ""
+    # Agent limits
+    agent_max_tool_calls: int = 6
+    agent_max_llm_steps: int = 5
+    agent_tool_timeout_s: float = 10
+    agent_turn_timeout_s: float = 150
+    agent_injection_filter: bool = True
+    pending_action_ttl_min: int = 30
 
 
 @lru_cache

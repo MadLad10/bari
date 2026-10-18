@@ -65,6 +65,16 @@ def count_properties(db: Session, params: PropertySearchParams) -> int:
     return db.query(Property).filter(and_(*build_filters(params))).count()
 
 
+PUBLIC_SUMMARY_FIELDS = ("id", "title", "area", "price", "rental_type", "bedrooms", "property_type", "listing_type",
+                         "furnishing", "is_female_only", "safety_score", "nearby_university",
+                         "university_distance_km", "photos")
+
+
+def public_summary(p: Property) -> dict:
+    """Public listing fields for search results and the agent. Owner phone/email are deliberately excluded."""
+    return {f: getattr(getattr(p, f), "value", getattr(p, f)) for f in PUBLIC_SUMMARY_FIELDS}
+
+
 def get_property(db: Session, property_id: int) -> Property:
     prop = db.get(Property, property_id)
     if not prop:

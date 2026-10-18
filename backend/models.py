@@ -271,3 +271,45 @@ class Job(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
+
+
+# ── Agent: human-in-the-loop actions and run log ─────────────────────────────
+
+class PendingAction(Base):
+    """An action the agent drafted. Nothing happens until the user confirms it in the UI."""
+    __tablename__ = "pending_actions"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    action_type = Column(String(30), nullable=False)            # create_booking
+    payload = Column(JSONB, nullable=False)
+    summary = Column(JSONB, nullable=False, default=dict)
+    status = Column(String(15), nullable=False, default="pending")  # pending | confirmed | cancelled | expired | failed
+    result = Column(JSONB, nullable=True)
+    request_id = Column(String(64), nullable=True)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    decided_at = Column(DateTime(timezone=True), nullable=True)
+
+
+class AgentRun(Base):
+    __tablename__ = "agent_runs"
+
+    id = Column(Integer, primary_key=True)
+    request_id = Column(String(64), nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    provider = Column(String(20), nullable=False)
+    model = Column(String(100), nullable=False)
+    question = Column(Text, nullable=False)
+    answer = Column(Text, nullable=True)
+    tool_calls = Column(JSONB, nullable=False, default=list)
+    citations = Column(JSONB, nullable=False, default=list)
+    unsupported_citations = Column(JSONB, nullable=False, default=list)
+    llm_steps = Column(Integer, nullable=False, default=0)
+    prompt_tokens = Column(Integer, nullable=False, default=0)
+    completion_tokens = Column(Integer, nullable=False, default=0)
+    cost_usd = Column(Float, nullable=False, default=0)
+    latency_ms = Column(Integer, nullable=False, default=0)
+    status = Column(String(15), nullable=False)                  # ok | error | limit
+    error = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)

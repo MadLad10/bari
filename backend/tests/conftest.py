@@ -8,7 +8,6 @@ import pytest
 os.environ["DATABASE_URL"] = os.environ.get(
     "TEST_DATABASE_URL", "postgresql+psycopg://bari:bari@localhost:5433/bari_test"
 )
-os.environ["OPENAI_API_KEY"] = ""
 os.environ["BCRYPT_ROUNDS"] = "4"
 os.environ["LLM_PROVIDER"] = "fake"
 os.environ["EMBEDDING_PROVIDER"] = "fake"
@@ -71,6 +70,9 @@ def _seeded_module(_migrated_schema):
 def seeded(request, _seeded_module, db):
     """Seeded + indexed DB. Tests using it must be marked `shared_seed` and must not write."""
     assert request.node.get_closest_marker("shared_seed"), "mark tests using `seeded` with @pytest.mark.shared_seed"
+    from models import Property
+    assert db.query(Property).count() == 150, (
+        "shared seed was wiped: keep `shared_seed` tests in modules without non-shared DB tests")
     return db
 
 
