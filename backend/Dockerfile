@@ -7,9 +7,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-COPY requirements.txt requirements-dev.txt ./
+COPY requirements.txt requirements-local.txt requirements-dev.txt ./
 ARG INSTALL_DEV=true
-RUN if [ "$INSTALL_DEV" = "true" ]; then pip install -r requirements-dev.txt; else pip install -r requirements.txt; fi
+RUN if [ "$INSTALL_DEV" = "true" ]; then pip install -r requirements-dev.txt; else pip install -r requirements-local.txt; fi
 
 COPY . .
 

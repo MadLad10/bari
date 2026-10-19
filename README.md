@@ -162,7 +162,8 @@ listings 1–8), `admin@example.com` (admin → `/admin`). Promote any account w
 
 ### Deploy (free, on Vercel)
 
-Vercel serves the React build and runs the FastAPI backend as a Python function. Data lives in Neon Postgres
+One Vercel project with two [Services](https://vercel.com/docs/services): `web` (the Vite build) and `api`
+(FastAPI from `backend/`, on `/api/*`). Data lives in Neon Postgres
 with pgvector, the LLM is Groq, and embeddings come from Gemini. Step by step: [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
 ### Configuration

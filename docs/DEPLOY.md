@@ -1,10 +1,9 @@
 # Deploying bari on Vercel (free)
 
 ```
-Browser ──► Vercel ── static React build (dist/)
-              │  /api/*  (same origin)
-              ▼
-            Vercel Python function: FastAPI (api/index.py → backend/), SSE streaming
+Browser ──► Vercel project with two Services (vercel.json)
+              ├─ "web": Vite React build, every path except /api and /uploads
+              └─ "api": FastAPI from backend/ (main:app), /api/* and /uploads/*, SSE streaming
               ├─► Neon Postgres + pgvector (free, connected via the Vercel integration)
               ├─► Groq (LLM, free tier)
               └─► Gemini embeddings (free tier); if rate-limited, search falls back to keyword-only
@@ -42,6 +41,11 @@ The backend picks these defaults itself when Vercel's `VERCEL=1` is present (`ba
    GEMINI_API_KEY=…
    ADMIN_PASSWORD=<a long secret: the demo password is public>
    ```
+
+## 2b. Put the functions next to the database
+
+Project → **Settings → Functions → Function Region** → **Singapore (sin1)** → Save. Neon is in Singapore; the
+default region (Washington, D.C.) would add a trans-Pacific round trip to every database query.
 
 ## 3. Load the database (once, from your machine)
 
@@ -84,5 +88,5 @@ If Gemini rate-limits, the reindex script pauses and resumes on its own.
 - Groq free tier: about 200K tokens per model per day, roughly 30 assistant turns. The rate limit stops one
   visitor from using it all.
 - Neon free: scales to zero when idle, so the first request after a pause takes a second or two longer.
-- Vercel Hobby: functions are capped at 60 s (`maxDuration` in `vercel.json`), enough for an assistant turn.
+- Python functions on Fluid compute default to a 300 s duration, plenty for an assistant turn or a Scout run.
 - Uploaded photos don't persist (no object storage in this setup).

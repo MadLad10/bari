@@ -1,7 +1,13 @@
-# Not needed by the Vercel build or the API function
+# Not needed by either Vercel service (the database is loaded from a workstation; see docs/DEPLOY.md)
 eval/
 docs/
 backend/tests/
 backend/seed_data/
+backend/alembic/
+backend/scripts/
 backend/uploads/
+backend/Dockerfile
+backend/.dockerignore
+docker/
 .env
+.env.*
