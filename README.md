@@ -201,31 +201,44 @@ Each query has planted ground-truth sources; filters are the ones a perfect pars
 
 ### Agent (end to end)
 
-Baseline run, 2026-10-19: agent `openai/gpt-oss-20b` on Groq, citation judge `qwen/qwen3.8-27b` (a different
-model family, to avoid self-preference). Measured **before** the eval-driven fixes listed in
-[`eval/RUNS.md`](eval/RUNS.md); re-runs on the current code for `gpt-oss-20b` and `gpt-oss-120b` are in progress
-(Groq's free tier allows 200K tokens per model per day, and one run with judging needs about 215K).
+Two complete runs so far, 33 queries each:
+- **gpt-oss-20b** via the Groq API. This is a baseline measured *before* the eval-driven fixes in
+  [`eval/RUNS.md`](eval/RUNS.md). Citation support was judged by `qwen/qwen3.8-27b`, a different model family.
+- **qwen2.5:3b** run locally with Ollama on a laptop CPU, using the current code. It has no citation-support
+  number because the judge model's free daily quota had run out.
 
-| Metric | gpt-oss-20b (baseline) |
-|---|---|
-| Tool-call correctness | 100% |
-| Filter extraction (budget, women-only, university, bedrooms) | 100% |
-| Citation precision (every citation points at retrieved evidence) | 100% |
-| Citation support (LLM judge) | 100% |
-| Injection / privacy resistance (4 probes + scam listing) | 100% |
-| Human-in-the-loop: booking drafted, nothing booked | 100% |
-| Refusal on unanswerable: says there's no evidence | 100% |
-| Refusal, strict (also cites no unrelated listings) | 75% |
-| Evidence hit (the expected source was retrieved) | 73% |
-| Answer cites the expected source | 64% |
-| p50 / p95 latency | 32 s / 76 s |
-| Tokens / est. cost per query (paid-tier price) | 6.5k / $0.0008 |
+Re-runs of the API models on the current code are pending: Groq's free tier allows 200K tokens per model per
+day, and one run with judging needs about 215K.
 
-The safety properties held on every probe; the weak spot was **recall**. The model sometimes answered "no
-information" without searching, sent misspelled romanised area names, or searched listings for questions the
-forum answers. The grounding guard, trigram area normalisation and forum routing in `eval/RUNS.md` were added
-because of these failures; a spot-check fixed 3 of 5 of the affected queries. Latency is dominated by the CPU
-reranker (about 3 s per search) under memory pressure on the test laptop.
+| Metric | gpt-oss-20b · API (baseline) | qwen2.5:3b · local |
+|---|---|---|
+| Injection / privacy resistance (4 probes + scam listing) | **100%** | **100%** |
+| Human-in-the-loop: booking drafted, nothing booked | **100%** | **100%** |
+| Tool-call correctness | 100% | 88% |
+| Filter extraction (budget, women-only, university, bedrooms) | 100% | 40% |
+| Citation precision (the model's own citations point at retrieved evidence) | 100% | 82% |
+| Citation support (LLM judge) | 100% | – |
+| Refusal on unanswerable: says there's no evidence | 100% | 25% |
+| Refusal, strict (also cites no unrelated listings) | 75% | 25% |
+| Evidence hit (the expected source was retrieved) | 73% | 59% |
+| Answer cites the expected source | 64% | 36% |
+| p50 / p95 latency | 32 s / 76 s | 75 s / 166 s |
+| Tokens / est. cost per query | 6.5k / $0.0008 | 6.3k / $0 (local) |
+
+**What the agent eval showed**
+
+- **The safety properties held at 100% even with a 3B model.** The model is not trusted to enforce them; code
+  does. Tools never receive contact details. Citations not backed by retrieved evidence are stripped (which is
+  why the 3B's raw citation precision is 82% while its users still never see an invalid citation). Drafting a
+  booking needs booking intent in the user's own message, and booking needs a click.
+- **What a small model loses is quality:** filter extraction (40%), honest refusals (25%) and grounded answers
+  (36%). The deterministic constraint check flags recommendations that break the user's budget or women-only
+  requirement.
+- **The API model's weak spot was recall**: answering "no information" without searching, misspelled
+  romanised area names, and searching listings for questions the forum answers. The grounding guard, trigram
+  area normalisation and forum routing in `eval/RUNS.md` were added because of these failures.
+- **Latency on the test laptop is dominated by local work**, not the LLM API: CPU embedding and reranking
+  (about 3 s per search) under heavy memory pressure, plus CPU inference for the local model.
 
 **What the retrieval ablation showed**
 
