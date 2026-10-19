@@ -42,10 +42,11 @@ The backend picks these defaults itself when Vercel's `VERCEL=1` is present (`ba
    ADMIN_PASSWORD=<a long secret: the demo password is public>
    ```
 
-## 2b. Put the functions next to the database
+## 2b. Functions run next to the database
 
-Project → **Settings → Functions → Function Region** → **Singapore (sin1)** → Save. Neon is in Singapore; the
-default region (Washington, D.C.) would add a trans-Pacific round trip to every database query.
+`vercel.json` sets `"regions": ["sin1"]` (Singapore), where the Neon database is. Without it, functions would run
+in Washington, D.C. and every database query would cross the Pacific. The Hobby plan allows one region, so don't
+select extra regions in the dashboard (that's a Pro feature).
 
 ## 3. Load the database (once, from your machine)
 

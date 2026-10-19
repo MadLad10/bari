@@ -1,12 +1,20 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": [
+    "sin1"
+  ],
   "services": {
     "web": {
       "root": ".",
       "framework": "vite",
       "buildCommand": "npm run build",
       "outputDirectory": "dist",
-      "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+      "rewrites": [
+        {
+          "source": "/(.*)",
+          "destination": "/index.html"
+        }
+      ]
     },
     "api": {
       "root": "backend",
@@ -15,9 +23,29 @@
     }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": { "service": "api" } },
-    { "source": "/uploads/(.*)", "destination": { "service": "api" } },
-    { "source": "/(.*)", "destination": { "service": "web" } }
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "api"
+      }
+    },
+    {
+      "source": "/uploads/(.*)",
+      "destination": {
+        "service": "api"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "web"
+      }
+    }
   ],
-  "crons": [{ "path": "/api/cron/scout", "schedule": "0 3 * * *" }]
+  "crons": [
+    {
+      "path": "/api/cron/scout",
+      "schedule": "0 3 * * *"
+    }
+  ]
 }
