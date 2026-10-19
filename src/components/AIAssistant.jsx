@@ -20,6 +20,9 @@ const WELCOME = {
   final: true,
 };
 
+// The API/local model switch only makes sense where Ollama runs (local dev), not on Vercel.
+const SHOW_MODEL_SWITCH = !import.meta.env.PROD || import.meta.env.VITE_SHOW_MODEL_SWITCH === "true";
+
 const STEP_ICON = { running: "◌", done: "✓", error: "!" };
 
 function Steps({ steps, live }) {
@@ -294,12 +297,14 @@ export default function AIAssistant() {
               <div className="ai-header-title">bari assistant</div>
               <div className="ai-header-sub">Searches listings, safety reviews &amp; the forum</div>
             </div>
-            <select className="ai-provider" value={provider} onChange={(e) => setProvider(e.target.value)}
-                    title="Which model answers" disabled={busy}>
-              <option value="">Default model</option>
-              <option value="api">API (Groq)</option>
-              <option value="ollama">Local (Ollama)</option>
-            </select>
+            {SHOW_MODEL_SWITCH && (
+              <select className="ai-provider" value={provider} onChange={(e) => setProvider(e.target.value)}
+                      title="Which model answers" disabled={busy}>
+                <option value="">Default model</option>
+                <option value="api">API (Groq)</option>
+                <option value="ollama">Local (Ollama)</option>
+              </select>
+            )}
             <button className="ai-close" onClick={() => setOpen(false)} aria-label="Close">✕</button>
           </div>
 

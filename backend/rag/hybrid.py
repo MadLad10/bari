@@ -11,7 +11,10 @@ from dataclasses import asdict, dataclass, field
 from sqlalchemy import and_, func, or_, select, text
 from sqlalchemy.orm import Session
 
+import logging
+
 from config import settings
+from llm.base import LLMError
 from models import Document, Property
 from rag.chunking import detect_lang
 from rag.embeddings import get_embedder
@@ -20,6 +23,7 @@ from rag.rerank import get_reranker
 from schemas import PropertySearchParams
 from services.properties import build_filters
 
+log = logging.getLogger("bari.rag")
 RRF_K = 60
 # Keyword search can't match across languages (a Bangla query vs an English listing), and equal-weight RRF then
 # buries a document that is #1 for vector search but absent from the keyword list. The eval showed Bangla hit@5
@@ -132,10 +136,17 @@ def hybrid_search(db: Session, query: str, *, sources: tuple[str, ...] | list[st
     hits: dict[int, Hit] = {}
     fused: dict[int, float] = {}
 
+    vector_ok = use_vector
     if use_vector:
         t = time.perf_counter()
-        qvec = get_embedder().embed_query(query)
+        try:
+            qvec = get_embedder().embed_query(query)
+        except LLMError as e:
+            # Embedding API rate-limited or down: degrade to keyword search instead of failing the request.
+            log.warning("query embedding failed, falling back to keyword search: %s", e)
+            vector_ok, use_keyword = False, True
         timings["embed"] = int((time.perf_counter() - t) * 1000)
+    if vector_ok:
         t = time.perf_counter()
         for rank, d in enumerate(_vector(db, qvec, where, candidates), start=1):
             h = hits.setdefault(d.id, _to_hit(d))
@@ -175,4 +186,6 @@ def hybrid_search(db: Session, query: str, *, sources: tuple[str, ...] | list[st
         ranked = unique
 
     return SearchResult(hits=ranked[:k], timings_ms=timings,
-                        stages={"vector": use_vector, "keyword": use_keyword, "rerank": bool(reranker)})
+                        stages={"vector": vector_ok if use_vector else False, "keyword": use_keyword,
+                                "rerank": bool(reranker),
+                                **({"vector_unavailable": True} if use_vector and not vector_ok else {})})

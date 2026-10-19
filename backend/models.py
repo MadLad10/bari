@@ -319,6 +319,7 @@ class AgentRun(Base):
     latency_ms = Column(Integer, nullable=False, default=0)
     status = Column(String(15), nullable=False)                  # ok | error | limit
     error = Column(Text, nullable=True)
+    client_key = Column(String(80), nullable=True, index=True)   # user:<id> or ip:<hash>, for rate limiting
     created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
 
 

@@ -1,3 +1,4 @@
+import logging
 import os
 import uuid
 
@@ -35,6 +36,31 @@ async def request_id_middleware(request: Request, call_next):
         request_id_var.reset(token)
     response.headers["X-Request-ID"] = rid[:64]
     return response
+
+
+@app.middleware("http")
+async def inline_jobs_middleware(request: Request, call_next):
+    """JOBS_MODE=inline: run the jobs a write request queued (index, screen, moderate) before answering.
+
+    On Vercel nothing runs after the response is sent, so the jobs go first. Locally the worker does this."""
+    response = await call_next(request)
+    if settings.jobs_mode == "inline" and request.method in ("POST", "PUT", "PATCH", "DELETE") \
+            and not request.url.path.startswith("/api/ai/"):
+        from starlette.concurrency import run_in_threadpool
+        await run_in_threadpool(_run_queued_jobs)
+    return response
+
+
+def _run_queued_jobs() -> None:
+    from database import SessionLocal
+    from jobs.queue import run_pending
+    db = SessionLocal()
+    try:
+        run_pending(db, limit=20)
+    except Exception:  # noqa: BLE001  a failed job is retried later; never fail the user's request
+        logging.getLogger("bari.jobs").exception("inline job run failed")
+    finally:
+        db.close()
 
 
 @app.exception_handler(LLMError)

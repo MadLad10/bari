@@ -124,6 +124,11 @@ Demo accounts (password `bari-demo-123`): `student@example.com` (renter), `owner
 listings 1–8), `admin@example.com` (admin → `/admin`). Promote any account with
 `docker compose run --rm backend python -m scripts.make_admin you@example.com`.
 
+### Deploy (free, on Vercel)
+
+Vercel serves the React build and runs the FastAPI backend as a Python function. Data lives in Neon Postgres
+with pgvector, the LLM is Groq, and embeddings come from Gemini. Step by step: [`docs/DEPLOY.md`](docs/DEPLOY.md).
+
 ### Configuration
 
 | Variable | Default | Meaning |

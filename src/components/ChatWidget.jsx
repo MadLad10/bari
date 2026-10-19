@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { getChatMessages, API_ROOT } from "../api";
+import { getChatMessages, sendChatMessage, API_ROOT } from "../api";
 import "./ChatWidget.css";
 
 function getOrCreateSession(propertyId) {
@@ -23,6 +23,8 @@ export default function ChatWidget({ property }) {
   const [nameSet, setNameSet] = useState(!!sessionStorage.getItem("bari_chat_name"));
   const [ws, setWs] = useState(null);
   const [connected, setConnected] = useState(false);
+  // Serverless hosts (Vercel) can't hold WebSockets: if the socket never opens, poll over REST instead.
+  const [polling, setPolling] = useState(false);
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -33,11 +35,11 @@ export default function ChatWidget({ property }) {
   useEffect(() => {
     if (!open || !nameSet) return;
 
-    const socket = new WebSocket(
-      `${API_ROOT.replace(/^http/, "ws")}/api/chat/ws/${propertyId}/${sessionToken}`
-    );
-    socket.onopen = () => setConnected(true);
-    socket.onclose = () => setConnected(false);
+    const wsRoot = (API_ROOT || window.location.origin).replace(/^http/, "ws");
+    const socket = new WebSocket(`${wsRoot}/api/chat/ws/${propertyId}/${sessionToken}`);
+    let opened = false;
+    socket.onopen = () => { opened = true; setConnected(true); };
+    socket.onclose = () => { setConnected(false); if (!opened) setPolling(true); };
     socket.onmessage = (e) => {
       const msg = JSON.parse(e.data);
       if (msg.error) return;
@@ -51,6 +53,13 @@ export default function ChatWidget({ property }) {
   }, [open, nameSet, propertyId, sessionToken]);
 
   useEffect(() => {
+    if (!open || !polling) return;
+    const refresh = () => getChatMessages(propertyId, sessionToken).then(setMessages).catch(() => {});
+    const timer = setInterval(refresh, 4000);
+    return () => clearInterval(timer);
+  }, [open, polling, propertyId, sessionToken]);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
@@ -61,14 +70,19 @@ export default function ChatWidget({ property }) {
     setNameSet(true);
   }
 
-  function sendMessage(e) {
+  async function sendMessage(e) {
     e.preventDefault();
-    if (!input.trim() || !ws || ws.readyState !== WebSocket.OPEN) return;
-    ws.send(JSON.stringify({
-      sender: "renter",
-      sender_name: name,
-      content: input.trim(),
-    }));
+    const content = input.trim();
+    if (!content) return;
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ sender: "renter", sender_name: name, content }));
+    } else if (polling) {
+      const msg = await sendChatMessage({ property_id: propertyId, session_token: sessionToken,
+                                          sender: "renter", sender_name: name, content }).catch(() => null);
+      if (msg) setMessages((prev) => [...prev, msg]);
+    } else {
+      return;
+    }
     setInput("");
   }
 
@@ -82,7 +96,7 @@ export default function ChatWidget({ property }) {
         <div className="cw-box">
           <div className="cw-header">
             <span>Chat with {owner_name}</span>
-            <span className={`cw-dot${connected ? " online" : ""}`} />
+            <span className={`cw-dot${connected || polling ? " online" : ""}`} />
           </div>
 
           {!nameSet ? (
@@ -120,11 +134,11 @@ export default function ChatWidget({ property }) {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type a message…"
-                  disabled={!connected}
+                  disabled={!(connected || polling)}
                 />
-                <button type="submit" disabled={!connected || !input.trim()}>Send</button>
+                <button type="submit" disabled={!(connected || polling) || !input.trim()}>Send</button>
               </form>
-              {!connected && <p className="cw-offline">Reconnecting…</p>}
+              {!connected && !polling && <p className="cw-offline">Connecting…</p>}
             </>
           )}
         </div>

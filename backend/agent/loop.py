@@ -73,7 +73,8 @@ class Agent:
         self.turn_timeout = turn_timeout or settings.agent_turn_timeout_s
         self.injection_filter = settings.agent_injection_filter if injection_filter is None else injection_filter
 
-    def run(self, messages: list[dict], *, user_id: int | None = None, request_id: str | None = None) -> Iterator[AgentEvent]:
+    def run(self, messages: list[dict], *, user_id: int | None = None, request_id: str | None = None,
+            client_key: str | None = None) -> Iterator[AgentEvent]:
         request_id = request_id or uuid.uuid4().hex
         started = time.perf_counter()
         history = _history(messages)
@@ -217,7 +218,7 @@ class Agent:
                 "pending_actions": ctx.pending_actions, "tool_calls": trace, "llm_steps": steps,
                 "usage": {**usage, "cost_usd": cost}, "latency_ms": latency, "request_id": request_id,
                 "evidence": sorted(ctx.evidence)}
-        self._persist(request_id, user_id, question, done, error)
+        self._persist(request_id, user_id, question, done, error, client_key)
         yield AgentEvent("done", done)
 
     def _forced_answer(self, convo: list[dict], request_id: str, ctx: ToolContext, error: LLMError):
@@ -247,7 +248,7 @@ class Agent:
         finally:
             db.close()
 
-    def _persist(self, request_id, user_id, question, done, error) -> None:
+    def _persist(self, request_id, user_id, question, done, error, client_key=None) -> None:
         db = SessionLocal()
         try:
             db.add(AgentRun(request_id=request_id, user_id=user_id, provider=self.llm.name, model=self.llm.model,
@@ -255,7 +256,8 @@ class Agent:
                             citations=done["citations"], unsupported_citations=done["unsupported_citations"],
                             llm_steps=done["llm_steps"], prompt_tokens=done["usage"]["prompt_tokens"],
                             completion_tokens=done["usage"]["completion_tokens"], cost_usd=done["usage"]["cost_usd"],
-                            latency_ms=done["latency_ms"], status=done["status"], error=error))
+                            latency_ms=done["latency_ms"], status=done["status"], error=error,
+                            client_key=client_key))
             db.commit()
         except Exception as e:  # noqa: BLE001
             log.warning("could not persist agent run: %s", e)

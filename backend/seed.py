@@ -13,6 +13,7 @@ from pathlib import Path
 from sqlalchemy import text
 
 import models  # noqa: F401  registers tables
+from config import settings
 from database import Base, SessionLocal, engine
 from models import Booking, ForumComment, ForumPost, Property, SafetyVote, User, UserRole
 from services.users import hash_password
@@ -20,7 +21,7 @@ from services.users import hash_password
 DATA = Path(__file__).resolve().parent / "seed_data"
 
 # Demo accounts for local development. Documented in README; never use in production.
-DEMO_PASSWORD = "bari-demo-123"
+DEMO_PASSWORD = settings.demo_password
 DEMO_USERS = [
     {"email": "student@example.com", "name": "Nusrat Jahan", "phone": "01700000001", "role": UserRole.renter},
     {"email": "owner@example.com", "name": "Karim Hossain", "phone": "01711000001", "role": UserRole.owner},
@@ -64,7 +65,8 @@ def seed(db, force: bool = False) -> dict[str, int]:
     votes, bookings = _load("safety_votes"), _load("bookings")
 
     pw = hash_password(DEMO_PASSWORD)
-    users = [User(password_hash=pw, **u) for u in DEMO_USERS]
+    admin_pw = hash_password(settings.admin_password) if settings.admin_password else pw
+    users = [User(password_hash=admin_pw if u["role"] == UserRole.admin else pw, **u) for u in DEMO_USERS]
     db.add_all(users)
     db.flush()
     owner = next(u for u in users if u.role == UserRole.owner)

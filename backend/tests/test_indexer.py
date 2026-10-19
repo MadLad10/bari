@@ -105,3 +105,25 @@ def test_concurrent_indexing_of_same_source_is_serialised(client, db, make_prope
     [t.join() for t in threads]
     assert errors == []
     assert len(_docs(db, "listing")) == 1
+
+
+def test_index_many_batches_embeddings_and_matches_single_indexing(client, db, make_property):
+    from rag.embeddings import FakeEmbedder, set_embedder_override
+    from rag.indexer import index_many
+
+    class Counting(FakeEmbedder):
+        calls = 0
+
+        def embed(self, texts):
+            Counting.calls += 1
+            return super().embed(texts)
+
+    props = [make_property(title=f"Listing number {i} near BRAC") for i in range(5)]
+    set_embedder_override(Counting())
+    try:
+        r = index_many(db, [("listing", p["id"]) for p in props])
+        assert r == {"sources": 5, "chunks": 5, "embedded": 5, "removed": 0} and Counting.calls == 1
+        assert index_many(db, [("listing", p["id"]) for p in props])["embedded"] == 0   # idempotent
+    finally:
+        set_embedder_override(None)
+    assert len(_docs(db, "listing")) == 5

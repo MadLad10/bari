@@ -1,6 +1,7 @@
 import { streamSSE } from "./lib/sse";
 
-export const API_ROOT = import.meta.env.VITE_API_ROOT || "http://localhost:8001";
+// Production (Vercel) serves the API from the same origin under /api; local dev talks to the Docker backend.
+export const API_ROOT = import.meta.env.VITE_API_ROOT ?? (import.meta.env.PROD ? "" : "http://localhost:8001");
 const BASE = `${API_ROOT}/api`;
 const TOKEN_KEY = "bari_token";
 

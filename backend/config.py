@@ -1,4 +1,5 @@
 """Application settings, loaded from environment variables and an optional .env file."""
+import os
 from functools import lru_cache
 from pathlib import Path
 
@@ -16,6 +17,17 @@ class Settings(BaseSettings):
 
     env: str = "dev"
     database_url: str = "sqlite:///./bari.db"
+    # Serverless (Vercel): no connection pool, and no server-side prepared statements (they break behind
+    # a transaction-mode pooler such as Neon's).
+    db_serverless: bool = False
+    # "worker" = background worker process; "inline" = run queued jobs at the end of each write request
+    # (Vercel has no always-on worker).
+    jobs_mode: str = "worker"
+    # Assistant turns per client (user or IP) per hour; 0 = unlimited. Protects a public demo's LLM quota.
+    ai_rate_limit_per_hour: int = 0
+    # Seeded demo accounts. Set ADMIN_PASSWORD to a secret in production: the demo password is public.
+    demo_password: str = "bari-demo-123"
+    admin_password: str = ""
     cors_origins: list[str] = [
         "http://localhost:5173",
         "http://localhost:3000",
@@ -45,7 +57,9 @@ class Settings(BaseSettings):
     ollama_timeout_s: float = 180
 
     # Retrieval
-    embedding_provider: str = "ollama"     # ollama | fake
+    embedding_provider: str = "ollama"     # ollama | gemini | fake
+    gemini_api_key: str = ""
+    gemini_embedding_model: str = "gemini-embedding-001"
     embedding_model: str = "bge-m3"
     reranker: str = "bge"                  # bge | fake | none
     reranker_model: str = "BAAI/bge-reranker-v2-m3-int8"
@@ -62,9 +76,37 @@ class Settings(BaseSettings):
     pending_action_ttl_min: int = 30
 
 
+def normalize_database_url(url: str) -> str:
+    """Hosted Postgres (Neon, Vercel) hands out postgres:// URLs; SQLAlchemy needs the psycopg driver named."""
+    for prefix in ("postgres://", "postgresql://"):
+        if url.startswith(prefix):
+            return "postgresql+psycopg://" + url[len(prefix):]
+    return url
+
+
+# Defaults that make the backend run on Vercel without extra configuration. Vercel sets VERCEL=1 in its
+# runtime; any of these can still be overridden with an explicit environment variable.
+VERCEL_DEFAULTS = {
+    "db_serverless": True,       # one connection per invocation; Neon's pooler pools
+    "jobs_mode": "inline",       # no always-on worker process
+    "reranker": "none",          # the ONNX cross-encoder is too large for a function
+    "upload_dir": "/tmp/uploads",  # the only writable path (ephemeral)
+}
+
+
+def apply_platform_defaults(s: Settings, environ=os.environ) -> Settings:
+    if environ.get("VERCEL"):
+        for field, value in VERCEL_DEFAULTS.items():
+            if field.upper() not in environ:
+                setattr(s, field, value)
+    return s
+
+
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    s = apply_platform_defaults(Settings())
+    s.database_url = normalize_database_url(s.database_url)
+    return s
 
 
 settings = get_settings()

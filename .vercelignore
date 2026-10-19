@@ -1,0 +1,7 @@
+# Not needed by the Vercel build or the API function
+eval/
+docs/
+backend/tests/
+backend/seed_data/
+backend/uploads/
+.env

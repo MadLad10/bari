@@ -222,7 +222,9 @@ def semantic_search(db: Session, ctx: ToolContext, a: SemanticSearchArgs) -> dic
         elif h.property_id:
             item["about_listing"] = f"listing:{h.property_id}"
         out.append(item)
-    return {**area_note, **relaxed_note, "results": out}
+    degraded = {"note": "Semantic search is temporarily unavailable; these are keyword matches only."} \
+        if result.stages.get("vector_unavailable") else {}
+    return {**area_note, **relaxed_note, **degraded, "results": out}
 
 
 class PropertyIdArgs(BaseModel):

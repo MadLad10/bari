@@ -34,23 +34,24 @@ def _visible(obj) -> bool:
     return getattr(obj, "moderation_status", "visible") in (None, "visible")
 
 
-def index_source(db: Session, source_type: str, source_id: int) -> dict:
+def _plan(db: Session, source_type: str, source_id: int, embedder) -> tuple[list[Chunk], dict, list[Chunk]]:
+    """Chunks the source should have, its current documents, and which chunks need (re-)embedding."""
     # Serialise indexing of the same source (worker vs. reindex script), held until commit.
     db.execute(text("SELECT pg_advisory_xact_lock(hashtext(:k))"), {"k": f"index:{source_type}:{source_id}"})
     chunks = build_chunks(db, source_type, source_id)
     existing = {d.chunk_index: d for d in
                 db.query(Document).filter_by(source_type=source_type, source_id=source_id).all()}
-    embedder = get_embedder()
-
     stale = [c for c in chunks if c.chunk_index not in existing
              or existing[c.chunk_index].content_hash != c.content_hash
              or existing[c.chunk_index].embedding_model != embedder.model]
-    vectors = embedder.embed([c.content for c in stale]) if stale else []
+    return chunks, existing, stale
 
+
+def _apply(db: Session, source_type: str, source_id: int, chunks, existing, stale, vectors, model: str) -> dict:
     for chunk, vec in zip(stale, vectors):
         doc = existing.get(chunk.chunk_index) or Document(source_type=source_type, source_id=source_id,
                                                           chunk_index=chunk.chunk_index)
-        doc.content, doc.content_hash, doc.embedding, doc.embedding_model = chunk.content, chunk.content_hash, vec, embedder.model
+        doc.content, doc.content_hash, doc.embedding, doc.embedding_model = chunk.content, chunk.content_hash, vec, model
         doc.property_id, doc.post_id, doc.area, doc.university = chunk.property_id, chunk.post_id, chunk.area, chunk.university
         doc.lang, doc.source_created_at, doc.meta = chunk.lang, chunk.source_created_at, chunk.meta
         db.add(doc)
@@ -59,13 +60,39 @@ def index_source(db: Session, source_type: str, source_id: int) -> dict:
         doc = existing.get(chunk.chunk_index)
         if doc is not None and chunk not in stale:
             doc.property_id, doc.area, doc.meta = chunk.property_id, chunk.area, chunk.meta
-
     keep = {c.chunk_index for c in chunks}
     removed = [d for idx, d in existing.items() if idx not in keep]
     for d in removed:
         db.delete(d)
-    db.commit()
     return {"chunks": len(chunks), "embedded": len(stale), "removed": len(removed)}
+
+
+def index_source(db: Session, source_type: str, source_id: int) -> dict:
+    embedder = get_embedder()
+    chunks, existing, stale = _plan(db, source_type, source_id, embedder)
+    vectors = embedder.embed([c.content for c in stale]) if stale else []
+    result = _apply(db, source_type, source_id, chunks, existing, stale, vectors, embedder.model)
+    db.commit()
+    return result
+
+
+def index_many(db: Session, sources: list[tuple[str, int]]) -> dict:
+    """Index several sources with one batched embedding call (hosted APIs count requests per day)."""
+    embedder = get_embedder()
+    plans = [(st, sid, *_plan(db, st, sid, embedder)) for st, sid in sources]
+    texts = [c.content for *_, stale in plans for c in stale]
+    try:
+        vectors = iter(embedder.embed(texts) if texts else [])
+    except Exception:
+        db.rollback()  # release the advisory locks; nothing was written
+        raise
+    totals = {"sources": len(sources), "chunks": 0, "embedded": 0, "removed": 0}
+    for st, sid, chunks, existing, stale in plans:
+        r = _apply(db, st, sid, chunks, existing, stale, [next(vectors) for _ in stale], embedder.model)
+        for k in ("chunks", "embedded", "removed"):
+            totals[k] += r[k]
+    db.commit()
+    return totals
 
 
 def all_sources(db: Session) -> list[tuple[str, int]]:
