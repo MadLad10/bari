@@ -37,7 +37,7 @@ The backend picks these defaults itself when Vercel's `VERCEL=1` is present (`ba
 3. Copy the **unpooled** connection string (Storage → your Neon database → `.env.local` tab) into your local
    `~/yaad_ws/bari/.env` as:
    ```
-   NEON_DATABASE_URL=postgresql://…
+   NEON_DATABASE_URL='postgresql://…'   # quoted: the URL contains '&'
    GEMINI_API_KEY=…
    ADMIN_PASSWORD=<a long secret: the demo password is public>
    ```
