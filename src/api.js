@@ -132,3 +132,12 @@ export const reviewListing = (id, verdict) => request(`/admin/listings/${id}/${v
 export const reviewContent = (kind, id, verdict) => request(`/admin/content/${kind}/${id}/${verdict}`, { method: "POST" });
 export const adminDecisions = (limit = 100) => request(`/admin/decisions?limit=${limit}`);
 export const adminLLMUsage = () => request("/admin/llm-usage");
+
+// Scout: background house-hunting agent
+export const parseHunt = (brief) => request("/hunts/parse", { method: "POST", body: { brief }, fallback: "Couldn't read that" });
+export const createHunt = (data) => request("/hunts", { method: "POST", body: data, fallback: "Couldn't save the hunt" });
+export const listHunts = () => request("/hunts");
+export const getHunt = (id) => request(`/hunts/${id}`);
+export const runHunt = (id) => request(`/hunts/${id}/run`, { method: "POST", fallback: "Scout couldn't run" });
+export const updateHunt = (id, data) => request(`/hunts/${id}`, { method: "PATCH", body: data });
+export const deleteHunt = (id) => request(`/hunts/${id}`, { method: "DELETE" });

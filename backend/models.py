@@ -288,7 +288,8 @@ class PendingAction(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    action_type = Column(String(30), nullable=False)            # create_booking
+    action_type = Column(String(30), nullable=False)            # create_booking | send_message
+    scout_run_id = Column(Integer, ForeignKey("scout_runs.id", ondelete="SET NULL"), nullable=True, index=True)
     payload = Column(JSONB, nullable=False)
     summary = Column(JSONB, nullable=False, default=dict)
     status = Column(String(15), nullable=False, default="pending")  # pending | confirmed | cancelled | expired | failed
@@ -344,3 +345,40 @@ class ModerationDecision(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
 
     __table_args__ = (Index("ix_moderation_target", "target_type", "target_id"),)
+
+
+# ── Scout: background house-hunting agent (LangGraph) ────────────────────────
+
+class Hunt(Base):
+    """A student's standing request. Scout checks new listings against it on a schedule."""
+    __tablename__ = "hunts"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    title = Column(String(120), nullable=False)
+    brief = Column(Text, nullable=False)                     # the student's own words
+    criteria = Column(JSONB, nullable=False, default=dict)   # hard filters (ListingFilters fields)
+    preferences = Column(JSONB, nullable=False, default=list)  # soft wishes, ranked by the LLM
+    questions = Column(JSONB, nullable=False, default=list)    # things to ask owners if a listing doesn't say
+    move_in = Column(DateTime(timezone=True), nullable=True)
+    stay_months = Column(Integer, nullable=False, default=6)
+    status = Column(String(10), nullable=False, default="active")   # active | paused
+    seen_listing_ids = Column(JSONB, nullable=False, default=list)   # already assessed: not re-shortlisted
+    rejected_listing_ids = Column(JSONB, nullable=False, default=list)  # the student discarded a draft for these
+    last_run_at = Column(DateTime(timezone=True), nullable=True)
+    next_run_at = Column(DateTime(timezone=True), nullable=True, index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class ScoutRun(Base):
+    __tablename__ = "scout_runs"
+
+    id = Column(Integer, primary_key=True)
+    hunt_id = Column(Integer, ForeignKey("hunts.id", ondelete="CASCADE"), nullable=False, index=True)
+    thread_id = Column(String(64), nullable=False, unique=True)   # LangGraph checkpoint thread
+    trigger = Column(String(10), nullable=False)                 # schedule | manual
+    status = Column(String(20), nullable=False, default="running")  # running | awaiting_approval | done | failed
+    report = Column(JSONB, nullable=False, default=dict)           # shortlist, skipped, summary, drafted actions
+    error = Column(Text, nullable=True)
+    started_at = Column(DateTime(timezone=True), server_default=func.now())
+    finished_at = Column(DateTime(timezone=True), nullable=True)

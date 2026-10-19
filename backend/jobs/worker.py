@@ -21,9 +21,15 @@ def main(poll_s: float = 1.0) -> None:
     signal.signal(signal.SIGTERM, _shutdown)
     signal.signal(signal.SIGINT, _shutdown)
     log.info("worker started")
+    next_tick = 0.0
     while not _stop:
         db = SessionLocal()
         try:
+            if time.monotonic() >= next_tick:  # once a minute: queue Scout runs that are due
+                from scout.service import enqueue_due_hunts
+                if n := enqueue_due_hunts(db):
+                    log.info("queued %d scout run(s)", n)
+                next_tick = time.monotonic() + 60
             job = claim_next(db)
             if job is None:
                 time.sleep(poll_s)

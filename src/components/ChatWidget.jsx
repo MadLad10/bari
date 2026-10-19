@@ -1,8 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { getChatMessages, sendChatMessage, API_ROOT } from "../api";
+import { useAuth } from "../auth/AuthContext";
 import "./ChatWidget.css";
 
-function getOrCreateSession(propertyId) {
+function getOrCreateSession(propertyId, user) {
+  // Logged-in students have one thread per listing tied to their account, so messages Scout sent for them
+  // (after their approval) show up here too.
+  if (user) return `user-${user.id}`;
   const key = `bari_chat_${propertyId}`;
   let token = sessionStorage.getItem(key);
   if (!token) {
@@ -14,7 +18,8 @@ function getOrCreateSession(propertyId) {
 
 export default function ChatWidget({ property }) {
   const { id: propertyId, owner_name } = property;
-  const sessionToken = getOrCreateSession(propertyId);
+  const { user } = useAuth();
+  const sessionToken = getOrCreateSession(propertyId, user);
 
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);

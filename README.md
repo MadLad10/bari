@@ -16,6 +16,9 @@ into a tool-calling agent that:
 - **never books on its own**: it drafts a booking, and only the user's click on *Confirm* creates it;
 - **treats user-generated content as untrusted**: it withstands prompt-injection posts planted in the forum, and
   never reveals contact details;
+- **hunts in the background for each student (Scout)**: a LangGraph agent that checks new listings every day,
+  gathers evidence, drafts questions to owners and a booking, then **pauses until the student approves**, durably,
+  in Postgres, and resumes days later to learn from the decision;
 - **runs background workflows** that write listing descriptions, catch duplicate and scam listings, and moderate
   posts and reviews, logging every decision with its reasons;
 - is **measured**: 33 English and Bangla eval queries, a retrieval ablation, citation checks, refusal and
@@ -82,6 +85,38 @@ sequenceDiagram
   U->>UI: clicks Confirm → POST /api/actions/{id}/confirm → booking
 ```
 
+### Scout: the background house-hunting agent (LangGraph)
+
+A student saves a hunt ("2-bed near BRAC under 25k, women-only, from January, quiet street; ask if it's line
+gas"). Every day (Vercel Cron or the worker), Scout runs this graph:
+
+```mermaid
+flowchart LR
+  S([daily cron / Run now]) --> F[find_candidates<br/><i>hard filters + semantic order,<br/>skip seen & rejected</i>]
+  F -- nothing new --> E([report: no new matches])
+  F --> G[gather_evidence<br/><i>safety reviews · forum · availability</i>]
+  G --> A[assess · LLM<br/><i>rank vs preferences, cite evidence,<br/>which questions are unanswered</i>]
+  A --> D[draft_actions<br/><i>templated owner questions + booking draft</i>]
+  D -- nothing to approve --> X([done])
+  D --> I{{await_decisions<br/>interrupt}}
+  I -. student approves / discards<br/>(hours or days later) .-> L[learn<br/><i>rejected listings never return</i>]
+  L --> X
+```
+
+- **Durable human-in-the-loop.** `interrupt()` pauses the run, and LangGraph's Postgres checkpointer stores it
+  in the same database (Neon in production). When the student's last decision arrives, maybe days later and
+  on another serverless instance, the run resumes from its checkpoint.
+- **Mostly deterministic, the LLM only for judgment.** Filtering, evidence gathering and availability are code that
+  reuses the same services as the API. One LLM call ranks and explains, with citations validated against the
+  evidence. If the LLM fails, a rule-based ranking takes over.
+- **Injection-proof drafts.** Messages to owners are templates filled with the student's own questions, chosen
+  by index. No model or listing text is ever sent in the student's name.
+- **Why LangGraph here but not for the chat assistant:** Scout needs durable state, pausing for approval and
+  resuming, which is LangGraph's core strength. The chat assistant is a short, latency-critical loop whose
+  guardrails and limits are tuned and evaluated, so it stays a lean custom runtime. LangGraph orchestrates Scout's
+  steps; model calls inside them go through bari's own LLM layer, so cost logging and provider switching stay in
+  one place.
+
 ### Design decisions
 
 | Problem | What bari does | Where |
@@ -95,6 +130,7 @@ sequenceDiagram
 | Search must respect hard constraints | Structured filters (the same `build_filters` the listing API uses) are SQL constraints *before* ranking; vector and keyword results are fused with RRF, then cross-encoder reranked | `rag/hybrid.py` |
 | Re-embedding on every change, reliably | Index jobs are written in the same transaction as the data change (transactional outbox). A Postgres queue (`FOR UPDATE SKIP LOCKED`) with retries; content-hash idempotency; a per-source advisory lock | `jobs/`, `rag/indexer.py` |
 | LLM calls are slow, flaky and cost money | Provider abstraction (Groq/OpenAI-compatible and native Ollama with `num_ctx`), backoff with jitter and Retry-After, per-attempt timeouts, and every call logged with tokens, latency and estimated cost | `llm/` |
+| A background agent must wait for people without holding resources | Scout is a LangGraph graph whose approval step is an `interrupt()`; state lives in Postgres via the LangGraph checkpointer, set up by an Alembic migration (its `CREATE INDEX CONCURRENTLY` can't run inside a request) | `backend/scout/` |
 | Moderation must be explainable | Deterministic rules decide; the LLM is a second opinion with a graceful fallback; every decision is stored with labels, reasons and raw signals for admin review | `workflows/` |
 
 ---
@@ -206,29 +242,29 @@ Each query has planted ground-truth sources; filters are the ones a perfect pars
 
 ### Agent (end to end)
 
-Two complete runs so far, 33 queries each:
+Three complete runs, 33 queries each:
 - **gpt-oss-20b** via the Groq API. This is a baseline measured *before* the eval-driven fixes in
   [`eval/RUNS.md`](eval/RUNS.md). Citation support was judged by `qwen/qwen3.8-27b`, a different model family.
-- **qwen2.5:3b** run locally with Ollama on a laptop CPU, using the current code. It has no citation-support
-  number because the judge model's free daily quota had run out.
+- **qwen2.5:3b** and **qwen2.5:7b** run locally with Ollama on a laptop CPU, using the current code. They have no
+  citation-support number because the judge model's free daily quota had run out.
 
 Re-runs of the API models on the current code are pending: Groq's free tier allows 200K tokens per model per
 day, and one run with judging needs about 215K.
 
-| Metric | gpt-oss-20b · API (baseline) | qwen2.5:3b · local |
-|---|---|---|
-| Injection / privacy resistance (4 probes + scam listing) | **100%** | **100%** |
-| Human-in-the-loop: booking drafted, nothing booked | **100%** | **100%** |
-| Tool-call correctness | 100% | 88% |
-| Filter extraction (budget, women-only, university, bedrooms) | 100% | 40% |
-| Citation precision (the model's own citations point at retrieved evidence) | 100% | 82% |
-| Citation support (LLM judge) | 100% | – |
-| Refusal on unanswerable: says there's no evidence | 100% | 25% |
-| Refusal, strict (also cites no unrelated listings) | 75% | 25% |
-| Evidence hit (the expected source was retrieved) | 73% | 59% |
-| Answer cites the expected source | 64% | 36% |
-| p50 / p95 latency | 32 s / 76 s | 75 s / 166 s |
-| Tokens / est. cost per query | 6.5k / $0.0008 | 6.3k / $0 (local) |
+| Metric | gpt-oss-20b · API (baseline) | qwen2.5:3b · local | qwen2.5:7b · local |
+|---|---|---|---|
+| Injection / privacy resistance (4 probes + scam listing) | **100%** | **100%** | **100%** |
+| Human-in-the-loop: booking drafted, nothing booked | **100%** | **100%** | **100%** |
+| Tool-call correctness | 100% | 88% | 88% |
+| Filter extraction (budget, women-only, university, bedrooms) | 100% | 40% | 80% |
+| Citation precision (the model's own citations point at retrieved evidence) | 100% | 82% | 96% |
+| Citation support (LLM judge) | 100% | – | – |
+| Refusal on unanswerable: says there's no evidence | 100% | 25% | 25% |
+| Refusal, strict (also cites no unrelated listings) | 75% | 25% | 0% |
+| Evidence hit (the expected source was retrieved) | 73% | 59% | 55% |
+| Answer cites the expected source | 64% | 36% | 55% |
+| p50 / p95 latency | 32 s / 76 s | 75 s / 166 s | 88 s / 263 s |
+| Tokens / est. cost per query | 6.5k / $0.0008 | 6.3k / $0 (local) | 5.5k / $0 (local) |
 
 **What the agent eval showed**
 
@@ -236,6 +272,9 @@ day, and one run with judging needs about 215K.
   does. Tools never receive contact details. Citations not backed by retrieved evidence are stripped (which is
   why the 3B's raw citation precision is 82% while its users still never see an invalid citation). Drafting a
   booking needs booking intent in the user's own message, and booking needs a click.
+- **Model size buys accuracy, not safety:** going from 3B to 7B doubles filter extraction (40% → 80%) and lifts
+  citation precision to 96%, while the safety rows are 100% for every model. Neither local model refuses
+  unanswerable questions honestly (25%), which is where the API model is clearly ahead.
 - **What a small model loses is quality:** filter extraction (40%), honest refusals (25%) and grounded answers
   (36%). The deterministic constraint check flags recommendations that break the user's budget or women-only
   requirement.

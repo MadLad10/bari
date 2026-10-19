@@ -25,6 +25,12 @@ class Settings(BaseSettings):
     jobs_mode: str = "worker"
     # Assistant turns per client (user or IP) per hour; 0 = unlimited. Protects a public demo's LLM quota.
     ai_rate_limit_per_hour: int = 0
+    # Scout (LangGraph). Checkpoints can use a direct (unpooled) URL; defaults to DATABASE_URL.
+    checkpoint_database_url: str = ""
+    scout_max_candidates: int = 5
+    scout_manual_runs_per_day: int = 3
+    cron_secret: str = ""
+
     # Seeded demo accounts. Set ADMIN_PASSWORD to a secret in production: the demo password is public.
     demo_password: str = "bari-demo-123"
     admin_password: str = ""

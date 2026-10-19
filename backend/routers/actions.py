@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from deps import get_current_user
-from models import PendingAction, RentalType, User
+from models import ChatMessage, PendingAction, RentalType, SenderType, User
 from services import bookings as booking_svc
 from services.bookings import BookingCreate
 from services.errors import BadRequest, Conflict, Forbidden, NotFound, ServiceError
@@ -23,6 +23,7 @@ class ConfirmIn(BaseModel):
 
 def _out(a: PendingAction) -> dict:
     return {"id": a.id, "type": a.action_type, "status": a.status, "summary": a.summary, "result": a.result,
+            "scout_run_id": a.scout_run_id,
             "expires_at": a.expires_at.isoformat(), "created_at": a.created_at.isoformat() if a.created_at else None}
 
 
@@ -55,6 +56,8 @@ def confirm(action_id: int, body: ConfirmIn | None = None, db: Session = Depends
     body = body or ConfirmIn()
     action = _load(db, action_id, user, lock=True)
     _ensure_pending(db, action)
+    if action.action_type == "send_message":
+        return _send_message(db, action, user)
     if action.action_type != "create_booking":
         raise BadRequest(f"Unsupported action {action.action_type}")
     phone = body.renter_phone or user.phone
@@ -73,12 +76,36 @@ def confirm(action_id: int, body: ConfirmIn | None = None, db: Session = Depends
         action.status, action.result = "failed", {"error": e.detail}
         action.decided_at = datetime.now(timezone.utc)
         db.commit()
+        _resume_scout(db, action)
         raise
     action.status, action.result = "confirmed", {"booking_id": booking.id, "total_price": booking.total_price}
     action.decided_at = datetime.now(timezone.utc)
     db.commit()  # booking and action status commit together
-    return {**_out(action), "booking": {"id": booking.id, "status": booking.status.value,
-                                        "total_price": booking.total_price}}
+    out = {**_out(action), "booking": {"id": booking.id, "status": booking.status.value,
+                                       "total_price": booking.total_price}}
+    _resume_scout(db, action)
+    return out
+
+
+def _send_message(db: Session, action: PendingAction, user: User) -> dict:
+    """A message Scout drafted to an owner, sent only now that the student approved it."""
+    p = action.payload
+    msg = ChatMessage(property_id=p["property_id"], session_token=f"user-{user.id}", sender=SenderType.renter,
+                      sender_name=user.name, content=p["content"])
+    db.add(msg)
+    db.flush()
+    action.status, action.result = "confirmed", {"message_id": msg.id}
+    action.decided_at = datetime.now(timezone.utc)
+    db.commit()
+    out = _out(action)
+    _resume_scout(db, action)
+    return out
+
+
+def _resume_scout(db: Session, action: PendingAction) -> None:
+    if action.scout_run_id:
+        from scout.service import resume_if_decided
+        resume_if_decided(db, action.scout_run_id)
 
 
 @router.post("/{action_id}/cancel")
@@ -87,4 +114,6 @@ def cancel(action_id: int, db: Session = Depends(get_db), user: User = Depends(g
     _ensure_pending(db, action)
     action.status, action.decided_at = "cancelled", datetime.now(timezone.utc)
     db.commit()
-    return _out(action)
+    out = _out(action)
+    _resume_scout(db, action)
+    return out

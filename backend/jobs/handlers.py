@@ -20,3 +20,9 @@ def screen_listing_job(db: Session, payload: dict) -> dict:
 def moderate_job(db: Session, payload: dict) -> dict:
     from workflows.moderation import moderate
     return moderate(db, payload["kind"], payload["id"])
+
+
+@handler("scout_run")
+def scout_run_job(db: Session, payload: dict) -> dict:
+    from scout.service import run_hunt
+    return {"run_id": run_hunt(payload["hunt_id"], payload.get("trigger", "schedule"))}

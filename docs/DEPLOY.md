@@ -68,6 +68,7 @@ If Gemini rate-limits, the reindex script pauses and resumes on its own.
 | `GEMINI_API_KEY` | your Gemini key |
 | `ADMIN_PASSWORD` | the same secret as in step 2 |
 | `AI_RATE_LIMIT_PER_HOUR` | `20` (assistant turns per user or IP per hour) |
+| `CRON_SECRET` | a long random string. Vercel Cron sends it to `/api/cron/scout`, Scout's daily run (09:00 Dhaka) |
 
 `DATABASE_URL` comes from the Neon integration. Then **Deployments → Redeploy**.
 

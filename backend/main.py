@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from config import settings
 from llm.base import LLMError
 from llm.context import request_id_var
-from routers import actions, admin, ai, auth, bookings, chat, forum, listing_assistant, properties, safety, search
+from routers import actions, admin, ai, auth, bookings, chat, forum, hunts, listing_assistant, properties, safety, search
 from services.errors import ServiceError
 
 # Schema is managed by Alembic (`alembic upgrade head`), not create_all.
@@ -76,7 +76,7 @@ async def service_error_handler(_: Request, exc: ServiceError):
 os.makedirs(settings.upload_dir, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=settings.upload_dir), name="uploads")
 
-for r in (auth, properties, bookings, chat, ai, actions, safety, forum, search, listing_assistant, admin):
+for r in (auth, properties, bookings, chat, ai, actions, safety, forum, search, listing_assistant, admin, hunts):
     app.include_router(r.router, prefix="/api")
 
 

@@ -7,6 +7,7 @@ import PropertyDetail from "./pages/PropertyDetail";
 import ListProperty from "./pages/ListProperty";
 import Forum from "./pages/Forum";
 import Admin from "./pages/Admin";
+import Scout from "./pages/Scout";
 import { AuthProvider } from "./auth/AuthContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -20,6 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/list-property" element={<ListProperty />} />
         <Route path="/forum" element={<Forum />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/scout" element={<Scout />} />
       </Routes>
       </AuthProvider>
     </BrowserRouter>

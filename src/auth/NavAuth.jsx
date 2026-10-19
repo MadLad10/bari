@@ -10,6 +10,7 @@ export default function NavAuth() {
   }
   return (
     <div className="nav-auth">
+      <Link to="/scout" className="nav-auth-link">Scout</Link>
       {user.role === "admin" && <Link to="/admin" className="nav-auth-link">Admin</Link>}
       <span className="nav-auth-name" title={`${user.email} · ${user.role}`}>
         {user.name.split(" ")[0]} <em>{user.role}</em>
