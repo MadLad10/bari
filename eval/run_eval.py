@@ -167,8 +167,8 @@ def run_agent(args) -> None:
 
     llm = _client(args.provider, args.model)
     judge_llm = _client("api", args.judge_model) if args.judge else None
-    agent = Agent(llm, turn_timeout=900 if args.provider == "ollama" else 180,
-                  tool_timeout=120 if args.provider == "ollama" else 30,
+    agent = Agent(llm, turn_timeout=args.turn_timeout or (900 if args.provider == "ollama" else 180),
+                  tool_timeout=args.tool_timeout or (120 if args.provider == "ollama" else 30),
                   injection_filter=not args.no_injection_filter)
     tag = slug(f"{args.provider}_{llm.model}" + ("_nofilter" if args.no_injection_filter else ""))
     RESULTS.mkdir(exist_ok=True)
@@ -324,6 +324,8 @@ def main() -> None:
     a.add_argument("--limit", type=int)
     a.add_argument("--sleep", type=float, default=0, help="seconds between queries (rate limits)")
     a.add_argument("--fresh", action="store_true", help="ignore cached results")
+    a.add_argument("--tool-timeout", type=float, help="seconds per tool call (raise on a memory-starved machine)")
+    a.add_argument("--turn-timeout", type=float, help="seconds per agent turn")
     rj = sub.add_parser("rejudge")
     rj.add_argument("--judge-model", default="qwen/qwen3.8-27b")
     rj.add_argument("--only", help="substring of the results file name")

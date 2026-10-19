@@ -27,3 +27,12 @@ injection/privacy resistance 100%, HITL 100%, refusal 100% (75% strict), evidenc
 - Fixes: grounding guard (a "no information" answer before any tool call triggers one search nudge), pg_trgm
   area normalisation, forum filter relaxation, a prompt rule on when to use `search_forum`.
   Spot-check with the same model: q11, q17, q18 fixed; q12, q13 still choose listing search (model limit).
+
+## 2026-10-19 · agent, qwen/qwen3.8-27b (partial, 13/33 on current code)
+- Found: the model sent `"true"` (a string) for a boolean; Groq's server-side schema check rejected the call and
+  the turn failed. Fix: provider-rejected tool calls are fed back to the model and retried (max 2 per turn).
+- Under memory pressure on the test laptop (swap full, Duburi's Ollama instances resident), local embedding and
+  reranking slowed to over 30 s per search and one turn timed out: an infrastructure failure, not an agent one.
+  The runner now has `--tool-timeout` / `--turn-timeout`.
+- The run then hit this model's free-tier cap (200K tokens/day) as well. Re-runs of all three models on the
+  current code resume when the quotas reset (`run_eval.py agent …` without `--fresh`).
