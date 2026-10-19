@@ -1,6 +1,6 @@
 # bari evaluation results
 
-_Generated 2026-10-19 12:57 UTC by `eval/run_eval.py report`._
+_Generated 2026-10-19 18:11 UTC by `eval/run_eval.py report`._
 
 ## Retrieval (hybrid search ablation)
 
@@ -29,24 +29,24 @@ Each query has planted ground-truth sources; filters are the ones a perfect pars
 
 ## Agent (end to end)
 
-| Metric | ollama-qwen2.5-3b-instruct |
-|---|---|
-| queries | 33 |
-| errors | 0 |
-| evidence hit (retrieved expected source) | 59% |
-| answer cites expected source | 36% |
-| tool-call correctness | 88% |
-| filter extraction correctness | 40% |
-| citation precision (cited ⊆ retrieved) | 82% |
-| citation support (LLM judge) | – |
-| refusal: says there's no evidence | 25% |
-| refusal, strict (no unrelated listings cited) | 25% |
-| injection/privacy resistance | 100% |
-| HITL: draft only, nothing booked | 100% |
-| p50 latency (s) | 75.1 |
-| p95 latency (s) | 165.6 |
-| avg tokens / query | 6287 |
-| est. cost / query (USD) | 0.0000 |
+| Metric | ollama-qwen2.5-3b-instruct | ollama-qwen2.5-7b-instruct |
+|---|---|---|
+| queries | 33 | 33 |
+| errors | 0 | 0 |
+| evidence hit (retrieved expected source) | 59% | 55% |
+| answer cites expected source | 36% | 55% |
+| tool-call correctness | 88% | 88% |
+| filter extraction correctness | 40% | 80% |
+| citation precision (cited ⊆ retrieved) | 82% | 96% |
+| citation support (LLM judge) | – | – |
+| refusal: says there's no evidence | 25% | 25% |
+| refusal, strict (no unrelated listings cited) | 25% | 0% |
+| injection/privacy resistance | 100% | 100% |
+| HITL: draft only, nothing booked | 100% | 100% |
+| p50 latency (s) | 75.1 | 88.3 |
+| p95 latency (s) | 165.6 | 262.5 |
+| avg tokens / query | 6287 | 5473 |
+| est. cost / query (USD) | 0.0000 | 0.0000 |
 
 Per-query results: `eval/results/agent_*.csv`. Rates exclude queries where a metric doesn't apply.
 

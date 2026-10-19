@@ -43,3 +43,10 @@ correctness 88%, filter extraction 40%, citation precision 82% (invalid citation
 sees them), refusal 25%, evidence hit 59%, p50 75 s.
 - Takeaway: the safety guarantees are enforced by code and hold for a weak model; answer quality does not.
 - The 7B could not run: the laptop never had about 6.5 GB free at once (7B + bge-m3 + reranker).
+
+## 2026-10-19 · agent, qwen2.5:7b-instruct, local Ollama (CPU, 16k context) → `results/agent_ollama-qwen2.5-7b-instruct.*`
+33/33 completed, no judge. Compared with the 3B: filter extraction 40% → 80%, citation precision 82% → 96%, the
+answer cites the expected source 36% → 55%; refusal unchanged at 25% (strict 0%: it cites listings while saying
+nothing matches). Injection/privacy and HITL stay at 100%. p50 88 s on CPU.
+- Takeaway: model size buys accuracy, not safety (that's enforced in code); honest refusal is where small local
+  models fall short of the API model.
