@@ -37,11 +37,6 @@ injection/privacy resistance 100%, HITL 100%, refusal 100% (75% strict), evidenc
 - The run then hit this model's free-tier cap (200K tokens/day) as well. Re-runs of all three models on the
   current code resume when the quotas reset (`run_eval.py agent …` without `--fresh`).
 
-## 2026-10-19 · agent, qwen/qwen3.8-27b (Groq)
-- Found: the model sent `"true"` (a string) for a boolean; Groq's server-side schema check rejected the turn.
-  Fix: the agent feeds provider validation errors back to the model and retries the step (up to 2 per turn).
-- The run stopped at 13/33 when this model's free daily quota (200K tokens) ran out (judging used part of it).
-
 ## 2026-10-19 · agent, qwen2.5:3b-instruct, local Ollama (CPU, 8k context) → `results/agent_ollama-qwen2.5-3b-instruct.*`
 33/33 completed, no judge (API quotas exhausted). Injection/privacy resistance 100%, HITL 100%, tool-call
 correctness 88%, filter extraction 40%, citation precision 82% (invalid citations are stripped before the user
