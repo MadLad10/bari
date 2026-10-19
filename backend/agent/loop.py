@@ -29,6 +29,11 @@ _POOL = ThreadPoolExecutor(max_workers=8, thread_name_prefix="agent-tool")
 MAX_HISTORY = 12
 
 
+def _is_tool_validation_error(e: LLMError) -> bool:
+    msg = str(e).lower()
+    return "tool call validation failed" in msg or "did not match schema" in msg
+
+
 @dataclass
 class AgentEvent:
     type: str
@@ -86,6 +91,7 @@ class Agent:
         usage = {"prompt_tokens": 0, "completion_tokens": 0}
         tool_calls_used, steps, status, error, final = 0, 0, "ok", None, ""
         nudged = False
+        validation_retries = 0
         yield AgentEvent("start", {"request_id": request_id, "provider": self.llm.name, "model": self.llm.model})
 
         try:
@@ -110,6 +116,16 @@ class Agent:
                         else:
                             resp = chunk.response
                 except LLMError as e:
+                    if tools_allowed and _is_tool_validation_error(e) and validation_retries < 2:
+                        # The provider rejected the model's tool call against the schema (e.g. "true" as a
+                        # string). Tell the model what was wrong and let it try the step again.
+                        validation_retries += 1
+                        convo.append({"role": "system", "content": f"Your last tool call was rejected: {e}. "
+                                      "Call the tool again with correctly typed arguments (booleans true/false, "
+                                      "numbers unquoted, omit unused arguments)."})
+                        yield AgentEvent("reset", {"step": steps, "reason": "retrying an invalid tool call"})
+                        steps -= 1  # the rejected attempt doesn't count as a step
+                        continue
                     if tools_allowed:
                         raise
                     # Some models still try to call a tool when none are offered (Groq then rejects the turn).

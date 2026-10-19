@@ -229,3 +229,17 @@ def test_grounding_guard_only_nudges_once(client, db):
     agent, _ = agent_with([answer("I don't have any data."), answer("Still no data, sorry.")])
     out = ask(agent, "something obscure")
     assert out["text"].startswith("Still no data")
+
+
+def test_provider_rejected_tool_call_is_retried(client, db, make_property):
+    prop = make_property(is_female_only=True)
+    agent, provider = agent_with([
+        LLMError("HTTP 400: tool call validation failed: parameters for tool search_properties did not match "
+                 "schema: errors: [`/is_female_only`: expected null or boolean, but got string]", status=400),
+        call("search_properties", is_female_only=True),
+        answer(f"Found one [listing:{prop['id']}]"),
+    ])
+    out = ask(agent, "women-only room")
+    assert out["status"] == "ok" and out["citations"] == [f"listing:{prop['id']}"]
+    retry_note = provider.calls[1]["messages"][-1]
+    assert retry_note["role"] == "system" and "rejected" in retry_note["content"]
