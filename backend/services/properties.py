@@ -1,4 +1,4 @@
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, text
 from sqlalchemy.orm import Session
 
 from models import Document, ListingStatus, Property, SafetyVote
@@ -81,6 +81,20 @@ def get_property(db: Session, property_id: int) -> Property:
     if not prop:
         raise NotFound("Property not found")
     return prop
+
+
+def normalize_area(db: Session, raw: str | None, min_similarity: float = 0.3) -> str | None:
+    """Map a free-text area ("Boshundhara", "mirpur 10") to a known area name with pg_trgm similarity.
+
+    Returns the input unchanged when it already matches, or when nothing is similar enough."""
+    if not raw or not raw.strip():
+        return raw
+    if db.query(Property.id).filter(Property.area.ilike(f"%{raw.strip()}%")).first():
+        return raw
+    row = db.execute(text(
+        "SELECT area, similarity(area, :q) AS s FROM (SELECT DISTINCT area FROM properties) a "
+        "ORDER BY s DESC LIMIT 1"), {"q": raw.strip()}).first()
+    return row.area if row and row.s >= min_similarity else raw
 
 
 def owner_properties(db: Session, owner_id: int) -> list[Property]:

@@ -108,26 +108,65 @@ def run_retrieval(args) -> None:
 # ── Agent ────────────────────────────────────────────────────────────────────
 
 def _evidence_texts(db, refs: list[str]) -> dict[str, str]:
-    from models import Document
+    """What the agent could see for each ref: the indexed text, plus, for listings, the structured public fields
+    the tools return (safety score, distance, …), which the search chunk deliberately leaves out."""
+    from models import Document, Property
+    from services.properties import public_summary
     out = {}
     for ref in refs:
         kind, num = ref.split(":")
         docs = db.query(Document).filter_by(source_type=kind, source_id=int(num)).order_by(Document.chunk_index).all()
-        if docs:
-            out[ref] = "\n".join(d.content for d in docs)
+        text = "\n".join(d.content for d in docs)
+        if kind == "listing" and (p := db.get(Property, int(num))):
+            fields = {k: v for k, v in public_summary(p).items() if v not in (None, [], "") and k != "photos"}
+            text = f"{text}\nStructured fields: {json.dumps(fields, ensure_ascii=False)}" if text else json.dumps(fields)
+        if text:
+            out[ref] = text
     return out
+
+
+def rejudge(args) -> None:
+    """Re-score citation support for finished runs without re-running the agent."""
+    from database import SessionLocal
+    from eval.judge import judge_citations
+    judge_llm = _client("api", args.judge_model)
+    db = SessionLocal()
+    for raw in sorted(RESULTS.glob("agent_*.jsonl")):
+        if args.only and args.only not in raw.name:
+            continue
+        records = [json.loads(l) for l in raw.read_text().splitlines()]
+        for rec in records:
+            if rec.get("status") != "error" and rec.get("text"):
+                rec["judge"] = judge_citations(judge_llm, rec["text"], _evidence_texts(db, rec.get("citations", [])),
+                                               request_id=f"eval-rejudge-{rec['id']}")
+                print(raw.stem, rec["id"], rec["judge"].get("supported"), "/", rec["judge"].get("judged"), flush=True)
+                time.sleep(args.sleep)
+        raw.write_text("".join(json.dumps(r, ensure_ascii=False, default=str) + "\n" for r in records))
+        write_agent_csv(raw)
+    db.close()
+
+
+def _client(provider: str, model: str | None):
+    """A fresh client per role: get_llm() is cached, so mutating its model would leak into other roles."""
+    from config import settings
+    from llm.client import LLMClient, get_llm
+    if not model:
+        return get_llm(provider)
+    if provider == "api":
+        from llm.openai_compat import OpenAICompatProvider
+        return LLMClient(OpenAICompatProvider(settings.llm_api_base_url, settings.llm_api_key, model))
+    from llm.ollama import OllamaProvider
+    return LLMClient(OllamaProvider(settings.ollama_base_url, model, settings.ollama_num_ctx),
+                     timeout=settings.ollama_timeout_s)
 
 
 def run_agent(args) -> None:
     from agent.loop import Agent, run_to_completion
     from database import SessionLocal
-    from llm.client import get_llm, LLMClient
     from models import Booking, PendingAction, User
 
-    llm = get_llm(args.provider)
-    if args.model:
-        llm.provider.model = args.model
-    judge_llm = get_llm("api") if args.judge else None
+    llm = _client(args.provider, args.model)
+    judge_llm = _client("api", args.judge_model) if args.judge else None
     agent = Agent(llm, turn_timeout=900 if args.provider == "ollama" else 180,
                   tool_timeout=120 if args.provider == "ollama" else 30,
                   injection_filter=not args.no_injection_filter)
@@ -214,7 +253,8 @@ def agent_summary(rows: list[dict]) -> dict:
         "filter extraction correctness": rate("args_ok"),
         "citation precision (cited ⊆ retrieved)": mean(r["citation_precision"] for r in rows),
         "citation support (LLM judge)": (sum(a for a, _ in judged) / total_judged) if total_judged else None,
-        "refusal on unanswerable": rate("refused"),
+        "refusal: says there's no evidence": rate("refused"),
+        "refusal, strict (no unrelated listings cited)": rate("refused_strict"),
         "injection/privacy resistance": rate("injection_safe"),
         "HITL: draft only, nothing booked": rate("pending_action_ok"),
         "p50 latency (s)": percentile([r["latency_s"] for r in rows], 0.5),
@@ -238,10 +278,14 @@ def report(args) -> None:
                          f"{float(r['mrr@10']):.2f} | {r['p50_ms']} | {r['p95_ms']} |")
         lines.append("")
     runs = sorted(RESULTS.glob("agent_*.jsonl"))
-    summaries = {}
+    summaries, incomplete = {}, []
+    n_queries = len(load_queries())
     for raw in runs:
         rows = write_agent_csv(raw)
-        if rows:
+        done = sum(r["status"] != "error" for r in rows)
+        if done < n_queries:  # e.g. stopped by a provider's daily token cap: resume with `agent` (no --fresh)
+            incomplete.append(f"{raw.stem.removeprefix('agent_')} ({done}/{n_queries} queries done)")
+        elif rows:
             summaries[raw.stem.removeprefix("agent_")] = agent_summary(rows)
     if summaries:
         names = list(summaries)
@@ -259,6 +303,8 @@ def report(args) -> None:
         lines += ["", "Per-query results: `eval/results/agent_*.csv`. Rates exclude queries where a metric doesn't apply.", ""]
     else:
         lines += ["## Agent (end to end)", "", "_Not run yet. See README → Evaluation._", ""]
+    if incomplete:
+        lines += ["In progress (not included above): " + "; ".join(incomplete) + ".", ""]
     (RESULTS / "results.md").write_text("\n".join(lines))
     print("\n".join(lines))
 
@@ -270,15 +316,21 @@ def main() -> None:
     a = sub.add_parser("agent")
     a.add_argument("--provider", choices=["api", "ollama"], required=True)
     a.add_argument("--model", help="override LLM_API_MODEL / OLLAMA_MODEL")
-    a.add_argument("--judge", action="store_true", help="LLM-judge citation support with the API model")
+    a.add_argument("--judge", action="store_true", help="LLM-judge citation support (an API model)")
+    a.add_argument("--judge-model", default="qwen/qwen3.8-27b",
+                   help="judge model; a different family from the agent avoids self-preference (default: %(default)s)")
     a.add_argument("--no-injection-filter", action="store_true", help="ablation: disable the injection filter")
     a.add_argument("--only", help="comma-separated query ids")
     a.add_argument("--limit", type=int)
     a.add_argument("--sleep", type=float, default=0, help="seconds between queries (rate limits)")
     a.add_argument("--fresh", action="store_true", help="ignore cached results")
+    rj = sub.add_parser("rejudge")
+    rj.add_argument("--judge-model", default="qwen/qwen3.8-27b")
+    rj.add_argument("--only", help="substring of the results file name")
+    rj.add_argument("--sleep", type=float, default=1)
     sub.add_parser("report")
     args = ap.parse_args()
-    {"retrieval": run_retrieval, "agent": run_agent, "report": report}[args.cmd](args)
+    {"retrieval": run_retrieval, "agent": run_agent, "rejudge": rejudge, "report": report}[args.cmd](args)
 
 
 if __name__ == "__main__":

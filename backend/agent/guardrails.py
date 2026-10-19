@@ -184,3 +184,15 @@ def check_constraints(cards: list[dict], constraints: dict) -> list[dict]:
         if constraints.get("women_only") and not c.get("is_female_only"):
             warnings.append({"ref": c["ref"], "issue": "not a women-only listing"})
     return warnings
+
+
+# ── Grounding: don't claim "no information" without looking ─────────────────
+
+_NO_EVIDENCE = re.compile(
+    r"(don['’]?t|do not|doesn['’]?t|does not) have (any )?(data|information|info|details|evidence|listings?)|"
+    r"no (data|information|evidence|listings?)|(couldn['’]?t|could not|unable to) find|not sure|"
+    r"তথ্য নেই|পাওয়া যায়নি|জানা নেই", re.IGNORECASE)
+
+
+def claims_no_evidence(text: str | None) -> bool:
+    return bool(text and _NO_EVIDENCE.search(text))

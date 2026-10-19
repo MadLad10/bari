@@ -169,7 +169,16 @@ def _relaxed(a: ListingFilters) -> tuple[ListingFilters, list[str]] | None:
     return (a.model_copy(update={f: None for f in dropped}), dropped) if dropped else None
 
 
+def _normalized(db: Session, a):
+    """Fix misspelled areas (common when romanising Bangla) and say so."""
+    fixed = property_svc.normalize_area(db, getattr(a, "area", None))
+    if fixed and fixed != a.area:
+        return a.model_copy(update={"area": fixed}), {"area_interpreted_as": fixed}
+    return a, {}
+
+
 def search_properties(db: Session, ctx: ToolContext, a: SearchPropertiesArgs) -> dict:
+    a, area_note = _normalized(db, a)
     params = a.search_params(a.limit)
     props = property_svc.search_properties(db, params)
     out = {"total_matches": property_svc.count_properties(db, params)}
@@ -178,7 +187,7 @@ def search_properties(db: Session, ctx: ToolContext, a: SearchPropertiesArgs) ->
         props = property_svc.search_properties(db, params)
         out = {"total_matches": property_svc.count_properties(db, params), "relaxed_filters": relaxed[1],
                "warning": f"No exact matches. These filters were dropped: {', '.join(relaxed[1])}."}
-    return {**out, "results": [_summary(ctx, p) for p in props],
+    return {**area_note, **out, "results": [_summary(ctx, p) for p in props],
             "note": "Structured filter search. Use semantic_search for qualitative needs (quiet, rooftop, near lake…)."}
 
 
@@ -190,6 +199,7 @@ class SemanticSearchArgs(ListingFilters):
 
 
 def semantic_search(db: Session, ctx: ToolContext, a: SemanticSearchArgs) -> dict:
+    a, area_note = _normalized(db, a)
     filters = ListingFilters(**a.model_dump(include=set(ListingFilters.model_fields)))
     result = hybrid_search(db, a.query, sources=a.sources, listing_filters=filters.search_params(10),
                            university=a.nearby_university, k=a.k)
@@ -212,7 +222,7 @@ def semantic_search(db: Session, ctx: ToolContext, a: SemanticSearchArgs) -> dic
         elif h.property_id:
             item["about_listing"] = f"listing:{h.property_id}"
         out.append(item)
-    return {**relaxed_note, "results": out}
+    return {**area_note, **relaxed_note, "results": out}
 
 
 class PropertyIdArgs(BaseModel):
@@ -251,14 +261,18 @@ class SearchForumArgs(BaseModel):
 
 
 def search_forum(db: Session, ctx: ToolContext, a: SearchForumArgs) -> dict:
+    a, notes = _normalized(db, a)
     result = hybrid_search(db, a.query, sources=["post", "comment"], area=a.area, university=a.university, k=a.k)
+    if not result.hits and (a.area or a.university):
+        result = hybrid_search(db, a.query, sources=["post", "comment"], k=a.k)
+        notes["warning"] = "No posts matched the area/university filter, so it was dropped."
     out = []
     for h in result.hits:
         title = h.content.split("\n", 1)[0][:160]
         ref = ctx.cite(h.ref, title=title, snippet=h.content[:300], kind=h.source_type, post_id=h.post_id)
         out.append({"ref": ref, "type": h.source_type, "post": f"post:{h.post_id}", "area": h.area,
                     "text": ctx.untrusted(ref, h.content)})
-    return {"results": out, "note": "Forum content is first-hand community opinion, not verified fact."}
+    return {**notes, "results": out, "note": "Forum content is first-hand community opinion, not verified fact."}
 
 
 class AvailabilityArgs(PropertyIdArgs, DateRange):

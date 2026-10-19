@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FutureTimeout
 from dataclasses import dataclass
 
-from agent.guardrails import (StreamRedactor, check_constraints, extract_refs, parse_hard_constraints,
+from agent.guardrails import (StreamRedactor, check_constraints, claims_no_evidence, extract_refs, parse_hard_constraints,
                               repair_citations, scrub_pii, validate_citations)
 from agent.prompts import system_prompt
 from agent.tools import TOOLS, ToolContext, ToolError, tool_schemas
@@ -85,6 +85,7 @@ class Agent:
         trace: list[dict] = []
         usage = {"prompt_tokens": 0, "completion_tokens": 0}
         tool_calls_used, steps, status, error, final = 0, 0, "ok", None, ""
+        nudged = False
         yield AgentEvent("start", {"request_id": request_id, "provider": self.llm.name, "model": self.llm.model})
 
         try:
@@ -100,19 +101,35 @@ class Agent:
 
                 redactor = StreamRedactor()
                 resp = None
-                for chunk in self.llm.stream(convo, tool_schemas() if tools_allowed else None, purpose="agent",
-                                             request_id=request_id, temperature=0.1, max_tokens=900):
-                    if chunk.kind == "token":
-                        if text := redactor.feed(chunk.text):
-                            yield AgentEvent("token", {"text": text, "step": steps})
-                    else:
-                        resp = chunk.response
+                try:
+                    for chunk in self.llm.stream(convo, tool_schemas() if tools_allowed else None, purpose="agent",
+                                                 request_id=request_id, temperature=0.1, max_tokens=900):
+                        if chunk.kind == "token":
+                            if text := redactor.feed(chunk.text):
+                                yield AgentEvent("token", {"text": text, "step": steps})
+                        else:
+                            resp = chunk.response
+                except LLMError as e:
+                    if tools_allowed:
+                        raise
+                    # Some models still try to call a tool when none are offered (Groq then rejects the turn).
+                    # Retry once with an explicit instruction, then fall back to a summary of the evidence.
+                    resp = self._forced_answer(convo, request_id, ctx, e)
                 if tail := redactor.flush():
                     yield AgentEvent("token", {"text": tail, "step": steps})
                 usage["prompt_tokens"] += resp.prompt_tokens
                 usage["completion_tokens"] += resp.completion_tokens
 
                 if not (resp.tool_calls and tools_allowed):
+                    # Grounding guard: "bari has no information" is only allowed after actually searching.
+                    if tool_calls_used == 0 and tools_allowed and not nudged and claims_no_evidence(resp.content):
+                        nudged = True
+                        convo += [{"role": "assistant", "content": resp.content},
+                                  {"role": "system", "content": "You answered without searching. bari's listings, "
+                                   "forum and safety reviews may well contain the answer: call the right search "
+                                   "tool first, then answer from what it returns."}]
+                        yield AgentEvent("reset", {"step": steps, "reason": "searching before answering"})
+                        continue
                     final = resp.content
                     break
 
@@ -186,6 +203,21 @@ class Agent:
                 "evidence": sorted(ctx.evidence)}
         self._persist(request_id, user_id, question, done, error)
         yield AgentEvent("done", done)
+
+    def _forced_answer(self, convo: list[dict], request_id: str, ctx: ToolContext, error: LLMError):
+        from llm.base import LLMResponse
+        log.warning("forced final answer failed (%s); retrying text-only", error)
+        try:
+            return self.llm.chat([*convo, {"role": "user", "content": "Write your final answer to my question now, "
+                                           "as plain text with citations. Do not call any tool."}],
+                                 None, purpose="agent", request_id=request_id, temperature=0, max_tokens=900)
+        except LLMError:
+            listings = [(r, i) for r, i in ctx.evidence.items() if r.startswith("listing:") and i.get("title")][:4]
+            if not listings:
+                return LLMResponse("I couldn't finish this answer. Please try asking again more specifically.")
+            lines = "\n".join(f"- {i['title']} ({i.get('area', '')}) [{r}]" for r, i in listings)
+            return LLMResponse(f"I ran out of steps before writing a full answer. These were the most relevant "
+                               f"listings I found:\n{lines}")
 
     def _cards(self, cited: list[str]) -> list[dict]:
         ids = [int(r.split(":")[1]) for r in cited if r.startswith("listing:")]

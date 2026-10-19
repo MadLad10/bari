@@ -239,6 +239,7 @@ export default function AIAssistant() {
         signal: abortRef.current.signal,
         onEvent: (type, data) => {
           if (type === "token") patchLast((m) => ({ ...m, content: m.content + data.text }));
+          else if (type === "reset") patchLast((m) => ({ ...m, content: "" }));  // a draft answer was discarded
           else if (type === "step") {
             patchLast((m) => {
               const steps = m.steps.filter((s) => s.id !== data.id);

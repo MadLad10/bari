@@ -201,3 +201,31 @@ def test_optional_tool_args_are_nullable_in_schema():
     uni = schemas["search_forum"]["properties"]["university"]
     assert uni["type"] == ["string", "null"] and None in uni["enum"]
     assert schemas["search_forum"]["properties"]["query"]["type"] == "string"   # required: not nullable
+
+
+def test_forced_final_answer_survives_a_rejected_tool_call(client, db, make_property):
+    """At the tool limit the model still tries a tool; the provider rejects it; the turn must still answer."""
+    prop = make_property()
+    script = [call("search_properties", max_price=50000)] * 3 + [
+        LLMError("Tool choice is none, but model called a tool", retryable=False),
+        LLMError("Tool choice is none, but model called a tool", retryable=False)]
+    agent, _ = agent_with(script, max_tool_calls=3, max_steps=10)
+    out = ask(agent, "find something")
+    assert out["status"] == "limit" and "error" not in out
+    assert f"[listing:{prop['id']}]" in out["text"] and out["citations"] == [f"listing:{prop['id']}"]
+
+
+def test_grounding_guard_makes_the_model_search_before_saying_no(client, db, make_property):
+    prop = make_property(title="Quiet room in Palashi for BUET students")
+    agent, provider = agent_with([answer("I don't have any information about that."),
+                                  call("search_properties", max_price=50000),
+                                  answer(f"Yes: [listing:{prop['id']}]")])
+    out = ask(agent, "any room near BUET?")
+    assert [s["tool"] for s in out["steps"] if s["status"] == "done"] == ["search_properties"]
+    assert out["citations"] == [f"listing:{prop['id']}"]
+
+
+def test_grounding_guard_only_nudges_once(client, db):
+    agent, _ = agent_with([answer("I don't have any data."), answer("Still no data, sorry.")])
+    out = ask(agent, "something obscure")
+    assert out["text"].startswith("Still no data")

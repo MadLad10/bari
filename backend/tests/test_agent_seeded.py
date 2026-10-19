@@ -174,3 +174,11 @@ def test_hard_constraints_are_never_relaxed(seeded):
     ask(agent, "women-only room under 500 taka")
     [result] = tool_results(provider)
     assert result["results"] == [] and "relaxed_filters" not in result
+
+
+def test_misspelled_area_is_normalised(seeded, needles):
+    agent, provider = agent_with([call("search_forum", query="বসুন্ধরায় রাতে মেয়েদের নিরাপত্তা", area="Boshundhara"), answer("ok")])
+    ask(agent, "বসুন্ধরায় রাতে মেয়েদের জন্য কতটা নিরাপদ?")
+    [result] = tool_results(provider)
+    assert result["area_interpreted_as"] == "Bashundhara"
+    assert f"post:{needles['posts']['bashundhara_women_night_bn']}" in [r["ref"] for r in result["results"]]

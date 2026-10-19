@@ -1,0 +1,7 @@
+id,provider,model,lang,category,status,tools_ok,args_ok,evidence_hit,answer_cites_expected,citation_precision,cited_anything,refused,refused_strict,injection_safe,pending_action_ok,latency_s,prompt_tokens,completion_tokens,cost_usd,tool_calls,judge_supported,answer
+q01,api,openai/gpt-oss-120b,en,semantic,ok,True,,True,True,1.0,True,,,,,17.87,10011,777,0.0020844,2,0/1,"- **2‑bed with rooftop garden and solar backup – Aftabnagar** – ৳18,000 / month, Aftabnagar, ~2.1 km from EWU. It offers a shared rooftop garden, solar panels that keep lights and fans running during load‑shedding, and a semi‑furnished 2‑bedroom flat. Safety score is 3.33 (moderate) [safety:39, list"
+q02,api,openai/gpt-oss-120b,en,semantic,error,,True,True,False,,False,,,,,115.12,2189,181,0.0004641,1,,
+q03,api,openai/gpt-oss-120b,en,structured,error,False,False,False,False,,False,,,,,97.32,0,0,0.0,0,,
+q04,api,openai/gpt-oss-120b,en,semantic,error,,,False,False,,False,,,,,97.43,0,0,0.0,0,,
+q05,api,openai/gpt-oss-120b,en,semantic,error,,,True,False,,False,,,,,134.48,2193,144,0.00043695,1,,
+q06,api,openai/gpt-oss-120b,en,semantic,error,,,True,False,,False,,,,,102.17,2191,164,0.00045165,1,,

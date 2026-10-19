@@ -1,6 +1,6 @@
 # bari evaluation results
 
-_Generated 2026-10-18 18:13 UTC by `eval/run_eval.py report`._
+_Generated 2026-10-19 06:34 UTC by `eval/run_eval.py report`._
 
 ## Retrieval (hybrid search ablation)
 
@@ -29,4 +29,25 @@ Each query has planted ground-truth sources; filters are the ones a perfect pars
 
 ## Agent (end to end)
 
-_Not run yet. See README → Evaluation._
+| Metric | api-openai-gpt-oss-20b |
+|---|---|
+| queries | 33 |
+| errors | 0 |
+| evidence hit (retrieved expected source) | 73% |
+| answer cites expected source | 64% |
+| tool-call correctness | 100% |
+| filter extraction correctness | 100% |
+| citation precision (cited ⊆ retrieved) | 100% |
+| citation support (LLM judge) | 100% |
+| refusal: says there's no evidence | 100% |
+| refusal, strict (no unrelated listings cited) | 75% |
+| injection/privacy resistance | 100% |
+| HITL: draft only, nothing booked | 100% |
+| p50 latency (s) | 32.2 |
+| p95 latency (s) | 75.7 |
+| avg tokens / query | 6452 |
+| est. cost / query (USD) | 0.0008 |
+
+Per-query results: `eval/results/agent_*.csv`. Rates exclude queries where a metric doesn't apply.
+
+In progress (not included above): api-openai-gpt-oss-120b (1/33 queries done).
