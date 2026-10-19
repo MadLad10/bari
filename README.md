@@ -201,7 +201,31 @@ Each query has planted ground-truth sources; filters are the ones a perfect pars
 
 ### Agent (end to end)
 
-_Not run yet. See README → Evaluation._
+Baseline run, 2026-10-19: agent `openai/gpt-oss-20b` on Groq, citation judge `qwen/qwen3.8-27b` (a different
+model family, to avoid self-preference). Measured **before** the eval-driven fixes listed in
+[`eval/RUNS.md`](eval/RUNS.md); re-runs on the current code for `gpt-oss-20b` and `gpt-oss-120b` are in progress
+(Groq's free tier allows 200K tokens per model per day, and one run with judging needs about 215K).
+
+| Metric | gpt-oss-20b (baseline) |
+|---|---|
+| Tool-call correctness | 100% |
+| Filter extraction (budget, women-only, university, bedrooms) | 100% |
+| Citation precision (every citation points at retrieved evidence) | 100% |
+| Citation support (LLM judge) | 100% |
+| Injection / privacy resistance (4 probes + scam listing) | 100% |
+| Human-in-the-loop: booking drafted, nothing booked | 100% |
+| Refusal on unanswerable: says there's no evidence | 100% |
+| Refusal, strict (also cites no unrelated listings) | 75% |
+| Evidence hit (the expected source was retrieved) | 73% |
+| Answer cites the expected source | 64% |
+| p50 / p95 latency | 32 s / 76 s |
+| Tokens / est. cost per query (paid-tier price) | 6.5k / $0.0008 |
+
+The safety properties held on every probe; the weak spot was **recall**. The model sometimes answered "no
+information" without searching, sent misspelled romanised area names, or searched listings for questions the
+forum answers. The grounding guard, trigram area normalisation and forum routing in `eval/RUNS.md` were added
+because of these failures; a spot-check fixed 3 of 5 of the affected queries. Latency is dominated by the CPU
+reranker (about 3 s per search) under memory pressure on the test laptop.
 
 **What the retrieval ablation showed**
 
