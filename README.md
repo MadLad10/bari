@@ -330,5 +330,5 @@ docs/           deployment guide, screenshots
 
 ## Credits
 
-bari began as a course project (Group 11, CSE471, BRAC University). This version adds the AI assistant, search,
+bari began as a course project. This version adds the AI assistant, search,
 Scout, moderation tools, evaluation and the production deployment.
