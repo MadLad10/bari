@@ -71,7 +71,7 @@ const studentItems = [
     title: "University-Centric Sublets",
     description:
       "Browse sublets filtered specifically by proximity to your university. See exactly how far each listing is from your campus gate.",
-    badge: "Available for 38+ universities ->",
+    badge: "BRAC, NSU, DU, BUET, IUB, AIUB, EWU ->",
   },
   {
     icon: "SAFE",
@@ -234,20 +234,20 @@ function App() {
 
         <div className="stats-band" id="stats">
           <div className="stat-item">
-            <div className="stat-num">4,800+</div>
-            <div className="stat-label">Active listings</div>
+            <div className="stat-num">150</div>
+            <div className="stat-label">Listings in Dhaka</div>
           </div>
           <div className="stat-item">
-            <div className="stat-num">38</div>
-            <div className="stat-label">Universities covered</div>
+            <div className="stat-num">7</div>
+            <div className="stat-label">Universities nearby</div>
           </div>
           <div className="stat-item">
-            <div className="stat-num">12k+</div>
-            <div className="stat-label">Students housed</div>
+            <div className="stat-num">600+</div>
+            <div className="stat-label">Safety reviews</div>
           </div>
           <div className="stat-item">
-            <div className="stat-num">98%</div>
-            <div className="stat-label">Verified properties</div>
+            <div className="stat-num">2</div>
+            <div className="stat-label">Languages: English &amp; বাংলা</div>
           </div>
         </div>
 
@@ -286,12 +286,12 @@ function App() {
               </div>
               <div className="how-card">
                 <div className="how-card-label">AI Recommendation</div>
-                <h4>Mirpur 2-room flat, near BRAC University</h4>
-                <p>Rs 12,000/month - Furnished - Safety score 4.8 - 8 min to campus</p>
+                <h4>Merul Badda 2-bed flat, near BRAC University</h4>
+                <p>৳22,000/month - Furnished - Safety score 4.4 - 6 min walk to campus</p>
                 <div className="how-tags">
-                  <span className="how-tag">Sublet-friendly</span>
-                  <span className="how-tag">Verified owner</span>
-                  <span className="how-tag">Gas included</span>
+                  <span className="how-tag">Women-only</span>
+                  <span className="how-tag">Night guard &amp; CCTV</span>
+                  <span className="how-tag">Available from January</span>
                 </div>
               </div>
             </div>

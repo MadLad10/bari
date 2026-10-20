@@ -1,7 +1,7 @@
 [
   {
     "title": "Furnished 2-bed flat near BRAC University",
-    "description": "Bright 2-bedroom apartment 8 minutes walk from BRAC University main gate. Fully furnished with AC, WiFi router included. Ground floor with separate entrance.",
+    "description": "Bright 2-bedroom apartment in Niketan, about 10 minutes by rickshaw from the BRAC University campus in Merul Badda. Fully furnished with AC, WiFi router included. Ground floor with separate entrance.",
     "property_type": "apartment",
     "listing_type": "sublet",
     "rental_type": "monthly",
@@ -14,7 +14,7 @@
     "area": "Gulshan",
     "city": "Dhaka",
     "nearby_university": "BRAC University",
-    "university_distance_km": 0.8,
+    "university_distance_km": 1.9,
     "is_female_only": false,
     "safety_score": 4.8,
     "amenities": [
@@ -33,7 +33,7 @@
   },
   {
     "title": "Single room for female students – Dhanmondi",
-    "description": "Safe, clean single room in a shared apartment exclusively for female university students. Female-only building with security guard, CCTV, and iron gate. Close to NSU and Dhanmondi 27.",
+    "description": "Safe, clean single room in a shared apartment exclusively for female university students. Female-only building with security guard, CCTV, and iron gate. Near Dhanmondi 27, about 20 minutes by rickshaw to Dhaka University.",
     "property_type": "room",
     "listing_type": "sublet",
     "rental_type": "monthly",
@@ -45,8 +45,8 @@
     "address": "House 12, Road 7, Dhanmondi",
     "area": "Dhanmondi",
     "city": "Dhaka",
-    "nearby_university": "North South University",
-    "university_distance_km": 2.1,
+    "nearby_university": "Dhaka University",
+    "university_distance_km": 2.8,
     "is_female_only": true,
     "safety_score": 4.9,
     "amenities": [
@@ -63,7 +63,7 @@
   },
   {
     "title": "Spacious 3-bed apartment – Mirpur 10",
-    "description": "Large unfurnished 3-bedroom flat ideal for a group of students or a family. Rooftop access, natural ventilation. 5 min auto-rickshaw to Mirpur 10 metro station.",
+    "description": "Large unfurnished 3-bedroom flat ideal for a group of students or a family. Rooftop access, natural ventilation. 5 min auto-rickshaw to Mirpur 10 metro station; the metro reaches Shahbag (Dhaka University and BUET) in about 25 minutes.",
     "property_type": "apartment",
     "listing_type": "rent",
     "rental_type": "monthly",
@@ -75,8 +75,8 @@
     "address": "Section 11, Block D, Mirpur",
     "area": "Mirpur",
     "city": "Dhaka",
-    "nearby_university": "BUET",
-    "university_distance_km": 5.4,
+    "nearby_university": "Dhaka University",
+    "university_distance_km": 10.5,
     "is_female_only": false,
     "safety_score": 4.2,
     "amenities": [
