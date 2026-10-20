@@ -82,4 +82,14 @@ for r in (auth, properties, bookings, chat, ai, actions, safety, forum, search, 
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok"}
+    """Liveness plus a database check, so a misconfigured deploy says why it's failing (no secrets)."""
+    if settings.database_url.startswith("sqlite") and os.environ.get("VERCEL"):
+        return JSONResponse(status_code=503, content={"status": "error", "database": "DATABASE_URL is not set"})
+    from sqlalchemy import text
+    from database import engine
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+    except Exception as e:  # noqa: BLE001
+        return JSONResponse(status_code=503, content={"status": "error", "database": type(e).__name__})
+    return {"status": "ok", "database": "ok"}
