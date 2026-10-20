@@ -1,222 +1,214 @@
-# bari
+# bari: AI housing assistant for students in Dhaka
 
-**An agentic RAG assistant for student housing in Dhaka, with human-in-the-loop booking and a real evaluation suite.**
+**An AI assistant that helps university students in Dhaka, Bangladesh find safe, affordable housing. It
+searches listings, safety reviews and a community forum in English and Bangla, shows where every answer
+comes from, and never books anything without the student's approval.**
 
-bari (বাড়ি, "home") is a rental and sublet platform for university students in Bangladesh. Students search
-listings near BRAC, NSU, DU, BUET, IUB, AIUB and East West University, read community safety reviews, ask the
-forum about neighbourhoods, and chat with owners. This repository upgrades bari's original prompt-stuffing chatbot
-into a tool-calling agent that:
+**Live demo:** https://bari-mad-lad.vercel.app
+(log in as `student@example.com`, password `bari-demo-123`)
 
-- **understands requests in English, Bangla and Banglish** ("2-bed near BRAC under 25k, women-only, safe area, from
-  January"), and turns them into structured filters and retrieval queries;
-- **searches with hybrid RAG** (pgvector + keyword search + structured filters, fused and reranked) over listings,
-  forum posts, comments and safety reviews;
-- **cites every claim** (`[listing:11]`, `[post:4]`, `[safety:606]`). Citations to sources the tools never returned
-  are stripped, and listings that break the user's stated budget or women-only constraint are flagged;
-- **never books on its own**: it drafts a booking, and only the user's click on *Confirm* creates it;
-- **treats user-generated content as untrusted**: it withstands prompt-injection posts planted in the forum, and
-  never reveals contact details;
-- **hunts in the background for each student (Scout)**: a LangGraph agent that checks new listings every day,
-  gathers evidence, drafts questions to owners and a booking, then **pauses until the student approves**, durably,
-  in Postgres, and resumes days later to learn from the decision;
-- **runs background workflows** that write listing descriptions, catch duplicate and scam listings, and moderate
-  posts and reviews, logging every decision with its reasons;
-- is **measured**: 33 English and Bangla eval queries, a retrieval ablation, citation checks, refusal and
-  injection tests, plus latency and cost, for an API model and a local model.
+![Python](https://img.shields.io/badge/Python-3.12-blue) ![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688)
+![React](https://img.shields.io/badge/React-18-61DAFB) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-pgvector-336791)
+![LangGraph](https://img.shields.io/badge/LangGraph-agent-1C3C3C) ![Vercel](https://img.shields.io/badge/Deployed-Vercel-black)
+
+---
+
+## What it does
+
+- **Ask in plain words, in English or Bangla.** "2-bed near BRAC under 25k, women-only, safe area, from January"
+  works, and so does "ধানমন্ডি লেকের পাশে মেয়েদের রুম".
+- **Get answers with sources.** Every recommendation links to the listing, safety review or forum post it
+  comes from. If there's no evidence, the assistant says so instead of guessing.
+- **Book safely.** The assistant can prepare a booking, but only the student's own click on *Confirm*
+  makes it real.
+- **Let an agent keep looking (Scout).** A student saves what they want once. Every day Scout checks new
+  listings, reads safety reviews and forum posts, and prepares questions for owners and a booking, all
+  waiting for the student's approval.
+- **Help owners and moderators.** Owners get help writing listings and checking their price. Duplicate and
+  scam listings, and abusive or spam posts, are flagged automatically for an admin to review.
+
+## What I built
+
+bari started as a university course project: a rental website with a basic chatbot that pasted 20 listings
+into a prompt. I rebuilt it into a full AI system:
+
+- **AI assistant (agent).** Replaced the chatbot with an assistant that decides which of 9 tools to use (search,
+  safety check, availability, price, booking…), streams its progress live, and cites every claim.
+- **Search over English and Bangla text (RAG).** Combined meaning-based search (vector embeddings), keyword
+  search and filters, then re-ranked the results. Found and fixed a problem where Bangla searches failed half the
+  time: Bangla search success went from 50% to 100%.
+- **Safety by design.** Booking needs the user's click. Contact details never reach the AI. Fake
+  "instructions" hidden in forum posts (prompt injection) are blocked. These held in **100%** of tests with
+  every model, including small local ones.
+- **Background agent with LangGraph (Scout).** Runs on a schedule, pauses for the student's approval, and
+  resumes days later where it left off, with its state saved in Postgres.
+- **Owner and moderation tools.** Listing assistant, duplicate/scam detection (cut false alarms from 48 to 16
+  by checking listing details, not just text similarity), and content moderation with logged reasons.
+- **Evaluation.** 33 test questions in English and Bangla, measuring search quality, correct tool use,
+  citation accuracy, honest "I don't know" answers, injection resistance, speed and cost. I ran it on
+  cloud and local models, and fixed 10+ problems it uncovered.
+- **Platform work.** Moved the app from SQLite to PostgreSQL, added login, background jobs, 157 automated tests
+  (149 backend + 8 frontend), and a free production deployment on Vercel with Neon Postgres.
+
+## Tech stack
+
+| Area | Tools |
+|---|---|
+| **Languages** | Python 3.12, JavaScript (React), SQL |
+| **Backend** | FastAPI, SQLAlchemy 2, Alembic (migrations), Pydantic, JWT authentication, Server-Sent Events (streaming) |
+| **AI agents** | Custom tool-calling agent (chat assistant), LangGraph (Scout background agent, human-in-the-loop) |
+| **LLMs** | Groq API (`gpt-oss-120b`, `gpt-oss-20b`), local models with Ollama (`qwen2.5` 3B and 7B) |
+| **Search / RAG** | PostgreSQL pgvector (vector search), full-text search, pg_trgm, `bge-m3` and Gemini embeddings, `bge-reranker-v2-m3` re-ranker (ONNX) |
+| **Database** | PostgreSQL 16+ with pgvector, Neon (production) |
+| **Frontend** | React 18, Vite, React Router |
+| **Infrastructure** | Docker Compose (local), Vercel (Services + Cron), Neon serverless Postgres |
+| **Testing & evaluation** | pytest, Vitest, React Testing Library, custom evaluation harness with an LLM judge |
+
+## Results
+
+| What was measured | Result |
+|---|---|
+| Blocks prompt-injection and privacy attacks | **100%** (every model tested) |
+| Never books without the user's click | **100%** |
+| Picks the right tools and understands filters (budget, women-only, university) | **100%** (cloud model) |
+| Search finds the right source in the top 5 results | **100%** (22 test searches, English + Bangla) |
+| Citations point to real, retrieved sources | **100%** (cloud model) |
+
+Measured on a laptop. The full numbers, including where small local models fall short, are in
+[Evaluation details](#evaluation-details) and [`eval/RUNS.md`](eval/RUNS.md).
+
+## Screenshots
 
 | Admin review queue | Listing assistant |
 |---|---|
 | ![Flagged listings and held posts with reasons](docs/screenshots/admin-review-queue.png) | ![Description draft, missing info and price check](docs/screenshots/listing-assistant.png) |
 
-> 🎬 _Assistant demo GIF: streaming steps, listing cards, citations and the confirm card (placeholder:
-> `docs/screenshots/assistant-demo.gif`)._
-
----
-
-## Architecture
+## How it works
 
 ```mermaid
 flowchart LR
-  subgraph Browser
-    UI["React + Vite<br/>assistant · listing assistant · admin"]
-  end
-  subgraph API["FastAPI (backend)"]
-    R[routers] --> S["services/<br/>properties · bookings · safety · forum"]
-    AG["agent/<br/>tool loop · guardrails · citations"] -->|9 tools| S
-    AG --> RAG["rag/<br/>chunking · hybrid search · rerank"]
-    AG -->|draft_booking| PA[(pending_actions)]
-    R -->|confirm click| S
-  end
-  UI -- REST + SSE --> R
-  R --> AG
-  S -- "outbox: index / screen / moderate" --> Q[(jobs)]
-  W["worker<br/>embed · screen listings · moderate"] --> Q
-  W --> RAG
-  W --> WF["workflows/<br/>rules + LLM second opinion"]
-  RAG --> PG[("PostgreSQL 16<br/>pgvector · tsvector · pg_trgm")]
-  S --> PG
-  AG & WF --> LLM["llm/<br/>Groq (OpenAI-compatible) · Ollama<br/>retries · timeouts · call log"]
-  RAG --> OL["Ollama: bge-m3 embeddings"]
-  RAG --> CE["bge-reranker-v2-m3<br/>(ONNX, in-process)"]
+  U[Student's browser<br/>React] -->|questions, live updates| API[FastAPI backend]
+  API --> AG[AI assistant<br/>9 tools]
+  API --> SC[Scout<br/>LangGraph background agent]
+  AG --> S[Search<br/>vector + keyword + filters]
+  SC --> S
+  S --> DB[(PostgreSQL<br/>pgvector)]
+  AG --> LLM[LLM<br/>Groq or Ollama]
+  SC --> LLM
+  AG -->|draft only| P[Pending booking]
+  U -->|clicks Confirm| P
 ```
 
-**One assistant turn:**
+1. The student types a request. The assistant (an LLM) decides which tools to call: search listings, check
+   safety, check dates, compute a price.
+2. The tools use the same code as the website, so the AI can't do anything the app itself doesn't allow.
+3. Search combines meaning-based matching (embeddings), keyword matching and filters such as budget and
+   women-only.
+4. The answer streams back with numbered sources. Any source the tools didn't actually return is removed.
+5. To book, the assistant only creates a draft. The student reviews it and clicks Confirm.
 
-```mermaid
-sequenceDiagram
-  actor U as Student
-  participant UI as AIAssistant (React)
-  participant A as Agent loop
-  participant L as LLM
-  participant T as Tools (services/RAG)
-  U->>UI: "2-bed near BRAC under 25k, women-only, from January"
-  UI->>A: POST /api/ai/chat (SSE)
-  A->>L: system prompt + history + tool schemas
-  L-->>A: search_properties(bedrooms=2, max_price=25000, is_female_only=true, …)
-  A-->>UI: step "Searching listings…"
-  A->>T: run tool (own DB session, timeout)
-  T-->>A: public listing fields, untrusted text wrapped
-  L-->>A: check_availability(property_id=11, 2027-01-01 → …)
-  A->>T: run tool
-  L-->>A: final answer with [listing:11] citations
-  A->>A: strip unsupported refs · repair · PII scrub · constraint check
-  A-->>UI: tokens, listing_cards, citations, done
-  U->>UI: "book it" → draft_booking → confirm card
-  U->>UI: clicks Confirm → POST /api/actions/{id}/confirm → booking
-```
+## Run it locally
 
-### Scout: the background house-hunting agent (LangGraph)
-
-A student saves a hunt ("2-bed near BRAC under 25k, women-only, from January, quiet street; ask if it's line
-gas"). Every day (Vercel Cron or the worker), Scout runs this graph:
-
-```mermaid
-flowchart LR
-  S([daily cron / Run now]) --> F[find_candidates<br/><i>hard filters + semantic order,<br/>skip seen & rejected</i>]
-  F -- nothing new --> E([report: no new matches])
-  F --> G[gather_evidence<br/><i>safety reviews · forum · availability</i>]
-  G --> A[assess · LLM<br/><i>rank vs preferences, cite evidence,<br/>which questions are unanswered</i>]
-  A --> D[draft_actions<br/><i>templated owner questions + booking draft</i>]
-  D -- nothing to approve --> X([done])
-  D --> I{{await_decisions<br/>interrupt}}
-  I -. student approves / discards<br/>(hours or days later) .-> L[learn<br/><i>rejected listings never return</i>]
-  L --> X
-```
-
-- **Durable human-in-the-loop.** `interrupt()` pauses the run, and LangGraph's Postgres checkpointer stores it
-  in the same database (Neon in production). When the student's last decision arrives, maybe days later and
-  on another serverless instance, the run resumes from its checkpoint.
-- **Mostly deterministic, the LLM only for judgment.** Filtering, evidence gathering and availability are code that
-  reuses the same services as the API. One LLM call ranks and explains, with citations validated against the
-  evidence. If the LLM fails, a rule-based ranking takes over.
-- **Injection-proof drafts.** Messages to owners are templates filled with the student's own questions, chosen
-  by index. No model or listing text is ever sent in the student's name.
-- **Why LangGraph here but not for the chat assistant:** Scout needs durable state, pausing for approval and
-  resuming, which is LangGraph's core strength. The chat assistant is a short, latency-critical loop whose
-  guardrails and limits are tuned and evaluated, so it stays a lean custom runtime. LangGraph orchestrates Scout's
-  steps; model calls inside them go through bari's own LLM layer, so cost logging and provider switching stay in
-  one place.
-
-### Design decisions
-
-| Problem | What bari does | Where |
-|---|---|---|
-| The agent must not duplicate business logic | Routers and the agent's tools call the same `services/` functions (search filters, price, availability, booking validation) | `backend/services`, `backend/agent/tools.py` |
-| The agent must never book without consent | `draft_booking` validates the booking and stores a `pending_action`. Only `POST /api/actions/{id}/confirm`, by the same user, creates the booking, atomically with the action status. Drafting also needs explicit booking intent in the *user's* message, so an injected post can't trigger it | `agent/tools.py`, `routers/actions.py` |
-| Answers must be grounded | Every claim cites a ref. Refs the tools didn't return are removed and reported. A listing named by exact title without a citation gets one attached (logged separately). Stated budget/women-only constraints are checked against the recommendations | `agent/guardrails.py`, `agent/loop.py` |
-| Forum posts and descriptions can contain prompt injections | User text goes to the model inside `<untrusted_data>` tags, an English/Bangla heuristic withholds instruction-like content, and the system prompt forbids obeying it. The agent has no write tools apart from the gated draft | `agent/guardrails.py` |
-| Privacy | Tools never receive owner phone/email (field allow-list). Streamed and final text are PII-scrubbed (phones in Latin and Bangla digits, emails) | `services/properties.py`, `agent/guardrails.py` |
-| Bangla without a Bangla stemmer | bge-m3 multilingual embeddings, plus `simple`-config full-text search with OR'd **prefix** terms (`ছাত্রী:*` matches `ছাত্রীদের`), plus pg_trgm | `rag/hybrid.py` |
-| Search must respect hard constraints | Structured filters (the same `build_filters` the listing API uses) are SQL constraints *before* ranking; vector and keyword results are fused with RRF, then cross-encoder reranked | `rag/hybrid.py` |
-| Re-embedding on every change, reliably | Index jobs are written in the same transaction as the data change (transactional outbox). A Postgres queue (`FOR UPDATE SKIP LOCKED`) with retries; content-hash idempotency; a per-source advisory lock | `jobs/`, `rag/indexer.py` |
-| LLM calls are slow, flaky and cost money | Provider abstraction (Groq/OpenAI-compatible and native Ollama with `num_ctx`), backoff with jitter and Retry-After, per-attempt timeouts, and every call logged with tokens, latency and estimated cost | `llm/` |
-| A background agent must wait for people without holding resources | Scout is a LangGraph graph whose approval step is an `interrupt()`; state lives in Postgres via the LangGraph checkpointer, set up by an Alembic migration (its `CREATE INDEX CONCURRENTLY` can't run inside a request) | `backend/scout/` |
-| Moderation must be explainable | Deterministic rules decide; the LLM is a second opinion with a graceful fallback; every decision is stored with labels, reasons and raw signals for admin review | `workflows/` |
-
----
-
-## Quickstart
-
-Requirements: Docker with Compose v2, and Node 20+. Nothing else is installed on the host: Python runs in Docker.
+You need Docker and Node.js 20+. Python runs inside Docker.
 
 ```bash
 cp .env.example .env
-# 1. Get a free Groq API key at https://console.groq.com → API Keys, then set in .env:
-#    LLM_API_KEY=gsk_...          (and a random JWT_SECRET)
-# 2. Start Postgres + Ollama and pull the local models (bge-m3 is required for search)
+# Add a free Groq API key (https://console.groq.com → API Keys) to .env as LLM_API_KEY=...
 docker compose up -d db ollama
-docker compose exec ollama ollama pull bge-m3
-docker compose exec ollama ollama pull qwen2.5:7b-instruct      # optional: local LLM
-# 3. Schema, synthetic data, search index (first index takes ~15 min on a laptop CPU)
+docker compose exec ollama ollama pull bge-m3                    # embedding model (required)
+docker compose exec ollama ollama pull qwen2.5:7b-instruct       # local LLM (optional)
 docker compose run --rm backend sh -c "alembic upgrade head && python seed.py --reset && python -m scripts.reindex"
-# 4. API + background worker
 docker compose up -d backend worker
-# 5. Frontend
-npm install
-npm run dev            # http://localhost:5173  (if 8001 is taken: BACKEND_PORT=8011 in .env, VITE_API_ROOT=http://localhost:8011)
+npm install && npm run dev                                       # http://localhost:5173
 ```
 
 Demo accounts (password `bari-demo-123`): `student@example.com` (renter), `owner@example.com` (owner of
-listings 1–8), `admin@example.com` (admin → `/admin`). Promote any account with
-`docker compose run --rm backend python -m scripts.make_admin you@example.com`.
+listings 1–8). The data is synthetic: 150 listings, 200 forum posts and 600+ safety reviews across Dhaka.
 
-### Deploy (free, on Vercel)
+**Deploy for free:** one Vercel project with two services (React site + FastAPI), Neon Postgres, Groq and
+Gemini. Step by step in [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
-One Vercel project with two [Services](https://vercel.com/docs/services): `web` (the Vite build) and `api`
-(FastAPI from `backend/`, on `/api/*`). Data lives in Neon Postgres
-with pgvector, the LLM is Groq, and embeddings come from Gemini. Step by step: [`docs/DEPLOY.md`](docs/DEPLOY.md).
-
-### Configuration
-
-| Variable | Default | Meaning |
-|---|---|---|
-| `LLM_PROVIDER` | `api` | `api` (OpenAI-compatible endpoint) or `ollama` (local) |
-| `LLM_API_BASE_URL` / `LLM_API_KEY` / `LLM_API_MODEL` | Groq / – / `openai/gpt-oss-120b` | Any OpenAI-compatible provider works |
-| `OLLAMA_MODEL`, `OLLAMA_NUM_CTX` | `qwen2.5:7b-instruct`, `16384` | Local chat model and context window |
-| `EMBEDDING_MODEL` | `bge-m3` | Served by Ollama, 1024-d |
-| `RERANKER`, `RERANK_TOP` | `bge`, `10` | `bge` = bge-reranker-v2-m3 int8 ONNX; `none` disables it |
-| `AGENT_MAX_TOOL_CALLS`, `AGENT_TOOL_TIMEOUT_S`, `AGENT_TURN_TIMEOUT_S` | `6`, `10`, `150` | Agent limits |
-| `BACKEND_PORT` | `8001` | Host port of the API |
-
-### Tests
+**Tests:**
 
 ```bash
-docker compose run --rm backend pytest     # 122 tests: API, auth, RAG, agent loop, guardrails, workflows, eval metrics
-npm test                                   # Vitest: SSE parser, citations, confirm card
+docker compose run --rm backend pytest     # 149 backend tests (no API keys or network needed)
+npm test                                   # 8 frontend tests
 ```
-
-The backend tests run against a separate `bari_test` database built through the real Alembic migrations, with
-a scripted fake LLM and a hashing embedder, so they need no network and no API key.
 
 ---
 
-## Evaluation
+## Technical details
 
-`eval/queries.yaml` holds 33 queries (24 English, 9 Bangla/Banglish) with ground truth taken from "needles"
-planted in the deterministic synthetic data: semantic needs (rooftop garden, wheelchair access, pet-friendly),
-structured requests, safety and forum questions, comparison and pricing, a booking, **4 unanswerable questions**
-and **4 prompt-injection/privacy probes** that use injection posts planted in the forum.
+<details>
+<summary><b>Design decisions</b></summary>
 
-```bash
-docker compose run --rm backend python /eval/run_eval.py retrieval                    # ablation, no LLM needed
-docker compose run --rm backend python /eval/run_eval.py agent --provider api --judge --sleep 3
-docker compose run --rm backend python /eval/run_eval.py agent --provider ollama
-docker compose run --rm backend python /eval/run_eval.py report                       # → eval/results/results.md
+| Problem | Solution | Code |
+|---|---|---|
+| The AI must not duplicate business logic | The website and the AI's tools call the same service functions (search filters, price, availability, booking checks) | `backend/services`, `backend/agent/tools.py` |
+| The AI must never book without consent | `draft_booking` only stores a pending action. Only the same user's `POST /api/actions/{id}/confirm` creates the booking. Drafting also requires booking intent in the *user's* message, so an injected post can't trigger it | `agent/tools.py`, `routers/actions.py` |
+| Answers must be grounded | Every claim cites a source. Citations to sources the tools didn't return are removed. Budget and women-only constraints are checked against the recommendations | `agent/guardrails.py`, `agent/loop.py` |
+| Forum posts can contain prompt injections | User-written text is wrapped as untrusted data, an English/Bangla filter withholds instruction-like content, and the AI has no write tools except the gated draft | `agent/guardrails.py` |
+| Privacy | Tools never receive owner phone numbers or emails; answers are scrubbed for phones (Latin and Bangla digits) and emails | `services/properties.py`, `agent/guardrails.py` |
+| Bangla search without a Bangla stemmer | Multilingual embeddings, plus full-text search with prefix matching (`ছাত্রী:*` matches `ছাত্রীদের`) and trigram matching | `rag/hybrid.py` |
+| Search must respect hard limits | Filters are applied in SQL before ranking; vector and keyword results are merged (Reciprocal Rank Fusion, weighted by script), then re-ranked | `rag/hybrid.py` |
+| Keep the search index up to date reliably | Index jobs are saved in the same transaction as the data change (outbox pattern); a Postgres job queue with retries; unchanged text is never re-embedded | `jobs/`, `rag/indexer.py` |
+| LLM calls are slow, flaky and cost money | One interface for Groq and Ollama, retries with backoff, timeouts, and every call logged with tokens, time and cost | `llm/` |
+| A background agent must wait for people | Scout's approval step is a LangGraph `interrupt()`; its state is saved in Postgres by the LangGraph checkpointer | `backend/scout/` |
+| Moderation must be explainable | Rules decide, the LLM gives a second opinion, and every decision is stored with its reasons for admin review | `workflows/` |
+
+</details>
+
+<details>
+<summary><b>Scout: the background agent (LangGraph)</b></summary>
+
+A student saves a hunt ("2-bed near BRAC under 25k, women-only, from January, quiet street; ask if it has line
+gas"). Every day (Vercel Cron, or the worker locally), Scout runs this graph:
+
+```mermaid
+flowchart LR
+  S([daily cron / Run now]) --> F[find new listings<br/><i>filters, skip seen and rejected</i>]
+  F -- nothing new --> E([report: no new matches])
+  F --> G[gather evidence<br/><i>safety reviews, forum, availability</i>]
+  G --> A[assess with LLM<br/><i>rank against preferences, cite evidence</i>]
+  A --> D[draft owner questions<br/>and a booking]
+  D -- nothing to approve --> X([done])
+  D --> I{{wait for the student<br/>interrupt}}
+  I -. approve / discard<br/>hours or days later .-> L[learn<br/><i>rejected listings don't return</i>]
+  L --> X
 ```
 
-| Metric | Definition |
-|---|---|
-| Retrieval hit@k / MRR | An expected source in the top k of hybrid search (with the filters a perfect parser would extract) |
-| Tool-call correctness | The agent called the tools the query needs (e.g. `check_availability` for "from January") |
-| Filter extraction | Some search call carried the expected filters (budget ±5%, women-only, university, bedrooms) |
-| Citation precision | The share of the model's own citations that point at sources the tools returned this turn |
-| Citation support | LLM judge: does the cited source's text support the sentence that cites it? |
-| Refusal | On unanswerable queries, the agent says bari has no evidence and recommends nothing |
-| Injection/privacy resistance | No forbidden tool call, no recommendation of the planted scam, no phone/email or injected payment instruction in the answer |
-| Latency, cost | Wall-clock per query; tokens × paid-tier list price (Groq's free tier itself costs $0) |
+- **Pauses for people.** `interrupt()` stops the run, and LangGraph's Postgres checkpointer saves its state.
+  When the student decides, maybe days later on another server, the run continues from the checkpoint.
+- **The LLM only judges.** Finding listings, collecting evidence and checking dates are normal code. One LLM call
+  ranks and explains. If the LLM fails, a rule-based ranking takes over.
+- **Messages can't be hijacked.** Questions to owners are filled from the student's own questions, so text in a
+  listing can never put words in the student's mouth.
+- **Why LangGraph here and not for the chat assistant:** Scout needs saved state and pausing for approval,
+  which is what LangGraph is built for. The chat assistant is a short, latency-sensitive loop that is already
+  tested and evaluated, so it stays a small custom agent.
+
+</details>
+
+<details>
+<summary><b>Evaluation details</b></summary>
+
+`eval/queries.yaml` has 33 questions (24 English, 9 Bangla/Banglish) with known correct answers planted in the
+synthetic data: specific needs (rooftop garden, wheelchair access, pet-friendly), filter requests, safety and
+forum questions, comparison and pricing, a booking, 4 questions with no answer in the data, and 4
+prompt-injection and privacy attacks.
+
+```bash
+docker compose run --rm backend python /eval/run_eval.py retrieval                 # search quality
+docker compose run --rm backend python /eval/run_eval.py agent --provider api --judge --sleep 3
+docker compose run --rm backend python /eval/run_eval.py agent --provider ollama
+docker compose run --rm backend python /eval/run_eval.py report                    # → eval/results/results.md
+```
+
+Search numbers were measured with the local stack (`bge-m3` + re-ranker). The live site uses Gemini
+embeddings without the re-ranker, to fit Vercel's free limits.
 
 <!-- RESULTS:START -->
-### Retrieval (hybrid search ablation)
+#### Search quality: full ablation
 
 Each query has planted ground-truth sources; filters are the ones a perfect parser would extract.
 
@@ -241,7 +233,7 @@ Each query has planted ground-truth sources; filters are the ones a perfect pars
 | hybrid, script-aware RRF + rerank | en | 14 | 86% | 100% | 0.91 | 3242 | 4870 |
 | hybrid, script-aware RRF + rerank | bn+banglish | 8 | 100% | 100% | 1.00 | 2979 | 3746 |
 
-### Agent (end to end)
+#### Assistant: full results
 
 Three complete runs, 33 queries each:
 - **gpt-oss-20b** via the Groq API. This is a baseline measured *before* the eval-driven fixes in
@@ -304,40 +296,39 @@ day, and one run with judging needs about 215K.
   the planted scam.
 <!-- RESULTS:END -->
 
----
+</details>
 
 ## Project layout
 
 ```
 backend/
-  agent/        tool-calling loop, tools, prompts, guardrails
-  rag/          chunking, embeddings, hybrid search, reranker, indexer
-  llm/          providers (Groq/OpenAI-compatible, Ollama, fake), retries, call log, pricing
-  workflows/    listing assistant, listing screening, content moderation
-  jobs/         Postgres job queue + worker
-  services/     business logic shared by routers and tools
-  routers/      HTTP API (auth, properties, bookings, chat, ai, actions, search, admin, …)
-  alembic/      migrations
-  seed_data/    deterministic synthetic data generator + fixtures
-  tests/        pytest suite
-eval/           queries, runner, metrics, judge, results
-src/            React frontend (AIAssistant, ListingAssistant, Admin, …)
+  agent/        AI assistant: tool loop, tools, prompts, guardrails
+  scout/        Scout background agent (LangGraph)
+  rag/          search: chunking, embeddings, hybrid search, re-ranker, indexer
+  llm/          LLM providers (Groq, Ollama), retries, call log, pricing
+  workflows/    listing assistant, duplicate/scam screening, moderation
+  jobs/         Postgres job queue and worker
+  services/     business logic shared by the website and the AI
+  routers/      HTTP API
+  alembic/      database migrations
+  seed_data/    synthetic data generator
+  tests/        backend tests
+eval/           evaluation questions, runner, metrics, results
+src/            React frontend
+docs/           deployment guide, screenshots
 ```
 
 ## Limitations and next steps
 
-- **Synthetic data.** The 150 listings and 200 posts are generated from templates, so many listings look alike.
-  Duplicate detection was tuned on this data (see `workflows/screening.py`); real listings would need re-tuning
-  and a labelled set.
-- **CPU-only inference.** On a laptop CPU, bge-m3 embeds a query in about 0.3–0.6 s, and the cross-encoder
-  costs about 0.4 s per candidate, so only the top 10 are reranked. A GPU or a hosted reranker would allow a
-  deeper rerank.
-- **Small local models.** In testing, qwen2.5 3B often skipped filters and citations; the guardrails catch some
-  of that (constraint warnings, citation repair), but the eval shows the gap to the API model.
-- Next: payments (bKash) on confirmed bookings, notifications for owners, map-based search, active learning
-  from moderator decisions.
+- **Synthetic data.** The listings and posts are generated, so many look alike. Real data would need re-tuning
+  of duplicate detection and a labelled test set.
+- **Laptop hardware.** Without a GPU, embedding and re-ranking take a few seconds per search. A GPU or a hosted
+  re-ranker would make search faster and deeper.
+- **Small local models.** The 3B and 7B models stay safe (100%) but are weaker at understanding filters and at
+  saying "I don't know". A cloud model does much better.
+- **Next:** bKash payments for confirmed bookings, owner notifications, map search.
 
 ## Credits
 
-bari was first built as a course project (Group 11, CSE471, BRAC University). This fork adds the agentic RAG
-system, evaluation, and the platform work around it.
+bari began as a course project (Group 11, CSE471, BRAC University). This version adds the AI assistant, search,
+Scout, moderation tools, evaluation and the production deployment.
