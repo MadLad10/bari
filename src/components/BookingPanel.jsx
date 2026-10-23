@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAvailability, createBooking } from "../api";
+import { getAvailability, createBooking, quoteBooking } from "../api";
 import { useAuth } from "../auth/AuthContext";
 import "./BookingPanel.css";
 
@@ -7,13 +7,6 @@ const PAD = (n) => String(n).padStart(2, "0");
 
 function toLocalInput(date) {
   return `${date.getFullYear()}-${PAD(date.getMonth() + 1)}-${PAD(date.getDate())}T${PAD(date.getHours())}:${PAD(date.getMinutes())}`;
-}
-
-function computePrice(price, rentalType, checkIn, checkOut) {
-  const delta = (new Date(checkOut) - new Date(checkIn)) / 1000;
-  if (rentalType === "hourly") return price * Math.max(delta / 3600, 1);
-  if (rentalType === "daily") return price * Math.max(Math.ceil(delta / 86400), 1);
-  return price * Math.max(Math.round(delta / (86400 * 30)), 1);
 }
 
 export default function BookingPanel({ property }) {
@@ -31,6 +24,8 @@ export default function BookingPanel({ property }) {
   const [submitting, setSubmitting] = useState(false);
   const [booking, setBooking] = useState(null);
   const [error, setError] = useState(null);
+  const [quote, setQuote] = useState(null);
+  const [quoteError, setQuoteError] = useState(null);
 
   const rentalType = rental_type || "daily";
 
@@ -43,6 +38,24 @@ export default function BookingPanel({ property }) {
     getAvailability(id).then(setBusy).catch(() => {});
   }, [id, listing_type]);
 
+  useEffect(() => {
+    if (listing_type === "sale") return;
+    let current = true;
+    setQuote(null);
+    setQuoteError(null);
+    if (!checkIn || !checkOut || new Date(checkOut) <= new Date(checkIn)) {
+      setQuoteError("Choose a check-out time after check-in.");
+      return;
+    }
+    const timer = setTimeout(() => {
+      quoteBooking({ property_id: id, check_in: new Date(checkIn).toISOString(),
+        check_out: new Date(checkOut).toISOString(), rental_type: rentalType })
+        .then(data => { if (current) setQuote(data); })
+        .catch(err => { if (current) setQuoteError(err.message); });
+    }, 250);
+    return () => { current = false; clearTimeout(timer); };
+  }, [id, listing_type, rentalType, checkIn, checkOut, price]);
+
   if (listing_type === "sale") {
     return (
       <div className="bp-card bp-sale">
@@ -52,7 +65,7 @@ export default function BookingPanel({ property }) {
     );
   }
 
-  const total = checkIn && checkOut ? computePrice(price, rentalType, checkIn, checkOut) : null;
+  const total = quote?.total_price ?? null;
 
   async function handleBook(e) {
     e.preventDefault();
@@ -78,14 +91,16 @@ export default function BookingPanel({ property }) {
     return (
       <div className="bp-card bp-confirmed">
         <div className="bp-confirmed-icon">✓</div>
-        <h3>Booking Confirmed</h3>
+        <h3>{booking.status === "confirmed" ? "Booking confirmed" : booking.status === "pending" ? "Booking request received" : "Booking updated"}</h3>
         <p>Booking #{booking.id} is <strong>{booking.status}</strong>.</p>
+        {booking.status === "pending" && <p>Your request is pending confirmation.</p>}
         <div className="bp-confirmed-rows">
           <div><span>Check-in</span><span>{new Date(booking.check_in).toLocaleString("en-BD")}</span></div>
           <div><span>Check-out</span><span>{new Date(booking.check_out).toLocaleString("en-BD")}</span></div>
           <div><span>Total</span><span>৳{booking.total_price.toLocaleString()}</span></div>
         </div>
         <button className="bp-reset" onClick={() => setBooking(null)}>Make another booking</button>
+        <a href={`/bookings/${booking.id}`} className="bp-manage">View or cancel this booking →</a>
       </div>
     );
   }
@@ -118,12 +133,16 @@ export default function BookingPanel({ property }) {
           <input type="datetime-local" value={checkOut} min={checkIn} onChange={(e) => setCheckOut(e.target.value)} required />
         </div>
 
-        {total !== null && (
+        {total !== null ? (
           <div className="bp-total">
             <span>Estimated total</span>
-            <span>৳{total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+            <span>৳{total.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
           </div>
-        )}
+        ) : !quoteError && <p role="status">Calculating total…</p>}
+        {quoteError && <div className="bp-error" role="alert">{quoteError}</div>}
+        <p className="bp-hint">{rentalType === "daily" ? "Daily rates apply to each started 24-hour period."
+          : rentalType === "monthly" ? "Monthly rates apply to each started 30-day period."
+          : "Hourly rates use the length of your stay, with a one-hour minimum."}</p>
 
         <div className="bp-field">
           <label>Your name *</label>
@@ -145,8 +164,8 @@ export default function BookingPanel({ property }) {
         {error && <div className="bp-error">{error}</div>}
 
         {user ? (
-          <button type="submit" className="bp-submit" disabled={submitting}>
-            {submitting ? "Booking…" : "Confirm Booking"}
+          <button type="submit" className="bp-submit" disabled={submitting || !quote}>
+            {submitting ? "Sending request…" : "Request booking"}
           </button>
         ) : (
           <button type="button" className="bp-submit" onClick={() => openAuth({ reason: "Log in to book this place." })}>

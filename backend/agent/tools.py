@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from agent.guardrails import has_booking_intent, wrap_untrusted
 from config import settings
+from services.publication import is_public
 from models import ListingStatus, PendingAction, RentalType, User
 from rag.hybrid import hybrid_search
 from schemas import PropertySearchParams
@@ -148,7 +149,7 @@ def _active_property(db: Session, property_id: int):
         p = property_svc.get_property(db, property_id)
     except ServiceError as e:
         raise ToolError(f"listing {property_id} does not exist") from e
-    if p.status != ListingStatus.active:
+    if not is_public(p):
         raise ToolError(f"listing {property_id} is not currently available")
     return p
 

@@ -15,6 +15,8 @@ backend/bari.db
 *.sqlite3
 backend/uploads/
 uploads/
+backend/private_uploads/
+private_uploads/
 
 # Secrets
 .env

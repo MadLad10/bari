@@ -70,7 +70,9 @@ def test_delete_property(client, make_property, owner):
 
 def test_upload_photo_and_document(client, make_property, owner, tmp_path, monkeypatch):
     import routers.properties as props_router
+    from config import settings
     monkeypatch.setattr(props_router, "UPLOAD_DIR", str(tmp_path))
+    monkeypatch.setattr(settings, "private_upload_dir", str(tmp_path / "private"))
     prop = make_property()
 
     res = client.post(f"/api/properties/{prop['id']}/photos",
@@ -83,7 +85,8 @@ def test_upload_photo_and_document(client, make_property, owner, tmp_path, monke
                       files={"file": ("a.txt", b"hi", "text/plain")}, headers=owner)
     assert bad.status_code == 400
 
+    from tests.test_verification import document_pdf
     doc = client.post(f"/api/properties/{prop['id']}/documents",
-                      files={"file": ("deed.pdf", b"%PDF", "application/pdf")}, headers=owner)
+                      files={"file": ("deed.pdf", document_pdf(), "application/pdf")}, headers=owner)
     assert doc.status_code == 200
     assert doc.json()["name"] == "deed.pdf"

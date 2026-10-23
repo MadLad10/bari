@@ -41,6 +41,7 @@ class Settings(BaseSettings):
         "http://localhost:4173",
     ]
     upload_dir: str = "uploads"
+    private_upload_dir: str = "private_uploads"
 
     # Auth
     jwt_secret: str = "dev-only-insecure-secret-change-me-in-env"
@@ -97,6 +98,7 @@ VERCEL_DEFAULTS = {
     "jobs_mode": "inline",       # no always-on worker process
     "reranker": "none",          # the ONNX cross-encoder is too large for a function
     "upload_dir": "/tmp/uploads",  # the only writable path (ephemeral)
+    "private_upload_dir": "/tmp/private_uploads",
 }
 
 

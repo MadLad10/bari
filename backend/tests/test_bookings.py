@@ -66,3 +66,29 @@ def test_cancel_booking_frees_dates(client, make_property, renter):
     assert client.patch(f"/api/bookings/{b['id']}/cancel", headers=renter).status_code == 400
     assert client.get(f"/api/bookings/property/{prop['id']}/availability").json() == []
     assert client.post("/api/bookings/", headers=renter, json=_booking(prop["id"])).status_code == 201
+
+
+def test_quote_and_booking_agree_on_started_days_and_months(client, make_property, renter):
+    start = datetime.now(timezone.utc) + timedelta(days=100)
+    for period, duration, expected in [("daily", timedelta(hours=36), 2000),
+                                       ("monthly", timedelta(days=30, minutes=1), 2000),
+                                       ("hourly", timedelta(minutes=90), 1500)]:
+        prop = make_property(price=1000, rental_type=period)
+        interval = {"property_id": prop["id"], "check_in": start.isoformat(),
+                    "check_out": (start + duration).isoformat(), "rental_type": period}
+        quote = client.post("/api/bookings/quote", json=interval)
+        assert quote.status_code == 200, quote.text
+        booking = client.post("/api/bookings/", headers=renter,
+                              json={**_booking(prop["id"]), **interval})
+        assert quote.json()["total_price"] == booking.json()["total_price"] == expected
+        assert booking.json()["status"] == "pending"
+
+
+def test_quote_rejects_invalid_or_unavailable_dates(client, make_property, renter):
+    prop = make_property()
+    body = _booking(prop["id"])
+    assert client.post("/api/bookings/", headers=renter, json=body).status_code == 201
+    interval = {k: body[k] for k in ("property_id", "check_in", "check_out", "rental_type")}
+    assert client.post("/api/bookings/quote", json=interval).status_code == 409
+    interval["check_out"] = interval["check_in"]
+    assert client.post("/api/bookings/quote", json=interval).status_code == 400

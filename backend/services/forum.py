@@ -1,7 +1,7 @@
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
-from models import ForumComment, ForumPost, PostType
+from models import ForumComment, ForumPost, PostType, User
 from jobs.queue import enqueue
 from rag.indexer import enqueue_index
 from services.errors import NotFound
@@ -78,11 +78,16 @@ def create_post(db: Session, **fields) -> dict:
     post = ForumPost(**fields)
     db.add(post)
     db.flush()
+    case = None
+    if post.post_type == PostType.report and post.author_id:
+        from services.cases import create_case
+        case = create_case(db, db.get(User, post.author_id), category="forum_report", title=post.title,
+                           description=post.body, property_id=post.property_id, forum_post=post, commit=False)
     enqueue_index(db, "post", post.id)
     enqueue(db, "moderate", {"kind": "post", "id": post.id}, dedupe_key=f"moderate:post:{post.id}")
     db.commit()
     db.refresh(post)
-    return post_to_dict(post, 0)
+    return {**post_to_dict(post, 0), "case_id": case.id if case else None}
 
 
 def upvote_post(db: Session, post_id: int) -> int:

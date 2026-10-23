@@ -2,6 +2,7 @@ from pgvector.sqlalchemy import Vector
 from sqlalchemy import Boolean, Column, Computed, DateTime, Enum, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB, TSVECTOR
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 import enum
 from database import Base
 
@@ -82,6 +83,11 @@ class Property(Base):
     university_distance_km = Column(Float, nullable=True)
 
     is_female_only = Column(Boolean, default=False, nullable=False)
+    women_safety_status = Column(String(25), nullable=False, default="not_submitted", server_default="not_submitted")
+    women_safety_submission = Column(JSONB, nullable=False, default=dict, server_default="{}")
+    women_safety_feedback = Column(Text, nullable=True)
+    women_safety_version = Column(Integer, nullable=False, default=0, server_default="0")
+    women_safety_reviewed_at = Column(DateTime(timezone=True), nullable=True)
     safety_score = Column(Float, nullable=True)
 
     amenities = Column(JSONB, default=list)
@@ -94,10 +100,44 @@ class Property(Base):
     owner_email = Column(String(150), nullable=True)
     owner_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
     moderation_reason = Column(Text, nullable=True)   # set when screening moves a listing to `pending`
+    document_check_status = Column(String(20), nullable=False, default="not_submitted", server_default="not_submitted")
+    document_check_reasons = Column(JSONB, nullable=False, default=list, server_default="[]")
+    document_checked_at = Column(DateTime(timezone=True), nullable=True)
 
     status = Column(Enum(ListingStatus), default=ListingStatus.active, nullable=False, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+
+class WomenSafetyReview(Base):
+    __tablename__ = "women_safety_reviews"
+
+    id = Column(Integer, primary_key=True)
+    property_id = Column(Integer, ForeignKey("properties.id", ondelete="CASCADE"), nullable=False, index=True)
+    reviewer_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    reviewer_name = Column(String(100), nullable=False)
+    verdict = Column(String(25), nullable=False)
+    version = Column(Integer, nullable=False)
+    checklist = Column(JSONB, nullable=False)
+    submission = Column(JSONB, nullable=False)
+    notes = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class PropertyDocument(Base):
+    __tablename__ = "property_documents"
+
+    id = Column(Integer, primary_key=True)
+    property_id = Column(Integer, ForeignKey("properties.id", ondelete="CASCADE"), nullable=False, index=True)
+    stored_name = Column(String(80), nullable=False, unique=True)
+    original_name = Column(String(255), nullable=False)
+    content_type = Column(String(50), nullable=False)
+    content_hash = Column(String(64), nullable=False, index=True)
+    text_hash = Column(String(64), nullable=True, index=True)
+    extracted_text = Column(Text, nullable=True)
+    extraction_error = Column(String(250), nullable=True)
+    processed = Column(Boolean, nullable=False, default=False, server_default="false")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
 # ── Booking ──────────────────────────────────────────────────────────────────
@@ -125,8 +165,11 @@ class Booking(Base):
     total_price = Column(Float, nullable=False)
 
     status = Column(Enum(BookingStatus), default=BookingStatus.pending, nullable=False)
+    cancellation_reason = Column(String(30), nullable=True)
+    cancelled_at = Column(DateTime(timezone=True), nullable=True)
     note = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    property = relationship("Property", lazy="selectin")
 
 
 # ── Chat ──────────────────────────────────────────────────────────────────────
@@ -201,6 +244,42 @@ class ForumComment(Base):
     moderation_status = Column(String(10), nullable=False, default="visible", server_default="visible")
     moderation_reason = Column(Text, nullable=True)
     content = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class InvestigationCase(Base):
+    __tablename__ = "investigation_cases"
+
+    id = Column(Integer, primary_key=True)
+    reporter_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    reporter_name = Column(String(100), nullable=False)
+    category = Column(String(30), nullable=False)
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    status = Column(String(25), nullable=False, default="open", server_default="open", index=True)
+    property_id = Column(Integer, ForeignKey("properties.id", ondelete="SET NULL"), nullable=True)
+    property_title = Column(String(200), nullable=True)
+    booking_id = Column(Integer, ForeignKey("bookings.id", ondelete="SET NULL"), nullable=True)
+    booking_reference = Column(Integer, nullable=True)
+    forum_post_id = Column(Integer, ForeignKey("forum_posts.id", ondelete="SET NULL"), nullable=True, unique=True)
+    assigned_to = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    resolution = Column(Text, nullable=True)
+    version = Column(Integer, nullable=False, default=1, server_default="1")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now())
+    resolved_at = Column(DateTime(timezone=True), nullable=True)
+
+
+class CaseUpdate(Base):
+    __tablename__ = "case_updates"
+
+    id = Column(Integer, primary_key=True)
+    case_id = Column(Integer, ForeignKey("investigation_cases.id", ondelete="CASCADE"), nullable=False, index=True)
+    actor_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    actor_name = Column(String(100), nullable=False)
+    kind = Column(String(25), nullable=False)
+    internal = Column(Boolean, nullable=False, default=False, server_default="false")
+    body = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 

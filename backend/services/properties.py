@@ -1,15 +1,18 @@
 from sqlalchemy import and_, or_, text
 from sqlalchemy.orm import Session
 
-from models import Document, ListingStatus, Property, SafetyVote
+from datetime import datetime, timezone
+
+from models import Booking, BookingStatus, Document, ListingStatus, ListingType, Property, PropertyDocument, SafetyVote
 from jobs.queue import enqueue
 from rag.indexer import enqueue_index
 from schemas import PropertyCreate, PropertySearchParams, PropertyUpdate
-from services.errors import NotFound
+from services.errors import Conflict, NotFound
+from services.publication import public_filter
 
 
 def build_filters(params: PropertySearchParams) -> list:
-    filters = [Property.status == ListingStatus.active]
+    filters = [public_filter()]
 
     if params.q:
         q = params.q
@@ -67,7 +70,7 @@ def count_properties(db: Session, params: PropertySearchParams) -> int:
 
 
 PUBLIC_SUMMARY_FIELDS = ("id", "title", "area", "price", "rental_type", "bedrooms", "property_type", "listing_type",
-                         "furnishing", "is_female_only", "safety_score", "nearby_university",
+                         "furnishing", "is_female_only", "women_safety_status", "safety_score", "nearby_university",
                          "university_distance_km", "photos")
 
 
@@ -106,7 +109,7 @@ def get_properties(db: Session, ids: list[int]) -> list[Property]:
 
 
 def create_property(db: Session, payload: PropertyCreate, **extra) -> Property:
-    prop = Property(**payload.model_dump(), **extra)
+    prop = Property(**payload.model_dump(), status=ListingStatus.pending, **extra)
     db.add(prop)
     db.flush()
     enqueue_index(db, "listing", prop.id)  # committed atomically with the listing (outbox)
@@ -117,10 +120,19 @@ def create_property(db: Session, payload: PropertyCreate, **extra) -> Property:
 
 
 def update_property(db: Session, property_id: int, payload: PropertyUpdate) -> Property:
-    prop = get_property(db, property_id)
-    changes = payload.model_dump(exclude_unset=True)
+    from services import women_safety
+    prop = women_safety.locked(db, property_id)
+    changes = {key: value for key, value in payload.model_dump(exclude_unset=True).items()
+               if getattr(prop, key) != value}
+    if changes.get("listing_type", prop.listing_type) == ListingType.sale:
+        changes["rental_type"] = None
     for field, value in changes.items():
         setattr(prop, field, value)
+    if women_safety.REVIEW_FIELDS & changes.keys():
+        women_safety.invalidate(db, prop)
+    if {"owner_name", "address", "area", "city"} & changes.keys():
+        from services.verification import invalidate
+        invalidate(db, prop)
     enqueue_index(db, "listing", prop.id)
     if {"title", "description", "price"} & changes.keys():  # scams are often edited in after approval
         enqueue(db, "screen_listing", {"property_id": prop.id}, dedupe_key=f"screen:{prop.id}")
@@ -135,15 +147,27 @@ def update_property(db: Session, property_id: int, payload: PropertyUpdate) -> P
 
 def delete_property(db: Session, property_id: int) -> None:
     prop = get_property(db, property_id)
+    db.refresh(prop, with_for_update=True)
+    if db.query(Booking.id).filter(Booking.property_id == property_id,
+                                 Booking.status != BookingStatus.cancelled,
+                                 Booking.check_out > datetime.now(timezone.utc)).first():
+        raise Conflict("Resolve upcoming bookings before deleting this listing. You can pause it instead.")
+    stored = [d.stored_name for d in db.query(PropertyDocument).filter_by(property_id=property_id)]
     db.query(Document).filter(Document.property_id == property_id,
                               Document.source_type.in_(("listing", "safety"))).delete(synchronize_session=False)
     db.delete(prop)
     db.commit()
+    from services.verification import private_path
+    for name in stored:
+        private_path(name).unlink(missing_ok=True)
 
 
 def append_file(db: Session, property_id: int, field: str, url: str) -> Property:
     """Append an uploaded file URL to the `photos` or `documents` list."""
-    prop = get_property(db, property_id)
+    from services import women_safety
+    prop = women_safety.locked(db, property_id)
     setattr(prop, field, [*(getattr(prop, field) or []), url])
+    if field == "photos":
+        women_safety.invalidate(db, prop)
     db.commit()
     return prop

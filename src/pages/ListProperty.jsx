@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { createProperty, uploadPhoto, uploadDocument } from "../api";
+import { createProperty, uploadPhoto } from "../api";
 import NavAuth from "../auth/NavAuth";
 import { useAuth } from "../auth/AuthContext";
 import { API_ROOT } from "../api";
 import ListingAssistant from "../components/ListingAssistant";
+import VerificationPanel from "../components/VerificationPanel";
+import WomenSafetyPanel from "../components/WomenSafetyPanel";
 import "./ListProperty.css";
 
 const UNIVERSITIES = [
@@ -54,10 +56,8 @@ export default function ListProperty() {
   const [error, setError] = useState(null);
   const [createdId, setCreatedId] = useState(null);
   const [photos, setPhotos] = useState([]);
-  const [documents, setDocuments] = useState([]);
   const [uploading, setUploading] = useState(false);
   const photoInputRef = useRef(null);
-  const docInputRef = useRef(null);
 
   useEffect(() => {
     if (!user) return;
@@ -126,24 +126,10 @@ export default function ListProperty() {
     setUploading(false);
   }
 
-  async function handleDocFiles(files) {
-    if (!createdId || !files.length) return;
-    setUploading(true);
-    for (const file of Array.from(files)) {
-      try {
-        const result = await uploadDocument(createdId, file);
-        setDocuments((prev) => [...prev, { url: `${API_ROOT}${result.url}`, name: result.name }]);
-      } catch {
-        // skip failed uploads silently — user can retry
-      }
-    }
-    setUploading(false);
-  }
-
-  function handleDrop(e, type) {
+  function handleDrop(e) {
     e.preventDefault();
     const files = e.dataTransfer.files;
-    type === "photo" ? handlePhotoFiles(files) : handleDocFiles(files);
+    handlePhotoFiles(files);
   }
 
   const isSale = form.listing_type === "sale";
@@ -161,7 +147,7 @@ export default function ListProperty() {
       <div className="lp-container">
         <div className="lp-header">
           <h1>List Your Property</h1>
-          <p>Fill in the details below and your listing will appear on bari.com within minutes.</p>
+          <p>Save your property details, then upload documents for checks before publication.</p>
         </div>
         {ready && (!user || !["owner", "admin"].includes(user.role)) && (
           <div className="auth-gate" style={{ marginBottom: "1.5rem" }}>
@@ -298,7 +284,7 @@ export default function ListProperty() {
               <div className="lp-checks">
                 <label className="check-option">
                   <input type="checkbox" name="is_female_only" checked={form.is_female_only} onChange={handleChange} />
-                  Women-only listing (female students only)
+                  Request women-only listing (separate admin safety approval required)
                 </label>
                 <label className="check-option">
                   <input type="checkbox" name="has_furniture_for_sale" checked={form.has_furniture_for_sale} onChange={handleChange} />
@@ -404,7 +390,7 @@ export default function ListProperty() {
               <div className="lp-nav">
                 <button type="button" className="btn-back" onClick={() => setStep(2)}>← Back</button>
                 <button type="submit" className="btn-submit" disabled={submitting}>
-                  {submitting ? "Publishing…" : "Publish & Add Photos →"}
+                  {submitting ? "Saving…" : "Save & Add Documents →"}
                 </button>
               </div>
             </div>
@@ -416,13 +402,13 @@ export default function ListProperty() {
               <div className="step4-success">
                 <span className="step4-check">✓</span>
                 <div>
-                  <strong>Listing published!</strong>
-                  <span>Now add photos and ownership documents to boost trust with renters.</span>
+                  <strong>Draft saved</strong>
+                  <span>Add photos and ownership documents. Your listing stays hidden until checks pass or an admin approves it.</span>
                 </div>
               </div>
               <p className="lp-review-note">
-                Every new listing is automatically checked for duplicates and scam patterns. If something looks off,
-                it's held for a quick review and you'll see the reason under your listings.
+                Matching documents can pass automatically. Unclear submissions are sent for review.
+                You can return to these checks at any time from your owner dashboard.
               </p>
 
               {/* Photos */}
@@ -458,45 +444,15 @@ export default function ListProperty() {
                 </div>
               )}
 
-              {/* Documents */}
-              <h2 style={{ marginTop: "2rem" }}>Ownership Documents</h2>
-              <p className="lp-note">Upload proof of ownership or tenancy agreement (PDF or image). Required for admin verification.</p>
-
-              <div
-                className="upload-dropzone upload-dropzone-doc"
-                onClick={() => docInputRef.current?.click()}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => handleDrop(e, "doc")}
-              >
-                <input
-                  ref={docInputRef}
-                  type="file"
-                  accept="application/pdf,image/jpeg,image/png,image/webp"
-                  multiple
-                  className="upload-input-hidden"
-                  onChange={(e) => handleDocFiles(e.target.files)}
-                />
-                <div className="dropzone-icon">📄</div>
-                <p>Drag documents here or <span className="dropzone-link">click to browse</span></p>
-                <span className="field-hint">PDF · JPEG · PNG · WebP</span>
-              </div>
-
-              {documents.length > 0 && (
-                <ul className="doc-list">
-                  {documents.map((d, i) => (
-                    <li key={i} className="doc-item">
-                      <span className="doc-icon">📄</span>
-                      <a href={d.url} target="_blank" rel="noreferrer">{d.name}</a>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              {createdId && <VerificationPanel propertyId={createdId} />}
+              {createdId && form.is_female_only && <WomenSafetyPanel propertyId={createdId} />}
 
               {uploading && <p className="upload-status">Uploading…</p>}
 
               <div className="lp-nav" style={{ marginTop: "2rem" }}>
+                <Link to="/owner">Open owner dashboard →</Link>
                 <span className="field-hint">
-                  {photos.length} photo{photos.length !== 1 ? "s" : ""} · {documents.length} document{documents.length !== 1 ? "s" : ""} uploaded
+                  {photos.length} photo{photos.length !== 1 ? "s" : ""} uploaded
                 </span>
                 <button
                   type="button"

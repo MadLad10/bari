@@ -1,9 +1,11 @@
 from datetime import datetime, timezone
+import math
 
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
-from models import Booking, BookingStatus, ListingStatus, Property, RentalType
+from services.publication import is_public
+from models import Booking, BookingStatus, ListingStatus, Property, RentalType, User, UserRole
 from services.errors import BadRequest, Conflict, NotFound
 from services.properties import get_property
 
@@ -25,10 +27,10 @@ def compute_price(prop: Property, check_in: datetime, check_out: datetime, renta
         hours = max(delta.total_seconds() / 3600, 1)
         return round(prop.price * hours, 2)
     if rental_type == RentalType.daily:
-        days = max(delta.days, 1)
+        days = max(math.ceil(delta.total_seconds() / 86400), 1)
         return round(prop.price * days, 2)
     # monthly: count started months
-    months = max(round(delta.days / 30), 1)
+    months = max(math.ceil(delta.total_seconds() / (86400 * 30)), 1)
     return round(prop.price * months, 2)
 
 
@@ -58,7 +60,7 @@ def validate_booking(db: Session, property_id: int, check_in: datetime, check_ou
     if check_out <= check_in:
         raise BadRequest("check_out must be after check_in")
     prop = get_property(db, property_id)
-    if prop.status != ListingStatus.active:
+    if not is_public(prop):
         raise Conflict("This listing is not available for booking")
     if has_overlap(db, property_id, check_in, check_out):
         raise Conflict("Property is already booked for the selected dates")
@@ -66,6 +68,8 @@ def validate_booking(db: Session, property_id: int, check_in: datetime, check_ou
 
 
 def create_booking(db: Session, payload: BookingCreate, *, commit: bool = True, **extra) -> Booking:
+    # Serialize requests for this property so two clients cannot reserve overlapping dates.
+    db.query(Property).filter(Property.id == payload.property_id).with_for_update().first()
     _, total = validate_booking(db, payload.property_id, payload.check_in, payload.check_out, payload.rental_type)
     booking = Booking(**payload.model_dump(), total_price=total, **extra)
     db.add(booking)
@@ -110,11 +114,44 @@ def get_booking(db: Session, booking_id: int) -> Booking:
     return b
 
 
-def cancel_booking(db: Session, booking_id: int) -> Booking:
+def cancel_booking(db: Session, booking_id: int, actor: User) -> Booking:
     b = get_booking(db, booking_id)
+    db.refresh(b, with_for_update=True)
     if b.status == BookingStatus.cancelled:
         raise BadRequest("Booking is already cancelled")
+    if b.check_out <= datetime.now(timezone.utc):
+        raise Conflict("This stay has already ended and cannot be cancelled")
     b.status = BookingStatus.cancelled
+    b.cancellation_reason = ("renter_cancelled" if actor.id == b.renter_id else
+                             "admin_cancelled" if actor.role == UserRole.admin else "owner_cancelled")
+    b.cancelled_at = datetime.now(timezone.utc)
+    db.commit()
+    db.refresh(b)
+    return b
+
+
+def owner_bookings(db: Session, owner_id: int) -> list[Booking]:
+    return (db.query(Booking).join(Property, Property.id == Booking.property_id)
+            .filter(Property.owner_id == owner_id).order_by(Booking.created_at.desc()).all())
+
+
+def decide_booking(db: Session, booking_id: int, *, accept: bool) -> Booking:
+    b = get_booking(db, booking_id)
+    prop = db.query(Property).filter(Property.id == b.property_id).with_for_update().one()
+    db.refresh(b, with_for_update=True)
+    if b.status != BookingStatus.pending:
+        raise Conflict("Only pending booking requests can be accepted or declined")
+    if accept:
+        if b.check_out <= datetime.now(timezone.utc):
+            raise Conflict("This booking request has already ended")
+        if not is_public(prop):
+            raise Conflict("Publish this listing before accepting bookings")
+        if has_overlap(db, b.property_id, b.check_in, b.check_out, exclude_id=b.id):
+            raise Conflict("These dates are reserved by another booking")
+    b.status = BookingStatus.confirmed if accept else BookingStatus.cancelled
+    if not accept:
+        b.cancellation_reason = "owner_declined"
+        b.cancelled_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(b)
     return b

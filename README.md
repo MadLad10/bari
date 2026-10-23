@@ -47,8 +47,8 @@ into a prompt. I rebuilt it into a full AI system:
 - **Evaluation.** 33 test questions in English and Bangla, measuring search quality, correct tool use,
   citation accuracy, honest "I don't know" answers, injection resistance, speed and cost. I ran it on
   cloud and local models, and fixed 10+ problems it uncovered.
-- **Platform work.** Moved the app from SQLite to PostgreSQL, added login, background jobs, 157 automated tests
-  (149 backend + 8 frontend), and a free production deployment on Vercel with Neon Postgres.
+- **Platform work.** Moved the app from SQLite to PostgreSQL, added login, background jobs, 239 automated tests
+  (196 backend + 43 frontend), and a free production deployment on Vercel with Neon Postgres.
 
 ## Tech stack
 
@@ -131,13 +131,137 @@ Gemini. Step by step in [`docs/DEPLOY.md`](docs/DEPLOY.md).
 **Tests:**
 
 ```bash
-docker compose run --rm backend pytest     # 149 backend tests (no API keys or network needed)
-npm test                                   # 8 frontend tests
+docker compose run --rm backend pytest     # 160 backend tests (no API keys or network needed)
+npm test                                   # 10 frontend tests
 ```
 
 ---
 
 ## Technical details
+
+### Local document checks and private uploads
+
+New listings start as hidden drafts. After saving a property, its owner uploads an ownership or tenancy
+document and follows the result in **My listings**. A background job reads native PDFs or runs local
+Tesseract OCR in English and Bangla for scans/images. It checks readability, the account/listing owner
+names, address and area, recognizable document wording, and file/text reuse across different owner
+accounts. Matching submissions receive **Document checks passed** and can publish automatically once
+any separate women-only safety approval is also complete;
+uncertain submissions appear in the admin review queue. These are document consistency checks, not
+proof of legal ownership. There are no paid API calls in this workflow.
+
+Docker installs Tesseract, both language packs, Poppler, and the pinned Python PDF parser. Documents
+are limited to five files per listing, 10 MB per file, and five PDF pages. If local extraction cannot
+finish, the submission requires admin review. Changing the owner name/address/area or replacing
+documents withdraws publication while checks run again.
+
+Document files are stored in `backend/private_uploads`, outside the public photo directory. Downloads
+require the property owner's or an admin's bearer token. Public property responses omit document URLs;
+legacy document URLs under `/uploads` are blocked as well. The owner/admin interfaces download files
+with authenticated requests. Existing general listings retain their publication state, without receiving a
+document-check badge until checks are actually performed. Legacy women-only flags require the separate
+safety approval below before public visibility.
+
+### Independent women-only safety approval
+
+The owner-selected women-only checkbox expresses a request, never approval. Owners use
+**Owner dashboard → Women-only safety** (`/owner?tab=women-safety`) to submit confirmations covering
+occupancy policy, secure access, common-area lighting, privacy and emergency contacts, with descriptions
+and evidence references. Finish document checks first; replacing supporting documents or changing
+reviewed listing details invalidates the request and requires resubmission.
+
+Admins use **Moderation → Women-only safety** (`/admin?tab=women-safety`) to review the submission,
+listing photos and private ownership documents. A separate admin checklist and evidence/method notes
+are required for approval. Admins may request changes, decline or revoke approval. Owners can see
+feedback and decision history and resubmit. Admins cannot approve their own listing. Version checks
+reject stale decisions after edits or another review; decision records retain the reviewed submission
+and listing snapshot.
+
+Women-only listings require **both** passed/reviewed ownership documents and safety approval to appear
+in browsing, direct public details, search, AI retrieval and new bookings. Ordinary document/moderation
+approval cannot grant safety approval. Open investigations and moderation holds block safety approval.
+Approval publishes an eligible pending listing but preserves an explicit owner pause. Changes to
+location, occupancy, description, photos, amenities or owner contact details withdraw safety approval;
+price-only edits keep it. Public badges identify a completed admin review, not a guarantee of safety.
+
+The migration retains all existing listing records and places legacy active women-only listings into
+pending review. It never converts an owner flag into an approval. This workflow uses no paid APIs.
+
+## Owner dashboard
+
+Open `/owner` (or choose **Owner dashboard** after logging in). `/my-listings` redirects to its property
+manager. The workspace includes live listing counts, booking requests, document feedback, and renter
+conversations. All sections work on desktop and mobile.
+
+- **My properties:** create, search and edit apartments, houses, offices or rooms; set sale/rental prices,
+  monthly/daily/hourly periods, furnishing, furniture-for-sale, amenities, campus proximity and contact details.
+  Add/remove photos, preview, pause/publish approved listings, or delete listings without upcoming bookings.
+- **Booking requests:** owner-only renter details and history; accept or decline pending requests and cancel
+  confirmed bookings. Accepting rechecks publication, dates and overlapping reservations. Declining/cancelling
+  releases the hold; the renter's existing booking endpoint returns the updated status.
+- **Availability:** a monthly calendar and daily agenda with property filters, confirmed stays and pending
+  holds. Checkout is exclusive; a midnight checkout does not block the next day.
+- **Messages:** an account-bound inbox with live owner/renter replies. Both HTTP and WebSocket access check
+  thread membership; sender name and role come from the account. WebSockets authenticate in their first
+  frame. Delivery is scoped by **both property ID and conversation token**, so renters asking about the same
+  property have separate histories and live streams. The frontend also checks incoming message scope, discards
+  delayed replies after switching threads, and reconnects with REST polling while a socket is unavailable.
+  Regression tests cover two simultaneous renters on one property, separate properties, forged sender/thread
+  fields, owner inbox switching, and reconnect/fallback behavior. Legacy anonymous threads are
+  visible only to the listing owner/admin; new conversations require login. Scout shares the same account thread.
+- **Document checks:** private uploads/downloads and verification feedback in the workspace. Editing the
+  owner name or location starts fresh checks; price/furnishing edits keep existing document results.
+
+These owner workflows use the local database and do not require payment or paid APIs.
+
+## Renter booking management
+
+Choose **My bookings** in the navigation or open `/my-bookings` for private booking history. Search by
+property, area or booking number, and filter upcoming/current stays, pending requests, past stays, and
+cancelled/rejected requests. Booking cards include property details, check-in/out times, and the recorded
+booking total. `/bookings/:id` shows the full booking and refreshes owner decisions automatically.
+
+`/bookings/:id/cancel` shows a separate confirmation screen with **Keep booking** and **Yes, cancel booking**.
+Only confirming sends the cancellation request. Pending or confirmed stays can be cancelled until checkout;
+ended stays remain in history. Cancellation releases the date hold without deleting the booking record.
+The database records the cancellation time and whether the renter, owner or admin cancelled, or the owner
+rejected the request. Existing cancelled records keep a generic label when no actor was previously recorded.
+The owner dashboard shows incoming requests, accepts/rejects them, and displays renter cancellations in history.
+
+History and detail endpoints enforce booking ownership. Authorized users can still view their booking's
+property summary when a listing is paused; ownership documents are excluded. No payment/refund API is used.
+
+## Reports and investigations
+
+Open **My reports** (`/my-reports`) to submit a private concern, follow case status and outcomes, or respond
+to an admin's questions. Listing pages link to a prefilled safety report; booking details link to a booking
+dispute form. A dispute must reference a booking the reporter made or manages. Text descriptions and evidence
+references are supported; case file attachments are not currently provided.
+
+Forum posts of type **Report** automatically create a case in the same transaction, even when content
+moderation does not flag the post. Existing forum reports are imported by the migration. Reports without
+an authenticated original author remain admin-visible legacy cases; they are never assigned to a guessed
+user account. Public forum posts remain public, while the case discussion is private to the reporter/admins.
+
+Admins use **Moderation → Investigations** (`/admin?tab=cases`) to filter/search/paginate cases, assign a
+case to themselves, add private notes or reporter-facing messages, and update status. The lifecycle is
+open → investigating → awaiting reporter/resolved/dismissed; a reporter response resumes investigation.
+Closed cases can be reopened by admins. Resolution/dismissal requires an explanation shared with the reporter.
+All actions retain a timeline; stale concurrent decisions return a conflict rather than overwriting updates.
+
+An explicit **Hold linked listing** action hides the listing and records a moderation decision. Owners cannot
+republish it. Publication through listing updates or the moderation queue waits until open investigations
+are closed and ownership-document requirements are satisfied. Closing a case does not automatically publish
+the listing or change a booking/payment. Case snapshots and history survive deletion of the linked listing.
+
+Admin-only notes are excluded from reporter list/detail responses, and unrelated users (including the listing
+owner) cannot read another reporter's case. Shared updates and resolutions appear in My reports, with automatic
+refresh and a manual refresh control. These are in-app case updates; email/push notifications are not included.
+
+Booking estimates use `/api/bookings/quote` and the same calculation as booking creation: each started
+24-hour period for daily rates, each started 30-day period for monthly rates, or the actual hourly
+duration with a one-hour minimum. A booking with `pending` status is shown as a request awaiting
+confirmation.
 
 <details>
 <summary><b>Design decisions</b></summary>

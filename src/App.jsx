@@ -78,7 +78,7 @@ const studentItems = [
     title: "Secure Housing for Women",
     description:
       "A dedicated, moderated section for female students with owner verification, safety tags, and community reviews.",
-    badge: "Admin-verified listings ->",
+    badge: "Separate admin safety review ->",
   },
   {
     icon: "COMM",

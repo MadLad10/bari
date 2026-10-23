@@ -96,13 +96,17 @@ export default function PropertyDetail() {
           <div className="detail-main">
             {/* Badges */}
             <div className="detail-badges">
+              {property.document_check_status === "passed" && <span className="d-badge">Document checks passed</span>}
+              {property.document_check_status === "reviewed" && <span className="d-badge">Documents reviewed by admin</span>}
               <span className="d-badge">{LABEL[listing_type]}</span>
               <span className="d-badge">{LABEL[property_type]}</span>
-              {is_female_only && <span className="d-badge d-badge-female">Women Only</span>}
+              {is_female_only && <span className="d-badge d-badge-female">{property.women_safety_status === "approved" ? "Women only · Safety review approved" : "Women only · Awaiting safety approval"}</span>}
               {has_furniture_for_sale && <span className="d-badge d-badge-furn">Furniture for sale</span>}
             </div>
 
             <h1 className="detail-title">{title}</h1>
+            {is_female_only && property.women_safety_status === "approved" && <p>Admin safety review completed {property.women_safety_reviewed_at ? new Date(property.women_safety_reviewed_at).toLocaleDateString("en-BD") : ""}. This records a review of evidence and does not guarantee safety.</p>}
+            {property.status !== "active" && <p role="status">This listing is hidden from public browsing while it awaits checks or review.</p>}
             <div className="detail-location">{address}, {area}, {city}</div>
             <div className="detail-price">{priceLabel}</div>
 
@@ -194,7 +198,7 @@ export default function PropertyDetail() {
 
             {/* Report */}
             <div className="detail-section">
-              <Link to={`/forum?type=report&property_id=${property.id}&title=Report: ${encodeURIComponent(title)}`} className="report-link">
+              <Link to={`/reports/new?property_id=${property.id}`} className="report-link">
                 ⚑ Report this listing as unsafe
               </Link>
             </div>

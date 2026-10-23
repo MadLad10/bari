@@ -59,6 +59,12 @@ def _seeded_module(_migrated_schema):
     _truncate()
     session = SessionLocal()
     seed(session)
+    # Read-only retrieval fixtures represent listings that have already passed review.
+    from models import Property, ListingStatus
+    session.query(Property).filter(Property.is_female_only.is_(True)).update({
+        Property.women_safety_status: "approved", Property.document_check_status: "reviewed",
+        Property.status: ListingStatus.active})
+    session.commit()
     for kind, sid in all_sources(session):
         index_source(session, kind, sid)
     yield session
@@ -152,9 +158,17 @@ def admin(db):
 
 
 @pytest.fixture
-def make_property(client, owner):
+def make_property(client, owner, db):
+    """Create an already reviewed, published fixture; verification tests use the raw create endpoint."""
     def _make(headers=None, **overrides):
         res = client.post("/api/properties/", json=property_payload(**overrides), headers=headers or owner)
         assert res.status_code == 201, res.text
-        return res.json()
+        from models import ListingStatus, Property
+        prop = db.get(Property, res.json()["id"])
+        prop.status = ListingStatus.active
+        prop.document_check_status = "reviewed"
+        if prop.is_female_only:
+            prop.women_safety_status = "approved"
+        db.commit()
+        return {**res.json(), "status": "active", "document_check_status": "reviewed", "women_safety_status": prop.women_safety_status}
     return _make

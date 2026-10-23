@@ -117,3 +117,4 @@
   color: #555;
 }
 .bp-reset:hover { border-color: #999; }
+.bp-manage { display: block; font-size: 12px; text-align: center; margin-top: 18px; color: #22543d; text-decoration: underline; text-underline-offset: 3px; }

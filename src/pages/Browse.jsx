@@ -43,7 +43,7 @@ function PropertyCard({ property }) {
           </div>
         )}
         {property.is_female_only && (
-          <span className="badge-female">Women Only</span>
+            <span className="badge-female" title="Separate admin safety review completed. This is not a guarantee of safety.">Women only · Admin reviewed</span>
         )}
         {property.listing_type === "sublet" && (
           <span className="badge-sublet">Sublet</span>

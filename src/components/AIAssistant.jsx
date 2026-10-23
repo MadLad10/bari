@@ -158,7 +158,7 @@ export function PendingActionCard({ action, onChange }) {
         </>
       )}
       {action.status === "confirmed" && (
-        <div className="ai-action-result ok">Booked: request #{action.booking?.id} sent to the owner.</div>
+        <div className="ai-action-result ok">Booking request #{action.booking?.id} submitted. {action.booking?.status === "confirmed" ? "Your booking is confirmed." : "Awaiting confirmation."}</div>
       )}
       {action.status === "cancelled" && <div className="ai-action-result">Cancelled. Nothing was booked.</div>}
       {action.status === "failed" && <div className="ai-action-result err">{action.error || "Could not book these dates."}</div>}

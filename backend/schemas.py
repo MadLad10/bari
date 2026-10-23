@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, field_validator
 from typing import Optional
 from datetime import datetime
 from models import PropertyType, ListingType, RentalType, Furnishing, ListingStatus
@@ -34,22 +34,54 @@ class PropertyBase(BaseModel):
 
 
 class PropertyCreate(PropertyBase):
-    pass
+    @field_validator("documents")
+    @classmethod
+    def uploaded_documents_only(cls, value):
+        if value:
+            raise ValueError("Upload documents through the protected document endpoint")
+        return value
 
 
 class PropertyUpdate(BaseModel):
-    title: Optional[str] = None
-    description: Optional[str] = None
-    price: Optional[float] = None
+    title: Optional[str] = Field(default=None, min_length=5, max_length=200)
+    description: Optional[str] = Field(default=None, min_length=20)
+    property_type: Optional[PropertyType] = None
+    listing_type: Optional[ListingType] = None
+    price: Optional[float] = Field(default=None, gt=0)
+    bedrooms: Optional[int] = Field(default=None, ge=0)
+    bathrooms: Optional[int] = Field(default=None, ge=0)
+    area_sqft: Optional[float] = Field(default=None, gt=0)
+    city: Optional[str] = Field(default=None, min_length=2, max_length=100)
+    nearby_university: Optional[str] = Field(default=None, max_length=200)
+    university_distance_km: Optional[float] = Field(default=None, ge=0)
+    owner_phone: Optional[str] = Field(default=None, min_length=11, max_length=20)
+    owner_email: Optional[EmailStr] = None
     furnishing: Optional[Furnishing] = None
     rental_type: Optional[RentalType] = None
     is_female_only: Optional[bool] = None
-    safety_score: Optional[float] = None
+    safety_score: Optional[float] = Field(default=None, ge=0, le=5)
     amenities: Optional[list[str]] = None
     photos: Optional[list[str]] = None
     documents: Optional[list[str]] = None
     has_furniture_for_sale: Optional[bool] = None
     status: Optional[ListingStatus] = None
+    owner_name: Optional[str] = Field(default=None, min_length=2)
+    address: Optional[str] = Field(default=None, min_length=5)
+    area: Optional[str] = Field(default=None, min_length=2)
+
+    @field_validator("documents")
+    @classmethod
+    def uploaded_documents_only(cls, value):
+        raise ValueError("Manage documents through the protected document endpoints")
+
+    @field_validator("title", "description", "property_type", "listing_type", "price", "bedrooms",
+                     "bathrooms", "city", "owner_phone", "owner_name", "address", "area", "furnishing",
+                     "is_female_only", "amenities", "photos", "has_furniture_for_sale", "status")
+    @classmethod
+    def required_when_supplied(cls, value):
+        if value is None:
+            raise ValueError("This field cannot be empty")
+        return value
 
 
 class PropertyOut(PropertyBase):
@@ -57,8 +89,16 @@ class PropertyOut(PropertyBase):
     status: ListingStatus
     created_at: datetime
     updated_at: Optional[datetime] = None
+    document_check_status: str = "not_submitted"
+    women_safety_status: str = "not_submitted"
+    women_safety_reviewed_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
+
+
+class PropertyPublicOut(PropertyOut):
+    documents: list[str] = Field(default_factory=list, exclude=True)
+    owner_id: Optional[int] = None
 
 
 class PropertyListOut(BaseModel):
@@ -76,6 +116,8 @@ class PropertyListOut(BaseModel):
     nearby_university: Optional[str] = None
     university_distance_km: Optional[float] = None
     is_female_only: bool
+    women_safety_status: str = "not_submitted"
+    women_safety_reviewed_at: Optional[datetime] = None
     safety_score: Optional[float] = None
     photos: list[str] = []
     status: ListingStatus

@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from models import Document, ForumComment, ForumPost, ListingStatus, Property, SafetyVote
 from rag.chunking import Chunk, comment_chunks, listing_chunks, post_chunks, safety_chunks
 from rag.embeddings import get_embedder
+from services.publication import is_public, public_filter
 
 SOURCE_TYPES = ("listing", "post", "comment", "safety")
 
@@ -15,11 +16,11 @@ def build_chunks(db: Session, source_type: str, source_id: int) -> list[Chunk]:
     """Chunks a source should currently have. An empty list means it should not be searchable."""
     if source_type == "listing":
         p = db.get(Property, source_id)
-        return listing_chunks(p) if p and p.status == ListingStatus.active else []
+        return listing_chunks(p) if p and is_public(p) else []
     if source_type == "safety":
         v = db.get(SafetyVote, source_id)
         prop = db.get(Property, v.property_id) if v else None
-        return safety_chunks(v, prop) if v and prop and prop.status == ListingStatus.active and _visible(v) else []
+        return safety_chunks(v, prop) if v and prop and is_public(prop) and _visible(v) else []
     if source_type == "post":
         post = db.get(ForumPost, source_id)
         return post_chunks(post) if post and _visible(post) else []
@@ -96,7 +97,7 @@ def index_many(db: Session, sources: list[tuple[str, int]]) -> dict:
 
 
 def all_sources(db: Session) -> list[tuple[str, int]]:
-    out = [("listing", i) for (i,) in db.query(Property.id).filter(Property.status == ListingStatus.active)]
+    out = [("listing", i) for (i,) in db.query(Property.id).filter(public_filter())]
     out += [("post", i) for (i,) in db.query(ForumPost.id)]
     out += [("comment", i) for (i,) in db.query(ForumComment.id)]
     out += [("safety", i) for (i,) in db.query(SafetyVote.id).filter(SafetyVote.comment.isnot(None))]

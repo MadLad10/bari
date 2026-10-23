@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { adminDecisions, adminLLMUsage, adminQueue, reviewContent, reviewListing } from "../api";
+import { Link, useSearchParams } from "react-router-dom";
+import { adminDecisions, adminLLMUsage, adminQueue, downloadPrivateDocument, reviewContent, reviewListing } from "../api";
 import { useAuth } from "../auth/AuthContext";
 import NavAuth from "../auth/NavAuth";
 import "./Admin.css";
+import AdminCases from "../components/AdminCases";
+import { AdminWomenSafety } from "../components/WomenSafetyPanel";
 
-const TABS = [["queue", "Review queue"], ["decisions", "Decision log"], ["usage", "LLM usage"]];
+const TABS = [["queue", "Review queue"], ["women-safety", "Women-only safety"], ["cases", "Investigations"], ["decisions", "Decision log"], ["usage", "LLM usage"]];
 
 function Labels({ labels }) {
   return <span className="adm-labels">{(labels || []).map((l) => <span key={l} className={`adm-label ${l}`}>{l.replace("_", " ")}</span>)}</span>;
@@ -40,10 +42,18 @@ function Queue() {
           </header>
           <p className="adm-meta">৳{Number(l.price).toLocaleString()} · {l.area} · by {l.owner_name}</p>
           <p className="adm-reason"><strong>Why:</strong> {l.reason}</p>
+          {l.verification && <section>
+            <h4>Document checks: {l.verification.status.replaceAll("_", " ")}</h4>
+            <ul>{l.verification.reasons.map((reason, i) => <li key={i}>{reason}</li>)}</ul>
+            {l.verification.documents.map(doc => <button key={doc.id} disabled={busy}
+              onClick={() => act(`doc${doc.id}`, () => downloadPrivateDocument(doc.url, doc.name))}>
+              Download {doc.name}
+            </button>)}
+          </section>}
           <details><summary>Description</summary><p className="adm-text">{l.description}</p></details>
           {l.decision?.signals && <details><summary>Signals</summary><pre>{JSON.stringify(l.decision.signals, null, 2)}</pre></details>}
           <div className="adm-actions">
-            <button className="approve" disabled={busy} onClick={() => act(`l${l.id}`, () => reviewListing(l.id, "approve"))}>Approve &amp; publish</button>
+            <button className="approve" disabled={busy} onClick={() => act(`l${l.id}`, () => reviewListing(l.id, "approve"))}>{l.is_female_only ? "Approve documents & moderation" : "Approve & publish"}</button>
             <button className="reject" disabled={busy} onClick={() => act(`l${l.id}`, () => reviewListing(l.id, "reject"))}>Reject</button>
           </div>
         </article>
@@ -132,7 +142,8 @@ function Usage() {
 
 export default function Admin() {
   const { user, ready, openAuth } = useAuth();
-  const [tab, setTab] = useState("queue");
+  const [params, setParams] = useSearchParams();
+  const tab = TABS.some(([key]) => key === params.get("tab")) ? params.get("tab") : "queue";
 
   return (
     <div className="adm-layout">
@@ -142,7 +153,7 @@ export default function Admin() {
       </nav>
       <main className="adm-main">
         <h1>Moderation</h1>
-        {ready && user?.role !== "admin" ? (
+        {!ready ? <p role="status">Loading your account…</p> : user?.role !== "admin" ? (
           <div className="auth-gate">
             This page is for bari admins.
             {!user && <><br /><button onClick={() => openAuth({ reason: "Log in with an admin account." })}>Log in</button></>}
@@ -151,10 +162,12 @@ export default function Admin() {
           <>
             <div className="adm-tabs" role="tablist">
               {TABS.map(([k, label]) => (
-                <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? "active" : ""} onClick={() => setTab(k)}>{label}</button>
+                <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? "active" : ""} onClick={() => setParams(k === "queue" ? {} : { tab: k })}>{label}</button>
               ))}
             </div>
             {tab === "queue" && <Queue />}
+            {tab === "cases" && <AdminCases />}
+            {tab === "women-safety" && <AdminWomenSafety />}
             {tab === "decisions" && <Decisions />}
             {tab === "usage" && <Usage />}
           </>

@@ -3,16 +3,19 @@ from datetime import datetime, timezone
 from typing import Literal
 
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from database import get_db
 from deps import require_role
 from models import (AgentRun, ForumComment, ForumPost, LLMCall, ListingStatus, ModerationDecision, Property,
-                    SafetyVote, User, UserRole)
+                    SafetyVote, User, UserRole, InvestigationCase)
 from rag.indexer import enqueue_index
 from services.errors import NotFound
 from services.properties import public_summary
+from services import verification
+from services.errors import BadRequest
+from services.publication import safety_ready
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 admin_only = require_role(UserRole.admin)
@@ -37,7 +40,8 @@ def _text(kind, obj) -> dict:
 
 @router.get("/queue")
 def review_queue(db: Session = Depends(get_db), _: User = Depends(admin_only)):
-    listings = (db.query(Property).filter(Property.status == ListingStatus.pending, Property.moderation_reason.isnot(None))
+    listings = (db.query(Property).filter(Property.status == ListingStatus.pending,
+                or_(Property.moderation_reason.isnot(None), Property.document_check_status == "needs_review"))
                 .order_by(Property.created_at.desc()).all())
     content = []
     for kind, model in CONTENT.items():
@@ -47,7 +51,9 @@ def review_queue(db: Session = Depends(get_db), _: User = Depends(admin_only)):
                             "created_at": obj.created_at.isoformat() if obj.created_at else None})
     return {
         "listings": [{**public_summary(p), "description": p.description, "owner_name": p.owner_name,
-                      "reason": p.moderation_reason, "decision": _latest_decision(db, "listing", p.id)}
+                      "reason": p.moderation_reason or "; ".join(p.document_check_reasons),
+                      "verification": verification.summary(db, p),
+                      "decision": _latest_decision(db, "listing", p.id)}
                      for p in listings],
         "content": sorted(content, key=lambda c: c["created_at"] or "", reverse=True),
     }
@@ -63,10 +69,24 @@ def _review(db: Session, kind: str, item_id: int, status: str, admin: User) -> N
 @router.post("/listings/{property_id}/{verdict}")
 def review_listing(property_id: int, verdict: Literal["approve", "reject"], db: Session = Depends(get_db),
                    admin: User = Depends(admin_only)):
-    prop = db.get(Property, property_id)
+    prop = db.query(Property).filter_by(id=property_id).with_for_update().populate_existing().first()
     if not prop:
         raise NotFound("Property not found")
-    prop.status = ListingStatus.active if verdict == "approve" else ListingStatus.inactive
+    if verdict == "approve":
+        if db.query(InvestigationCase.id).filter(InvestigationCase.property_id == property_id,
+                InvestigationCase.status.in_(["open", "investigating", "awaiting_reporter"])).first():
+            raise BadRequest("Resolve open investigations about this listing before publishing it")
+        if prop.document_check_status == "checking":
+            raise BadRequest("Wait for the document checks to finish")
+        if prop.document_check_status not in ("passed", "reviewed") and not verification.summary(db, prop)["documents"]:
+            raise BadRequest("An ownership or tenancy document is required before approval")
+        prop.document_check_status = "reviewed"
+        prop.document_check_reasons = ["Documents reviewed by an admin"]
+    else:
+        prop.document_check_status = "rejected"
+        prop.document_check_reasons = ["The submission was rejected by an admin; upload corrected documents to resubmit"]
+    prop.document_checked_at = datetime.now(timezone.utc)
+    prop.status = (ListingStatus.active if safety_ready(prop) else ListingStatus.pending) if verdict == "approve" else ListingStatus.inactive
     prop.moderation_reason = None if verdict == "approve" else prop.moderation_reason
     _review(db, "listing", property_id, "approved" if verdict == "approve" else "rejected", admin)
     enqueue_index(db, "listing", property_id)

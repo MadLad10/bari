@@ -5,6 +5,7 @@ import AIAssistant from "../components/AIAssistant";
 import NavAuth from "../auth/NavAuth";
 import { useAuth } from "../auth/AuthContext";
 import "./Forum.css";
+import "./Reports.css";
 
 const TYPE_LABELS = {
   neighborhood: { label: "Neighborhood", icon: "🏘️", color: "#dbeafe", text: "#1d4ed8" },
@@ -179,6 +180,7 @@ function NewPostForm({ initial, onCreated, onCancel }) {
           <label>Title *</label>
           <input name="title" value={form.title} onChange={handleChange} required placeholder="What's your post about?" />
         </div>
+        {form.post_type === "report" && <p className="case-help">Forum reports are public and also create an admin investigation case. <Link to="/reports/new">Send a private report instead</Link> for sensitive details.</p>}
         <div className="npf-field">
           <label>Details *</label>
           <textarea name="body" value={form.body} onChange={handleChange} required rows={4} placeholder="Share the full story…" />
@@ -216,6 +218,7 @@ export default function Forum() {
   const [showNewForm, setShowNewForm] = useState(
     searchParams.get("type") === "report" || searchParams.get("new") === "1"
   );
+  const [createdCaseId, setCreatedCaseId] = useState(null);
   const initialForm = {
     type: searchParams.get("type") || "",
     title: searchParams.get("title") ? decodeURIComponent(searchParams.get("title")) : "",
@@ -240,6 +243,7 @@ export default function Forum() {
   function handleCreated(post) {
     setPosts((prev) => [post, ...prev]);
     setShowNewForm(false);
+    if (post.case_id) setCreatedCaseId(post.case_id);
   }
 
   return (
@@ -254,6 +258,7 @@ export default function Forum() {
       </nav>
 
       <div className="forum-container">
+        {createdCaseId && <div className="case-forum-notice" role="status">Your report was sent to the admin investigation queue. <Link to={`/reports/${createdCaseId}`}>Follow case #{createdCaseId} →</Link></div>}
         <div className="forum-header">
           <div>
             <h1>Community Forum</h1>

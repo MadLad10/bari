@@ -1,0 +1,13 @@
+.verification-panel { padding: 1.25rem; margin-top: 1.5rem; border: 1px solid #dce2e9; border-radius: 12px; background: #f8fafc; color: #263449; }
+.verification-panel h2 { font-size: 1.15rem; margin: 0 0 .75rem; }
+.verification-panel p, .verification-panel li { font-size: .9rem; line-height: 1.6; }
+.verification-state { display: inline-block; padding: .4rem .7rem; border-radius: 6px; background: #fff1d6; color: #774a00; }
+.verification-state.passed, .verification-state.reviewed { background: #ddf6e8; color: #176137; }
+.verification-files { padding: 0; list-style: none; }
+.verification-files li { display: flex; gap: .75rem; margin: .5rem 0; flex-wrap: wrap; }
+.verification-panel button { cursor: pointer; padding: .4rem .6rem; border: 1px solid #bfcddd; border-radius: 5px; background: white; color: #204a83; }
+.verification-upload { display: block; font-weight: 600; margin: 1rem 0; }
+.verification-upload input { display: block; margin-top: .5rem; max-width: 100%; }
+.verification-error { color: #a61c22; }
+.owner-list { max-width: 1000px; margin: 2rem auto; padding: 1rem; }
+.owner-list article { border-bottom: 1px solid #dce2e9; padding: 1.5rem 0; }

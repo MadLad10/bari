@@ -5,6 +5,12 @@ from jobs.queue import handler
 from rag.indexer import index_source
 
 
+@handler("verify_documents")
+def verify_documents_job(db: Session, payload: dict) -> dict:
+    from services.verification import verify_documents
+    return verify_documents(db, payload["property_id"])
+
+
 @handler("index")
 def index_job(db: Session, payload: dict) -> dict:
     return index_source(db, payload["source_type"], payload["source_id"])

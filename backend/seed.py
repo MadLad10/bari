@@ -71,7 +71,7 @@ def seed(db, force: bool = False) -> dict[str, int]:
     db.flush()
     owner = next(u for u in users if u.role == UserRole.owner)
 
-    db.add_all(Property(**_row(l), owner_id=owner.id if l["id"] in DEMO_OWNER_LISTINGS else None)
+    db.add_all(Property(**{**_row(l), **({"status": "pending"} if l.get("is_female_only") else {})}, owner_id=owner.id if l["id"] in DEMO_OWNER_LISTINGS else None)
                for l in listings)
     db.flush()
     db.add_all(ForumPost(**_row(p)) for p in posts)

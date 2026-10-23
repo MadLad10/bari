@@ -31,6 +31,7 @@ class PostOut(BaseModel):
     property_id: int | None
     created_at: str
     comment_count: int = 0
+    case_id: int | None = None
 
 
 class CommentIn(BaseModel):

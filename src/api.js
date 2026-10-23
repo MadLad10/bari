@@ -84,12 +84,19 @@ export function uploadDocument(propertyId, file) {
 export const getAvailability = (propertyId) =>
   request(`/bookings/property/${propertyId}/availability`, { fallback: "Failed to fetch availability" });
 export const createBooking = (data) => request("/bookings/", { method: "POST", body: data, fallback: "Booking failed" });
+export const quoteBooking = (data) => request("/bookings/quote", { method: "POST", body: data, fallback: "Could not calculate this booking" });
 export const fetchMyBookings = () => request("/bookings/mine");
+export const fetchBooking = (id) => request(`/bookings/${id}`, { fallback: "Booking not found or unavailable" });
+export const fetchOwnerBookings = () => request("/bookings/owner");
+export const acceptBooking = (id) => request(`/bookings/${id}/accept`, { method: "PATCH" });
+export const declineBooking = (id) => request(`/bookings/${id}/decline`, { method: "PATCH" });
+export const cancelBooking = (id) => request(`/bookings/${id}/cancel`, { method: "PATCH" });
 
 // Owner–renter chat
 export const getChatMessages = (propertyId, sessionToken) =>
   request(`/chat/${propertyId}/${sessionToken}`, { fallback: "Failed to load messages" });
 export const sendChatMessage = (data) => request("/chat/", { method: "POST", body: data, fallback: "Failed to send message" });
+export const fetchOwnerInbox = () => request("/chat/inbox");
 
 // AI assistant (SSE stream of agent events)
 export function streamAgent(messages, { provider, signal, onEvent }) {
@@ -125,13 +132,42 @@ export const addComment = (postId, data) =>
 export const listingAssistant = (draft) =>
   request("/listing-assistant", { method: "POST", body: draft, fallback: "Assistant unavailable" });
 export const fetchMyProperties = () => request("/properties/mine");
+export const updateProperty = (id, data) => request(`/properties/${id}`, { method: "PUT", body: data });
+export const deleteProperty = (id) => request(`/properties/${id}`, { method: "DELETE" });
+export const getVerification = (id) => request(`/properties/${id}/verification`);
+export const removeDocument = (id, documentId) => request(`/properties/${id}/documents/${documentId}`, { method: "DELETE" });
+
+export async function downloadPrivateDocument(url, name) {
+  const res = await fetch(`${API_ROOT}${url}`, { headers: authHeaders() });
+  if (!res.ok) throw new Error("You cannot download this document. Check your login and try again.");
+  const blobUrl = URL.createObjectURL(await res.blob());
+  const link = document.createElement("a");
+  link.href = blobUrl;
+  link.download = name;
+  link.click();
+  window.setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+}
 
 // Admin
 export const adminQueue = () => request("/admin/queue");
+export const fetchWomenSafety = id => request(`/properties/${id}/women-safety`);
+export const submitWomenSafety = (id, data) => request(`/properties/${id}/women-safety`, { method: "POST", body: data });
+export const fetchWomenSafetyQueue = (params = {}) => request(`/admin/women-safety${qs(params)}`);
+export const decideWomenSafety = (id, data) => request(`/admin/women-safety/${id}`, { method: "POST", body: data });
 export const reviewListing = (id, verdict) => request(`/admin/listings/${id}/${verdict}`, { method: "POST" });
 export const reviewContent = (kind, id, verdict) => request(`/admin/content/${kind}/${id}/${verdict}`, { method: "POST" });
 export const adminDecisions = (limit = 100) => request(`/admin/decisions?limit=${limit}`);
 export const adminLLMUsage = () => request("/admin/llm-usage");
+
+// Private reports and admin investigations
+export const createCase = data => request("/cases", { method: "POST", body: data });
+export const fetchMyCases = (params = {}) => request(`/cases/mine${qs(params)}`);
+export const fetchCase = id => request(`/cases/${id}`);
+export const sendCaseMessage = (id, body) => request(`/cases/${id}/messages`, { method: "POST", body: { body } });
+export const fetchAdminCases = (params = {}) => request(`/admin/cases${qs(params)}`);
+export const claimCase = (id, version) => request(`/admin/cases/${id}/claim`, { method: "POST", body: { expected_version: version } });
+export const addCaseNote = (id, body, internal) => request(`/admin/cases/${id}/notes`, { method: "POST", body: { body, internal } });
+export const decideCase = (id, data) => request(`/admin/cases/${id}`, { method: "PATCH", body: data });
 
 // Scout: background house-hunting agent
 export const parseHunt = (brief) => request("/hunts/parse", { method: "POST", body: { brief }, fallback: "Couldn't read that" });
