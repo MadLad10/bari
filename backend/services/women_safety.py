@@ -9,7 +9,7 @@ from services.users import ensure_can_manage_property
 OWNER_CHECKS = ("women_only_policy", "secure_access", "common_area_lighting", "privacy", "emergency_contact")
 ADMIN_CHECKS = ("identity_and_documents", "access_and_lighting", "occupancy_and_privacy", "emergency_arrangements", "evidence_reviewed")
 REVIEW_FIELDS = {"title", "description", "owner_name", "owner_phone", "owner_email", "address", "area", "city",
-                 "property_type", "listing_type", "bedrooms", "bathrooms", "amenities", "photos", "is_female_only"}
+                 "property_type", "listing_type", "bedrooms", "bathrooms", "amenities", "photos", "is_female_only", "latitude", "longitude"}
 
 
 def locked(db, property_id):

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getSafety, submitSafetyVote } from "../api";
 import { useAuth } from "../auth/AuthContext";
 import "./SafetySection.css";
+import PropertyLocation from "./PropertyLocation";
 
 const STARS = [1, 2, 3, 4, 5];
 
@@ -64,46 +65,9 @@ export default function SafetySection({ property }) {
     }
   }
 
-  const mapQuery = encodeURIComponent(address);
-  const mapSrc = `https://maps.google.com/maps?q=${mapQuery}&output=embed&z=15`;
-
   return (
     <div className="safety-section">
-      {/* Google Maps */}
-      <div className="detail-section">
-        <h2>Location & Accessibility</h2>
-        <div className="map-container">
-          <iframe
-            title="Property location"
-            src={mapSrc}
-            loading="lazy"
-            allowFullScreen
-          />
-        </div>
-        <a
-          className="map-open-link"
-          href={`https://maps.google.com/?q=${mapQuery}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Open in Google Maps →
-        </a>
-
-        <div className="nearby-grid">
-          {[
-            { icon: "🎓", label: "University", value: property.nearby_university ? `${property.university_distance_km?.toFixed(1)} km — ${property.nearby_university}` : "—" },
-            { icon: "🏥", label: "Hospital", value: "See map" },
-            { icon: "🚌", label: "Bus stop", value: "See map" },
-            { icon: "🛒", label: "Market", value: "See map" },
-          ].map(({ icon, label, value }) => (
-            <div key={label} className="nearby-card">
-              <span className="nearby-icon">{icon}</span>
-              <span className="nearby-label">{label}</span>
-              <span className="nearby-value">{value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <PropertyLocation property={property} />
 
       {/* Safety Score */}
       <div className="detail-section">

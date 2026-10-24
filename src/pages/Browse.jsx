@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { fetchProperties } from "../api";
+import { fetchProperties, countProperties, fetchPropertyMap } from "../api";
+import GeoMap from "../components/GeoMap";
+import { photoUrl } from "../components/OwnerPhotos";
 import AIAssistant from "../components/AIAssistant";
 import NavAuth from "../auth/NavAuth";
-import { API_ROOT } from "../api";
 import "./Browse.css";
 
 const UNIVERSITIES = [
@@ -36,7 +37,7 @@ function PropertyCard({ property }) {
     <Link to={`/property/${property.id}`} className="prop-card">
       <div className="prop-card-img">
         {photo ? (
-          <img src={`${API_ROOT}${photo}`} alt={property.title} />
+          <img src={photoUrl(photo)} alt={property.title} />
         ) : (
           <div className="prop-card-img-placeholder">
             <span>{property.property_type}</span>
@@ -74,68 +75,54 @@ function PropertyCard({ property }) {
   );
 }
 
+const FILTER_KEYS = ["q", "listing_type", "property_type", "furnishing", "min_price", "max_price", "bedrooms", "nearby_university", "is_female_only", "min_safety_score", "max_university_distance_km", "rental_type"];
+const PAGE_SIZE = 20;
+const readFilters = params => Object.fromEntries(FILTER_KEYS.map(key => [key, params.get(key) || ""]));
+
 export default function Browse() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [properties, setProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const [filters, setFilters] = useState({
-    q: searchParams.get("q") || "",
-    listing_type: searchParams.get("listing_type") || "",
-    property_type: searchParams.get("property_type") || "",
-    furnishing: searchParams.get("furnishing") || "",
-    min_price: searchParams.get("min_price") || "",
-    max_price: searchParams.get("max_price") || "",
-    bedrooms: searchParams.get("bedrooms") || "",
-    nearby_university: searchParams.get("nearby_university") || "",
-    is_female_only: searchParams.get("is_female_only") || "",
-  });
-
-  const load = useCallback(async (f) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const params = { ...f };
-      if (params.is_female_only === "") delete params.is_female_only;
-      const data = await fetchProperties(params);
-      setProperties(data);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
+  const serialized = searchParams.toString();
+  const applied = useMemo(() => readFilters(new URLSearchParams(serialized)), [serialized]);
+  const rawPage = Number(searchParams.get("page") || 1);
+  const page = Number.isSafeInteger(rawPage) && rawPage > 0 && rawPage <= 1000000 ? rawPage : 1;
+  const view = searchParams.get("view") === "map" ? "map" : "list";
+  const [filters, setFilters] = useState(applied);
+  const [properties, setProperties] = useState([]), [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true), [error, setError] = useState(null);
+  const [mapData, setMapData] = useState(null), [mapLoading, setMapLoading] = useState(false), [mapError, setMapError] = useState("");
+  useEffect(() => { setFilters(applied); }, [applied]);
   useEffect(() => {
-    load(filters);
-  }, []);
-
-  function handleChange(e) {
-    setFilters((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }
-
+    let active = true;
+    setLoading(true); setError(null);
+    Promise.all([fetchProperties({ ...applied, skip: (page - 1) * PAGE_SIZE, limit: PAGE_SIZE }), countProperties(applied)])
+      .then(([rows, result]) => {
+        if (!active) return;
+        const pages = Math.max(1, Math.ceil(result.count / PAGE_SIZE));
+        if (page > pages) { const next = new URLSearchParams(serialized); if (pages === 1) next.delete("page"); else next.set("page", pages); setSearchParams(next, { replace: true }); return; }
+        setProperties(rows); setTotal(result.count);
+      }).catch(e => { if (active) setError(e.message); }).finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [applied, page, serialized, setSearchParams]);
+  useEffect(() => {
+    if (view !== "map") return;
+    let active = true;
+    setMapData(null); setMapLoading(true); setMapError("");
+    fetchPropertyMap(applied).then(result => { if (active) setMapData(result); }).catch(e => { if (active) setMapError(e.message); }).finally(() => { if (active) setMapLoading(false); });
+    return () => { active = false; };
+  }, [applied, view]);
+  const mapPoints = useMemo(() => (mapData?.items || []).map(p => ({ ...p, propertyId: p.id })), [mapData]);
+  function handleChange(e) { setFilters(prev => ({ ...prev, [e.target.name]: e.target.value })); }
   function handleSubmit(e) {
     e.preventDefault();
-    const params = {};
-    Object.entries(filters).forEach(([k, v]) => {
-      if (v !== "") params[k] = v;
-    });
+    const params = Object.fromEntries(Object.entries(filters).filter(([, value]) => value !== ""));
+    if (view === "map") params.view = "map";
     setSearchParams(params);
-    load(filters);
   }
-
-  function handleReset() {
-    const cleared = {
-      q: "", listing_type: "", property_type: "", furnishing: "",
-      min_price: "", max_price: "", bedrooms: "", nearby_university: "", is_female_only: "",
-    };
-    setFilters(cleared);
-    setSearchParams({});
-    load(cleared);
-  }
-
-  const activeTab = filters.listing_type;
+  function handleReset() { setSearchParams(view === "map" ? { view: "map" } : {}); setFilters(readFilters(new URLSearchParams())); }
+  function changePage(nextPage) { const next = new URLSearchParams(serialized); if (nextPage === 1) next.delete("page"); else next.set("page", nextPage); setSearchParams(next); }
+  function changeView(nextView) { const next = new URLSearchParams(serialized); if (nextView === "list") next.delete("view"); else next.set("view", "map"); setSearchParams(next); }
+  const activeTab = applied.listing_type;
+  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
     <div className="browse-layout">
@@ -152,9 +139,9 @@ export default function Browse() {
           <h2>Filters</h2>
           <form onSubmit={handleSubmit} className="filter-form">
             <div className="filter-group">
-              <label>Search</label>
+              <label htmlFor="browse-search">Search</label>
               <input
-                name="q"
+                id="browse-search" name="q"
                 value={filters.q}
                 onChange={handleChange}
                 placeholder="Area, title, description…"
@@ -178,8 +165,8 @@ export default function Browse() {
             </div>
 
             <div className="filter-group">
-              <label>Property type</label>
-              <select name="property_type" value={filters.property_type} onChange={handleChange}>
+              <label htmlFor="browse-property_type">Property type</label>
+              <select id="browse-property_type" name="property_type" value={filters.property_type} onChange={handleChange}>
                 <option value="">Any</option>
                 {PROPERTY_TYPES.map((t) => (
                   <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
@@ -188,8 +175,8 @@ export default function Browse() {
             </div>
 
             <div className="filter-group">
-              <label>Furnishing</label>
-              <select name="furnishing" value={filters.furnishing} onChange={handleChange}>
+              <label htmlFor="browse-furnishing">Furnishing</label>
+              <select id="browse-furnishing" name="furnishing" value={filters.furnishing} onChange={handleChange}>
                 <option value="">Any</option>
                 {FURNISHINGS.map((f) => (
                   <option key={f} value={f}>{f.replace("_", " ")}</option>
@@ -200,15 +187,15 @@ export default function Browse() {
             <div className="filter-group">
               <label>Price (৳)</label>
               <div className="price-range">
-                <input name="min_price" value={filters.min_price} onChange={handleChange} type="number" placeholder="Min" />
+                <input aria-label="Minimum price" min="0" name="min_price" value={filters.min_price} onChange={handleChange} type="number" placeholder="Min" />
                 <span>–</span>
-                <input name="max_price" value={filters.max_price} onChange={handleChange} type="number" placeholder="Max" />
+                <input aria-label="Maximum price" min="0" name="max_price" value={filters.max_price} onChange={handleChange} type="number" placeholder="Max" />
               </div>
             </div>
 
             <div className="filter-group">
-              <label>Min bedrooms</label>
-              <select name="bedrooms" value={filters.bedrooms} onChange={handleChange}>
+              <label htmlFor="browse-bedrooms">Min bedrooms</label>
+              <select id="browse-bedrooms" name="bedrooms" value={filters.bedrooms} onChange={handleChange}>
                 <option value="">Any</option>
                 {[1, 2, 3, 4].map((n) => (
                   <option key={n} value={n}>{n}+</option>
@@ -217,8 +204,8 @@ export default function Browse() {
             </div>
 
             <div className="filter-group">
-              <label>Near university</label>
-              <select name="nearby_university" value={filters.nearby_university} onChange={handleChange}>
+              <label htmlFor="browse-nearby_university">Near university</label>
+              <select id="browse-nearby_university" name="nearby_university" value={filters.nearby_university} onChange={handleChange}>
                 <option value="">Any</option>
                 {UNIVERSITIES.map((u) => (
                   <option key={u} value={u}>{u}</option>
@@ -226,6 +213,9 @@ export default function Browse() {
               </select>
             </div>
 
+            <div className="filter-group"><label htmlFor="browse-period">Rental period</label><select id="browse-period" name="rental_type" value={filters.rental_type} onChange={handleChange}><option value="">Any period</option><option value="hourly">Hourly</option><option value="daily">Daily</option><option value="monthly">Monthly</option></select></div>
+            <div className="filter-group"><label htmlFor="browse-safety">Minimum safety rating</label><select id="browse-safety" name="min_safety_score" value={filters.min_safety_score} onChange={handleChange}><option value="">Any rating</option>{[1, 2, 3, 4, 4.5, 5].map(value => <option key={value} value={value}>{value}+ / 5</option>)}</select></div>
+            <div className="filter-group"><label htmlFor="browse-distance">Maximum campus distance (km)</label><input id="browse-distance" name="max_university_distance_km" type="number" min="0" step="0.1" placeholder="Any distance" value={filters.max_university_distance_km} onChange={handleChange} /></div>
             <div className="filter-group filter-group-check">
               <label>
                 <input
@@ -255,9 +245,15 @@ export default function Browse() {
                 : "All Listings"}
             </h1>
             {!loading && (
-              <span className="result-count">{properties.length} result{properties.length !== 1 ? "s" : ""}</span>
+              <span className="result-count" role="status">{view === "map" ? `${total} matching listings` : total ? `${(page - 1) * PAGE_SIZE + 1}-${Math.min(page * PAGE_SIZE, total)} of ${total} listings` : "0 listings"}</span>
             )}
           </div>
+
+          <div className="browse-view-controls"><button type="button" aria-pressed={view === "list"} onClick={() => changeView("list")}>List view</button><button type="button" aria-pressed={view === "map"} onClick={() => changeView("map")}>Map view</button></div>
+          {view === "map" && <section className="browse-map-panel" aria-label="Matching property locations">
+            {mapLoading && <p role="status">Loading matching map pins?</p>}{mapError && <p role="alert" className="geo-error">{mapError}</p>}
+            {mapData && <><GeoMap points={mapPoints} label="All matching property pins" /><p className="geo-help">{mapPoints.length} pins across all matching pages. {mapData.missing_coordinates > 0 && `${mapData.missing_coordinates} matching listings have no map pin.`} {mapData.truncated && "The map is limited to 1,000 pins; narrow the filters to see more."} Select a pin to open its listing.</p></>}
+          </section>}
 
           {loading && (
             <div className="browse-loading">
@@ -269,7 +265,7 @@ export default function Browse() {
 
           {error && (
             <div className="browse-error">
-              <p>Could not load properties. Make sure the backend is running.</p>
+              <p>Could not load properties. Try applying your filters again.</p>
               <code>{error}</code>
             </div>
           )}
@@ -281,13 +277,14 @@ export default function Browse() {
             </div>
           )}
 
-          {!loading && !error && properties.length > 0 && (
+          {!loading && !error && properties.length > 0 && view === "list" && (
             <div className="prop-grid">
               {properties.map((p) => (
                 <PropertyCard key={p.id} property={p} />
               ))}
             </div>
           )}
+          {!loading && !error && total > 0 && view === "list" && <nav className="browse-pagination" aria-label="Listing pages"><button disabled={page === 1} onClick={() => changePage(page - 1)}>Previous</button><label>Page<select aria-label="Listing page" value={page} onChange={e => changePage(Number(e.target.value))}>{Array.from({ length: pages }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}</option>)}</select><span>of {pages}</span></label><button disabled={page >= pages} onClick={() => changePage(page + 1)}>Next</button></nav>}
         </main>
       </div>
       <AIAssistant />

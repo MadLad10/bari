@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { updateProperty } from "../api";
+import LocationPicker from "./LocationPicker";
 
-const NUMBERS = ["price", "bedrooms", "bathrooms", "area_sqft", "university_distance_km"];
-const FIELDS = ["title", "description", "property_type", "listing_type", "rental_type", "furnishing", "price",
+const NUMBERS = ["latitude", "longitude", "price", "bedrooms", "bathrooms", "area_sqft", "university_distance_km"];
+const FIELDS = ["latitude", "longitude", "title", "description", "property_type", "listing_type", "rental_type", "furnishing", "price",
   "bedrooms", "bathrooms", "area_sqft", "address", "area", "city", "nearby_university", "university_distance_km",
   "owner_name", "owner_phone", "owner_email", "is_female_only", "has_furniture_for_sale"];
 
@@ -31,6 +32,7 @@ export default function OwnerPropertyEditor({ property, onClose, onSaved }) {
       normalized.rental_type = form.listing_type === "sale" ? null : (form.rental_type || "monthly");
       normalized.amenities = amenities.split(",").map(s => s.trim()).filter(Boolean);
       const changed = Object.fromEntries(Object.entries(normalized).filter(([k, v]) => JSON.stringify(v) !== JSON.stringify(property[k] ?? (v === null ? null : ""))));
+      if ("latitude" in changed || "longitude" in changed) { changed.latitude = normalized.latitude; changed.longitude = normalized.longitude; }
       await updateProperty(property.id, changed);
       await onSaved();
       onClose();
@@ -55,6 +57,7 @@ export default function OwnerPropertyEditor({ property, onClose, onSaved }) {
           {input("bathrooms", "Bathrooms", { type: "number", required: true, min: 0 })}
           {input("area_sqft", "Floor area (sq ft)", { type: "number", min: 1 })}
         </div>
+        <LocationPicker latitude={form.latitude} longitude={form.longitude} onChange={point => setForm(old => ({ ...old, ...point }))} />
         {input("address", "Full address", { required: true, minLength: 5, maxLength: 300 })}
         <div className="od-form-grid">
           {input("area", "Neighborhood", { required: true, minLength: 2, maxLength: 100 })}

@@ -65,6 +65,10 @@ export const fetchMe = () => request("/auth/me");
 
 // Properties
 export const fetchProperties = (params = {}) => request(`/properties/${qs(params)}`, { fallback: "Failed to fetch properties" });
+export const countProperties = (params = {}) => request(`/properties/count${qs(params)}`);
+export const fetchPropertyMap = (params = {}) => request(`/properties/map${qs(params)}`);
+export const fetchNearby = id => request(`/properties/${id}/nearby`);
+export const fetchRoute = (id, destinationId) => request(`/properties/${id}/route`, { method: "POST", body: { destination_id: destinationId } });
 export const fetchProperty = (id) => request(`/properties/${id}`, { fallback: "Property not found" });
 export const createProperty = (data) => request("/properties/", { method: "POST", body: data });
 

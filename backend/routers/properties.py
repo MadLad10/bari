@@ -38,6 +38,20 @@ def count_properties(params: Annotated[PropertySearchParams, Query()], db: Sessi
     return {"count": svc.count_properties(db, params)}
 
 
+@router.get("/map")
+def map_properties(params: Annotated[PropertySearchParams, Query()], db: Session = Depends(get_db)):
+    from models import Property
+    query = db.query(Property).filter(*svc.build_filters(params))
+    total = query.count()
+    located = query.filter(Property.latitude.isnot(None), Property.longitude.isnot(None))
+    mapped = located.count()
+    rows = located.order_by(Property.id).limit(1000).all()
+    return {"total": total, "located": mapped, "missing_coordinates": total - mapped,
+            "truncated": mapped > len(rows), "items": [{"id": p.id, "title": p.title, "area": p.area,
+                "latitude": p.latitude, "longitude": p.longitude, "price": p.price,
+                "listing_type": p.listing_type.value, "rental_type": p.rental_type.value if p.rental_type else None} for p in rows]}
+
+
 @router.get("/mine")
 def my_properties(db: Session = Depends(get_db), user: User = Depends(require_role(UserRole.owner))):
     """The owner's own listings, including ones held for review and why."""

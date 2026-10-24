@@ -10,6 +10,7 @@ vi.mock("../components/OwnerPhotos", () => ({ default: () => <div>Photo manager<
 vi.mock("../components/Conversation", () => ({ default: ({ propertyId, sessionToken }) => <div data-testid="active-conversation">{propertyId}:{sessionToken}</div> }));
 import * as api from "../api";
 import { useAuth } from "../auth/AuthContext";
+vi.mock("../components/GeoMap", () => ({ default: () => <div>Property pin map</div> }));
 import OwnerDashboard from "../pages/OwnerDashboard";
 import OwnerPropertyEditor from "../components/OwnerPropertyEditor";
 import OwnerCalendar from "../components/OwnerCalendar";

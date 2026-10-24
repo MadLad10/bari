@@ -47,8 +47,8 @@ into a prompt. I rebuilt it into a full AI system:
 - **Evaluation.** 33 test questions in English and Bangla, measuring search quality, correct tool use,
   citation accuracy, honest "I don't know" answers, injection resistance, speed and cost. I ran it on
   cloud and local models, and fixed 10+ problems it uncovered.
-- **Platform work.** Moved the app from SQLite to PostgreSQL, added login, background jobs, 239 automated tests
-  (196 backend + 43 frontend), and a free production deployment on Vercel with Neon Postgres.
+- **Platform work.** Moved the app from SQLite to PostgreSQL, added login, background jobs, 254 automated tests
+  (205 backend + 49 frontend), and a free production deployment on Vercel with Neon Postgres.
 
 ## Tech stack
 
@@ -186,6 +186,41 @@ price-only edits keep it. Public badges identify a completed admin review, not a
 
 The migration retains all existing listing records and places legacy active women-only listings into
 pending review. It never converts an owner flag into an approval. This workflow uses no paid APIs.
+
+## Browse filters, map pins and nearby places
+
+`/browse` supports a minimum community safety rating, maximum listed campus distance and
+hourly/daily/monthly rental periods alongside the existing filters. Apply resets to page one;
+Previous/Next and the page selector expose every matching public listing. Filter and page state is
+stored in the URL and restored by browser Back/Forward. Totals use the same publication and search
+rules as the results; unapproved women-only listings remain hidden.
+
+**Map view** shows matching pins across all result pages, up to 1,000 pins, with a count of listings
+whose coordinates are missing. Select a pin to open its listing. Owners can add coordinates by clicking
+the map or entering latitude/longitude in creation and editing forms. Missing coordinates are never
+replaced with an invented location. Moving a pin invalidates ownership checks and women-only safety
+approval, just like changing the address.
+
+On property details, **Find nearby places** looks up hospitals, bus stops and markets/supermarkets
+within 3 km using OpenStreetMap categories. The default provider is [Photon](https://github.com/komoot/photon),
+queried with category and bounding-box filters; [Overpass by Private.coffee](https://overpass.private.coffee/)
+is also supported by setting `PLACES_PROVIDER=overpass`. Coordinates, names and source links come from
+the returned OSM features. The closest five returned places per category are offered, sorted by
+calculated straight-line distance. Provider data may be incomplete; an empty category means no mapped
+result was found, not that the facility does not exist.
+
+**Road route** fetches an OSRM driving route to the selected mapped place and draws it on the map.
+Road distance and estimated driving time are shown separately from straight-line distance; live traffic,
+transit timetables and walking directions are not included. Campus distances remain listing-supplied
+and are labelled accordingly. No result is fabricated when coordinates, place data or routing is unavailable.
+
+Place responses are cached in a bounded process cache for 24 hours, routes for one hour. Requests
+are serialized, paced, identified with an application User-Agent and paused for a minute after provider
+failures. Nearby lookups are user-triggered; there is no automatic bulk geocoding. Maps show OSM
+attribution and load only visible tiles under the [OSM tile policy](https://operations.osmfoundation.org/policies/tiles/).
+`PHOTON_API_URL`, `PLACES_API_URL`, `ROUTING_API_URL`, and `VITE_MAP_TILE_URL` configure providers.
+Public services are best effort. OSRM's [public demo policy](https://github.com/Project-OSRM/osrm-backend/wiki/Demo-server)
+allows reasonable non-commercial use; commercial hosting must configure an appropriate routing server.
 
 ## Owner dashboard
 

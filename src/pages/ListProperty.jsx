@@ -5,6 +5,7 @@ import NavAuth from "../auth/NavAuth";
 import { useAuth } from "../auth/AuthContext";
 import { API_ROOT } from "../api";
 import ListingAssistant from "../components/ListingAssistant";
+import LocationPicker from "../components/LocationPicker";
 import VerificationPanel from "../components/VerificationPanel";
 import WomenSafetyPanel from "../components/WomenSafetyPanel";
 import "./ListProperty.css";
@@ -32,6 +33,8 @@ const INITIAL = {
   price: "",
   bedrooms: "1",
   bathrooms: "1",
+  latitude: "",
+  longitude: "",
   area_sqft: "",
   address: "",
   area: "",
@@ -93,6 +96,8 @@ export default function ListProperty() {
         price: parseFloat(form.price),
         bedrooms: parseInt(form.bedrooms),
         bathrooms: parseInt(form.bathrooms),
+        latitude: form.latitude === "" ? null : Number(form.latitude),
+        longitude: form.longitude === "" ? null : Number(form.longitude),
         area_sqft: form.area_sqft ? parseFloat(form.area_sqft) : null,
         university_distance_km: form.university_distance_km ? parseFloat(form.university_distance_km) : null,
         safety_score: form.safety_score ? parseFloat(form.safety_score) : null,
@@ -305,6 +310,7 @@ export default function ListProperty() {
           {step === 2 && (
             <div className="lp-section">
               <h2>Location & University</h2>
+              <LocationPicker latitude={form.latitude} longitude={form.longitude} onChange={point => setForm(old => ({ ...old, ...point }))} />
 
               <div className="lp-field">
                 <label>Full address *</label>

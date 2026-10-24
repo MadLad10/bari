@@ -130,7 +130,7 @@ def update_property(db: Session, property_id: int, payload: PropertyUpdate) -> P
         setattr(prop, field, value)
     if women_safety.REVIEW_FIELDS & changes.keys():
         women_safety.invalidate(db, prop)
-    if {"owner_name", "address", "area", "city"} & changes.keys():
+    if {"owner_name", "address", "area", "city", "latitude", "longitude"} & changes.keys():
         from services.verification import invalidate
         invalidate(db, prop)
     enqueue_index(db, "listing", prop.id)

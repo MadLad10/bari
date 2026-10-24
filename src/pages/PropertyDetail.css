@@ -184,6 +184,16 @@
 
 /* Owner card */
 .detail-aside { position: sticky; top: 76px; }
+.detail-main { min-width: 0; }
+@media (max-width: 760px) {
+  .detail-container { padding: 20px 16px; }
+  .detail-body { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .detail-aside { position: static; min-width: 0; }
+  .detail-photos .photo-main { height: 260px; }
+  .detail-title, .detail-location { overflow-wrap: anywhere; }
+  .detail-layout .browse-nav { height: auto; padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
+  .detail-layout .browse-nav-right { flex-wrap: wrap; gap: 10px; }
+}
 
 .owner-card {
   background: #fff;

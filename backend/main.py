@@ -12,6 +12,7 @@ from llm.context import request_id_var
 from routers import actions, admin, ai, auth, bookings, cases, chat, forum, hunts, listing_assistant, properties, safety, search, uploads
 from services.errors import ServiceError
 from routers import women_safety
+from routers import location
 
 # Schema is managed by Alembic (`alembic upgrade head`), not create_all.
 app = FastAPI(title="bari.com API", version="0.2.0")
@@ -76,6 +77,7 @@ async def service_error_handler(_: Request, exc: ServiceError):
 os.makedirs(settings.upload_dir, exist_ok=True)
 app.include_router(uploads.router)
 app.include_router(women_safety.router, prefix="/api")
+app.include_router(location.router, prefix="/api")
 
 for r in (auth, properties, bookings, cases, chat, ai, actions, safety, forum, search, listing_assistant, admin, hunts):
     app.include_router(r.router, prefix="/api")

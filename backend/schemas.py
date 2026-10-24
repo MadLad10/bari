@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, EmailStr, field_validator
+from pydantic import BaseModel, Field, EmailStr, field_validator, model_validator
 from typing import Optional
 from datetime import datetime
 from models import PropertyType, ListingType, RentalType, Furnishing, ListingStatus
@@ -18,8 +18,8 @@ class PropertyBase(BaseModel):
     address: str = Field(..., min_length=5)
     area: str = Field(..., min_length=2)
     city: str = "Dhaka"
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
+    latitude: Optional[float] = Field(default=None, ge=-90, le=90)
+    longitude: Optional[float] = Field(default=None, ge=-180, le=180)
     nearby_university: Optional[str] = None
     university_distance_km: Optional[float] = None
     is_female_only: bool = False
@@ -34,6 +34,12 @@ class PropertyBase(BaseModel):
 
 
 class PropertyCreate(PropertyBase):
+    @model_validator(mode="after")
+    def coordinate_pair(self):
+        if (self.latitude is None) != (self.longitude is None):
+            raise ValueError("Supply both latitude and longitude, or leave both empty")
+        return self
+
     @field_validator("documents")
     @classmethod
     def uploaded_documents_only(cls, value):
@@ -43,6 +49,16 @@ class PropertyCreate(PropertyBase):
 
 
 class PropertyUpdate(BaseModel):
+    latitude: Optional[float] = Field(default=None, ge=-90, le=90)
+    longitude: Optional[float] = Field(default=None, ge=-180, le=180)
+
+    @model_validator(mode="after")
+    def coordinate_pair(self):
+        if {"latitude", "longitude"} & self.model_fields_set:
+            if not {"latitude", "longitude"} <= self.model_fields_set or (self.latitude is None) != (self.longitude is None):
+                raise ValueError("Update latitude and longitude together, or clear both")
+        return self
+
     title: Optional[str] = Field(default=None, min_length=5, max_length=200)
     description: Optional[str] = Field(default=None, min_length=20)
     property_type: Optional[PropertyType] = None
@@ -102,6 +118,8 @@ class PropertyPublicOut(PropertyOut):
 
 
 class PropertyListOut(BaseModel):
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     id: int
     title: str
     property_type: PropertyType
@@ -138,8 +156,8 @@ class PropertySearchParams(BaseModel):
     area: Optional[str] = None
     city: Optional[str] = None
     nearby_university: Optional[str] = None
-    max_university_distance_km: Optional[float] = None
+    max_university_distance_km: Optional[float] = Field(default=None, ge=0)
     is_female_only: Optional[bool] = None
-    min_safety_score: Optional[float] = None
+    min_safety_score: Optional[float] = Field(default=None, ge=0, le=5)
     skip: int = Field(default=0, ge=0)
     limit: int = Field(default=20, ge=1, le=100)

@@ -42,6 +42,11 @@ class Settings(BaseSettings):
     ]
     upload_dir: str = "uploads"
     private_upload_dir: str = "private_uploads"
+    # Free public services for local/demo use; configurable for a hosted deployment.
+    places_provider: str = "photon"  # photon | overpass
+    places_api_url: str = "https://overpass.private.coffee/api/interpreter"
+    photon_api_url: str = "https://photon.komoot.io/api/"
+    routing_api_url: str = "https://router.project-osrm.org"
 
     # Auth
     jwt_secret: str = "dev-only-insecure-secret-change-me-in-env"
