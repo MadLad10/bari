@@ -64,8 +64,10 @@ def test_rejection_and_owner_or_admin_cancellation_are_distinct(client, make_pro
 
 def test_completed_stay_cannot_be_cancelled(client, db, make_property, owner, renter):
     prop = make_property()
-    b = client.post("/api/bookings/", headers=renter, json=_booking(prop["id"], start_days=-100, nights=1)).json()
+    b = client.post("/api/bookings/", headers=renter, json=_booking(prop["id"], nights=1)).json()
     stored = db.get(Booking, b["id"])
+    stored.check_in = datetime.now(timezone.utc) - timedelta(days=100)
+    stored.check_out = stored.check_in + timedelta(days=1)
     stored.status = BookingStatus.confirmed
     db.commit()
     for headers in (renter, owner):

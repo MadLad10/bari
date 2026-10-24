@@ -85,6 +85,8 @@ def update_property(property_id: int, payload: PropertyUpdate, db: Session = Dep
                     user: User = Depends(get_current_user)):
     prop = _managed_property(db, property_id, user)
     db.refresh(prop, with_for_update=True)
+    if prop.archived_at is not None:
+        raise NotFound("Property not found")
     if payload.photos is not None and any(photo not in (prop.photos or []) for photo in payload.photos):
         raise BadRequest("Add new photos through the photo upload endpoint")
     if payload.status == ListingStatus.active:

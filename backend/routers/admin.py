@@ -70,7 +70,7 @@ def _review(db: Session, kind: str, item_id: int, status: str, admin: User) -> N
 def review_listing(property_id: int, verdict: Literal["approve", "reject"], db: Session = Depends(get_db),
                    admin: User = Depends(admin_only)):
     prop = db.query(Property).filter_by(id=property_id).with_for_update().populate_existing().first()
-    if not prop:
+    if not prop or prop.archived_at is not None:
         raise NotFound("Property not found")
     if verdict == "approve":
         if db.query(InvestigationCase.id).filter(InvestigationCase.property_id == property_id,

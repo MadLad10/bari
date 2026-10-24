@@ -107,6 +107,7 @@ class Property(Base):
     status = Column(Enum(ListingStatus), default=ListingStatus.active, nullable=False, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    archived_at = Column(DateTime(timezone=True), nullable=True, index=True)
 
 
 class WomenSafetyReview(Base):
@@ -152,7 +153,7 @@ class Booking(Base):
     __tablename__ = "bookings"
 
     id = Column(Integer, primary_key=True, index=True)
-    property_id = Column(Integer, ForeignKey("properties.id", ondelete="CASCADE"), nullable=False, index=True)
+    property_id = Column(Integer, ForeignKey("properties.id", ondelete="RESTRICT"), nullable=False, index=True)
 
     renter_name = Column(String(100), nullable=False)
     renter_phone = Column(String(20), nullable=False)

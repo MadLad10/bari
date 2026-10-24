@@ -129,7 +129,7 @@ def test_cases_keep_snapshots_after_listing_is_deleted(client, db, make_property
     row = open_case(client, renter, category="unsafe_listing", property_id=prop["id"])
     assert client.delete(f"/api/properties/{prop['id']}", headers=owner).status_code == 204
     history = client.get(f"/api/cases/{row['id']}", headers=renter).json()
-    assert history["property_id"] is None
+    assert history["property_id"] == prop["id"]  # archived record and case link are retained
     assert history["property_title"] == prop["title"]
     assert history["description"] == row["description"]
 

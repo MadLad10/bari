@@ -19,6 +19,17 @@ const property = { id: 4, title: "Furnished room in Gulshan", description: "A co
 const booking = { id: 8, property_id: 4, renter_name: "Rafi", renter_phone: "01811000000", check_in: "2028-01-08T10:00:00Z", check_out: "2028-01-09T10:00:00Z", status: "pending", total_price: 1500 };
 const mount = path => render(<MemoryRouter initialEntries={[path]}><OwnerDashboard /></MemoryRouter>);
 
+it("archives a listing with a confirmation that preserves booking history", async () => {
+  const confirmation = vi.spyOn(window, "confirm").mockReturnValue(true);
+  api.deleteProperty.mockImplementation(async () => api.fetchMyProperties.mockResolvedValue([]));
+  mount("/owner?tab=listings");
+  fireEvent.click(await screen.findByRole("button", { name: "Archive", exact: true }));
+  await vi.waitFor(() => expect(api.deleteProperty).toHaveBeenCalledWith(property.id));
+  expect(confirmation).toHaveBeenCalledWith(expect.stringContaining("Existing booking history will be retained"));
+  expect(await screen.findByText("Listing archived. Booking history has been preserved.")).toBeTruthy();
+  confirmation.mockRestore();
+});
+
 beforeEach(() => {
   useAuth.mockReturnValue({ user: { id: 2, name: "Karim Owner", role: "owner" }, ready: true, logout: vi.fn(), openAuth: vi.fn() });
   api.fetchMyProperties.mockResolvedValue([{ ...property }]);

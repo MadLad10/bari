@@ -47,8 +47,8 @@ into a prompt. I rebuilt it into a full AI system:
 - **Evaluation.** 33 test questions in English and Bangla, measuring search quality, correct tool use,
   citation accuracy, honest "I don't know" answers, injection resistance, speed and cost. I ran it on
   cloud and local models, and fixed 10+ problems it uncovered.
-- **Platform work.** Moved the app from SQLite to PostgreSQL, added login, background jobs, 254 automated tests
-  (205 backend + 49 frontend), and a free production deployment on Vercel with Neon Postgres.
+- **Platform work.** Moved the app from SQLite to PostgreSQL, added login, background jobs, 276 automated tests
+  (225 backend + 51 frontend), and a free production deployment on Vercel with Neon Postgres.
 
 ## Tech stack
 
@@ -230,7 +230,7 @@ conversations. All sections work on desktop and mobile.
 
 - **My properties:** create, search and edit apartments, houses, offices or rooms; set sale/rental prices,
   monthly/daily/hourly periods, furnishing, furniture-for-sale, amenities, campus proximity and contact details.
-  Add/remove photos, preview, pause/publish approved listings, or delete listings without upcoming bookings.
+  Add/remove photos, preview, pause/publish approved listings, or archive listings without upcoming bookings.
 - **Booking requests:** owner-only renter details and history; accept or decline pending requests and cancel
   confirmed bookings. Accepting rechecks publication, dates and overlapping reservations. Declining/cancelling
   releases the hold; the renter's existing booking endpoint returns the updated status.
@@ -264,7 +264,21 @@ rejected the request. Existing cancelled records keep a generic label when no ac
 The owner dashboard shows incoming requests, accepts/rejects them, and displays renter cancellations in history.
 
 History and detail endpoints enforce booking ownership. Authorized users can still view their booking's
-property summary when a listing is paused; ownership documents are excluded. No payment/refund API is used.
+property summary when a listing is paused or archived; ownership documents are excluded. No payment/refund API is used.
+
+Quotes, new bookings, AI price/availability tools, AI drafts and confirmation enforce the same rental
+rules: sale listings cannot be rented, the requested billing period must match the current listing,
+check-in must be in the future, and check-out must follow check-in. Both timestamps must include a
+timezone; pricing uses elapsed UTC time even when the two timestamps carry different offsets.
+Owner acceptance rechecks the listing and rental terms. Existing recorded totals are retained.
+
+**Archive** removes a listing from public browsing, map/search/AI results and the owner's property
+manager while keeping its row, related evidence and booking history. The existing `DELETE /properties/:id`
+endpoint now archives instead of physically deleting. Upcoming non-cancelled bookings still block
+archival; resolve them or pause the listing first. Booking history/detail endpoints continue to enforce
+participant access and show the archived property's details. Archive cannot be undone through ordinary
+listing edits, document checks or admin approval. The migration also changes the booking-to-property
+foreign key from cascading deletion to `RESTRICT`, so a hard database deletion cannot erase bookings.
 
 ## Reports and investigations
 

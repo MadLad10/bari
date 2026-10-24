@@ -79,9 +79,9 @@ def public_summary(p: Property) -> dict:
     return {f: getattr(getattr(p, f), "value", getattr(p, f)) for f in PUBLIC_SUMMARY_FIELDS}
 
 
-def get_property(db: Session, property_id: int) -> Property:
+def get_property(db: Session, property_id: int, *, include_archived=False) -> Property:
     prop = db.get(Property, property_id)
-    if not prop:
+    if not prop or (prop.archived_at is not None and not include_archived):
         raise NotFound("Property not found")
     return prop
 
@@ -101,11 +101,11 @@ def normalize_area(db: Session, raw: str | None, min_similarity: float = 0.3) ->
 
 
 def owner_properties(db: Session, owner_id: int) -> list[Property]:
-    return db.query(Property).filter(Property.owner_id == owner_id).order_by(Property.created_at.desc()).all()
+    return db.query(Property).filter(Property.owner_id == owner_id, Property.archived_at.is_(None)).order_by(Property.created_at.desc()).all()
 
 
 def get_properties(db: Session, ids: list[int]) -> list[Property]:
-    return db.query(Property).filter(Property.id.in_(ids)).all() if ids else []
+    return db.query(Property).filter(Property.id.in_(ids), Property.archived_at.is_(None)).all() if ids else []
 
 
 def create_property(db: Session, payload: PropertyCreate, **extra) -> Property:
@@ -148,18 +148,17 @@ def update_property(db: Session, property_id: int, payload: PropertyUpdate) -> P
 def delete_property(db: Session, property_id: int) -> None:
     prop = get_property(db, property_id)
     db.refresh(prop, with_for_update=True)
+    if prop.archived_at is not None:
+        raise NotFound("Property not found")
     if db.query(Booking.id).filter(Booking.property_id == property_id,
                                  Booking.status != BookingStatus.cancelled,
                                  Booking.check_out > datetime.now(timezone.utc)).first():
-        raise Conflict("Resolve upcoming bookings before deleting this listing. You can pause it instead.")
-    stored = [d.stored_name for d in db.query(PropertyDocument).filter_by(property_id=property_id)]
+        raise Conflict("Resolve upcoming bookings before archiving this listing. You can pause it instead.")
     db.query(Document).filter(Document.property_id == property_id,
                               Document.source_type.in_(("listing", "safety"))).delete(synchronize_session=False)
-    db.delete(prop)
+    prop.archived_at = datetime.now(timezone.utc)
+    prop.status = ListingStatus.inactive
     db.commit()
-    from services.verification import private_path
-    for name in stored:
-        private_path(name).unlink(missing_ok=True)
 
 
 def append_file(db: Session, property_id: int, field: str, url: str) -> Property:

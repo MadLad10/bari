@@ -284,6 +284,10 @@ class AvailabilityArgs(PropertyIdArgs, DateRange):
 
 def check_availability(db: Session, ctx: ToolContext, a: AvailabilityArgs) -> dict:
     p = _active_property(db, a.property_id)
+    try:
+        booking_svc.validate_rental_terms(p, _parse_day(a.check_in), _parse_day(a.check_out), p.rental_type)
+    except ServiceError as e:
+        raise ToolError(e.detail) from e
     ctx.cite(f"listing:{p.id}", title=p.title, area=p.area, kind="listing")
     clashes = booking_svc.overlapping_bookings(db, p.id, _parse_day(a.check_in), _parse_day(a.check_out))
     return {"listing": f"listing:{p.id}", "available": not clashes,
@@ -299,7 +303,10 @@ def compute_price(db: Session, ctx: ToolContext, a: PriceArgs) -> dict:
     p = _active_property(db, a.property_id)
     ctx.cite(f"listing:{p.id}", title=p.title, area=p.area, kind="listing")
     rt = RentalType(a.rental_type or getattr(p.rental_type, "value", None) or "monthly")
-    total = booking_svc.compute_price(p, _parse_day(a.check_in), _parse_day(a.check_out), rt)
+    try:
+        _, total = booking_svc.validate_booking(db, p.id, _parse_day(a.check_in), _parse_day(a.check_out), rt)
+    except ServiceError as e:
+        raise ToolError(e.detail) from e
     return {"listing": f"listing:{p.id}", "unit_price": p.price, "rental_type": rt.value, "total_bdt": total}
 
 

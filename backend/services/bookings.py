@@ -1,11 +1,11 @@
 from datetime import datetime, timezone
 import math
 
-from pydantic import BaseModel, Field
+from pydantic import AwareDatetime, BaseModel, Field
 from sqlalchemy.orm import Session
 
 from services.publication import is_public
-from models import Booking, BookingStatus, ListingStatus, Property, RentalType, User, UserRole
+from models import Booking, BookingStatus, ListingStatus, ListingType, Property, RentalType, User, UserRole
 from services.errors import BadRequest, Conflict, NotFound
 from services.properties import get_property
 
@@ -15,13 +15,29 @@ class BookingCreate(BaseModel):
     renter_name: str = Field(..., min_length=2)
     renter_phone: str = Field(..., min_length=11)
     renter_email: str | None = None
-    check_in: datetime
-    check_out: datetime
+    check_in: AwareDatetime
+    check_out: AwareDatetime
     rental_type: RentalType
     note: str | None = None
 
 
+def validate_rental_terms(prop: Property, check_in: datetime, check_out: datetime, rental_type: RentalType):
+    if prop.listing_type == ListingType.sale:
+        raise BadRequest("Sale listings cannot be booked as rentals")
+    if prop.rental_type is None or rental_type != prop.rental_type:
+        raise BadRequest("The rental period must match the listing's current billing period")
+    if any(value.tzinfo is None or value.utcoffset() is None for value in (check_in, check_out)):
+        raise BadRequest("Check-in and check-out must include a timezone")
+    check_in, check_out = check_in.astimezone(timezone.utc), check_out.astimezone(timezone.utc)
+    if check_out <= check_in:
+        raise BadRequest("check_out must be after check_in")
+    if check_in <= datetime.now(timezone.utc):
+        raise BadRequest("Check-in must be in the future")
+    return check_in, check_out
+
+
 def compute_price(prop: Property, check_in: datetime, check_out: datetime, rental_type: RentalType) -> float:
+    check_in, check_out = validate_rental_terms(prop, check_in, check_out, rental_type)
     delta = check_out - check_in
     if rental_type == RentalType.hourly:
         hours = max(delta.total_seconds() / 3600, 1)
@@ -57,19 +73,18 @@ def validate_booking(db: Session, property_id: int, check_in: datetime, check_ou
     """All checks that must pass before a booking can exist. Returns the property and total price.
 
     Shared by the booking endpoint, the agent's draft_booking tool and the confirm endpoint."""
-    if check_out <= check_in:
-        raise BadRequest("check_out must be after check_in")
     prop = get_property(db, property_id)
     if not is_public(prop):
         raise Conflict("This listing is not available for booking")
+    total = compute_price(prop, check_in, check_out, rental_type)
     if has_overlap(db, property_id, check_in, check_out):
         raise Conflict("Property is already booked for the selected dates")
-    return prop, compute_price(prop, check_in, check_out, rental_type)
+    return prop, total
 
 
 def create_booking(db: Session, payload: BookingCreate, *, commit: bool = True, **extra) -> Booking:
     # Serialize requests for this property so two clients cannot reserve overlapping dates.
-    db.query(Property).filter(Property.id == payload.property_id).with_for_update().first()
+    db.query(Property).filter(Property.id == payload.property_id).with_for_update().populate_existing().first()
     _, total = validate_booking(db, payload.property_id, payload.check_in, payload.check_out, payload.rental_type)
     booking = Booking(**payload.model_dump(), total_price=total, **extra)
     db.add(booking)
@@ -137,7 +152,7 @@ def owner_bookings(db: Session, owner_id: int) -> list[Booking]:
 
 def decide_booking(db: Session, booking_id: int, *, accept: bool) -> Booking:
     b = get_booking(db, booking_id)
-    prop = db.query(Property).filter(Property.id == b.property_id).with_for_update().one()
+    prop = db.query(Property).filter(Property.id == b.property_id).with_for_update().populate_existing().one()
     db.refresh(b, with_for_update=True)
     if b.status != BookingStatus.pending:
         raise Conflict("Only pending booking requests can be accepted or declined")
@@ -146,6 +161,7 @@ def decide_booking(db: Session, booking_id: int, *, accept: bool) -> Booking:
             raise Conflict("This booking request has already ended")
         if not is_public(prop):
             raise Conflict("Publish this listing before accepting bookings")
+        validate_rental_terms(prop, b.check_in, b.check_out, b.rental_type)
         if has_overlap(db, b.property_id, b.check_in, b.check_out, exclude_id=b.id):
             raise Conflict("These dates are reserved by another booking")
     b.status = BookingStatus.confirmed if accept else BookingStatus.cancelled

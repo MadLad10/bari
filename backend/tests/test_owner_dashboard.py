@@ -42,9 +42,13 @@ def test_accept_rechecks_visibility_and_legacy_overlaps(client, db, make_propert
     assert client.patch(f"/api/bookings/{b['id']}/decline", headers=owner).status_code == 200
 
 
-def test_past_request_cannot_be_accepted(client, make_property, owner, renter):
+def test_past_request_cannot_be_accepted(client, db, make_property, owner, renter):
     prop = make_property()
-    b = client.post("/api/bookings/", headers=renter, json=_booking(prop["id"], start_days=-100, nights=1)).json()
+    b = client.post("/api/bookings/", headers=renter, json=_booking(prop["id"], nights=1)).json()
+    stored = db.get(Booking, b["id"])
+    stored.check_in = datetime.now(timezone.utc) - timedelta(days=100)
+    stored.check_out = stored.check_in + timedelta(days=1)
+    db.commit()
     assert client.patch(f"/api/bookings/{b['id']}/accept", headers=owner).status_code == 409
     assert client.patch(f"/api/bookings/{b['id']}/decline", headers=owner).status_code == 200
 

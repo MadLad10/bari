@@ -21,6 +21,7 @@ describe("BookingPanel authoritative quotes and booking status", () => {
     render(<BookingPanel property={{ id: 3, price: 1000, rental_type: "daily", listing_type: "rent" }} />);
     await screen.findByText("৳2,350");
     expect(quoteBooking).toHaveBeenCalledWith(expect.objectContaining({ property_id: 3, rental_type: "daily" }));
+    expect(new Date(quoteBooking.mock.calls[0][0].check_in).getTime()).toBeGreaterThan(Date.now());
     fireEvent.click(screen.getByRole("button", { name: "Request booking" }));
     await screen.findByRole("heading", { name: "Booking request received" });
     expect(screen.queryByRole("heading", { name: /booking confirmed/i })).toBeNull();

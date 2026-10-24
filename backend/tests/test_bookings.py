@@ -24,9 +24,10 @@ def test_create_booking_computes_monthly_price(client, make_property, renter):
 
 
 def test_daily_and_hourly_price(client, make_property, renter):
-    prop = make_property(price=500)
+    prop = make_property(price=500, rental_type="daily")
     res = client.post("/api/bookings/", headers=renter, json=_booking(prop["id"], nights=3, rental_type="daily"))
     assert res.json()["total_price"] == 1500
+    prop = make_property(price=500, rental_type="hourly")
     start = datetime.now(timezone.utc) + timedelta(days=200)
     res = client.post("/api/bookings/", headers=renter, json={
         **_booking(prop["id"]), "rental_type": "hourly",

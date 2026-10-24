@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel
+from pydantic import AwareDatetime, BaseModel
 from sqlalchemy.orm import Session
 
 from database import get_db
@@ -24,6 +24,7 @@ class BookedPropertyOut(BaseModel):
     photos: list[str] = []
     status: ListingStatus
     owner_name: str
+    archived_at: datetime | None = None
 
     model_config = {"from_attributes": True}
 
@@ -50,8 +51,8 @@ class BookingOut(BaseModel):
 
 class BookingQuoteIn(BaseModel):
     property_id: int
-    check_in: datetime
-    check_out: datetime
+    check_in: AwareDatetime
+    check_out: AwareDatetime
     rental_type: RentalType
 
 
@@ -80,7 +81,7 @@ def owner_bookings(db: Session = Depends(get_db), user: User = Depends(require_r
 def get_property_bookings(property_id: int, db: Session = Depends(get_db),
                           user: User = Depends(get_current_user)):
     # Includes renter contact details, so only the listing owner (or an admin) may see it.
-    ensure_can_manage_property(user, get_property(db, property_id))
+    ensure_can_manage_property(user, get_property(db, property_id, include_archived=True))
     return svc.list_property_bookings(db, property_id)
 
 
@@ -95,26 +96,26 @@ def get_availability(property_id: int, db: Session = Depends(get_db)):
 @router.get("/{booking_id}", response_model=BookingOut)
 def get_booking(booking_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     b = svc.get_booking(db, booking_id)
-    ensure_can_view_booking(user, b, get_property(db, b.property_id))
+    ensure_can_view_booking(user, b, get_property(db, b.property_id, include_archived=True))
     return b
 
 
 @router.patch("/{booking_id}/cancel", response_model=BookingOut)
 def cancel_booking(booking_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     b = svc.get_booking(db, booking_id)
-    ensure_can_cancel_booking(user, b, get_property(db, b.property_id))
+    ensure_can_cancel_booking(user, b, get_property(db, b.property_id, include_archived=True))
     return svc.cancel_booking(db, booking_id, actor=user)
 
 
 @router.patch("/{booking_id}/accept", response_model=BookingOut)
 def accept_booking(booking_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     b = svc.get_booking(db, booking_id)
-    ensure_can_manage_property(user, get_property(db, b.property_id))
+    ensure_can_manage_property(user, get_property(db, b.property_id, include_archived=True))
     return svc.decide_booking(db, booking_id, accept=True)
 
 
 @router.patch("/{booking_id}/decline", response_model=BookingOut)
 def decline_booking(booking_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     b = svc.get_booking(db, booking_id)
-    ensure_can_manage_property(user, get_property(db, b.property_id))
+    ensure_can_manage_property(user, get_property(db, b.property_id, include_archived=True))
     return svc.decide_booking(db, booking_id, accept=False)

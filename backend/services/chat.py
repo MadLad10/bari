@@ -19,7 +19,7 @@ class MessageIn(BaseModel):
 
 
 def authorize(db: Session, property_id: int, session_token: str, user: User) -> SenderType:
-    prop = get_property(db, property_id)
+    prop = get_property(db, property_id, include_archived=True)
     if user.id == prop.owner_id or user.role == UserRole.admin:
         return SenderType.owner
     if session_token != f"user-{user.id}":

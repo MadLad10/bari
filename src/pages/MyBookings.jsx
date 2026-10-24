@@ -43,6 +43,7 @@ export default function MyBookings() {
             <h2><Link to={`/bookings/${b.id}`}>{property?.title || `Property #${b.property_id}`}</Link></h2><p className="mb-location">{property ? `${property.area}, ${property.city}` : "Open your booking for details"}</p>
             <dl className="mb-dates"><div><dt>Check-in</dt><dd>{bookingDate(b.check_in)}</dd></div><div><dt>Check-out</dt><dd>{bookingDate(b.check_out)}</dd></div><div><dt>Booking total</dt><dd>{bookingMoney(b.total_price)}</dd></div></dl>
             {b.status === "cancelled" && <p className="mb-status-note">{cancellationDescription(b)}</p>}
+            {property?.archived_at && <p className="mb-status-note">Listing archived · Booking history retained</p>}
             {state === "pending" && <p className="mb-status-note">The owner hasn’t accepted this request yet. Your selected dates are on hold.</p>}
             <div className="mb-card-actions"><Link className="mb-button secondary" to={`/bookings/${b.id}`}>View booking</Link>{canCancelBooking(b) && <Link className="mb-cancel-link" to={`/bookings/${b.id}/cancel`}>Cancel booking</Link>}</div>
           </div>

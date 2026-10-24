@@ -163,6 +163,8 @@ def check_fields(prop: Property, account_name: str, text: str) -> list[str]:
 
 def evaluate(db, prop: Property) -> None:
     from services.publication import safety_ready
+    if prop.archived_at is not None:
+        return
     rows = documents(db, prop.id)
     if any(not d.processed for d in rows):
         prop.document_check_status = "checking"
@@ -198,7 +200,7 @@ def evaluate(db, prop: Property) -> None:
 
 def verify_documents(db, property_id: int) -> dict:
     prop = db.get(Property, property_id)
-    if not prop:
+    if not prop or prop.archived_at is not None:
         return {"skipped": "listing removed"}
     for doc in documents(db, property_id):
         if doc.processed:

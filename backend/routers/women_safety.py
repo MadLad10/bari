@@ -40,7 +40,7 @@ def submit(property_id: int, payload: SafetySubmission, db: Session = Depends(ge
 def queue(status: Literal["pending", "approved", "changes_requested", "rejected", "not_submitted", "all"] = "pending",
           limit: int = Query(50, ge=1, le=100), skip: int = Query(0, ge=0),
           db: Session = Depends(get_db), _: User = Depends(require_role(UserRole.admin))):
-    query = db.query(Property).filter(Property.is_female_only.is_(True))
+    query = db.query(Property).filter(Property.is_female_only.is_(True), Property.archived_at.is_(None))
     if status != "all":
         query = query.filter(Property.women_safety_status == status)
     return {"total": query.count(), "items": [svc.summary(db, p) for p in query.order_by(Property.id).offset(skip).limit(limit)]}

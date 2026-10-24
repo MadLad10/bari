@@ -44,10 +44,10 @@ def create_case(db: Session, user: User, *, category: str, title: str, descripti
         raise BadRequest("Select the booking this dispute concerns")
     if category == "unsafe_listing" and not property_id:
         raise BadRequest("Select the listing this safety report concerns")
-    prop = get_property(db, property_id) if property_id else None
+    prop = get_property(db, property_id, include_archived=bool(booking_id)) if property_id else None
     if booking_id:
         booking = get_booking(db, booking_id)
-        booked_prop = get_property(db, booking.property_id)
+        booked_prop = get_property(db, booking.property_id, include_archived=True)
         ensure_can_view_booking(user, booking, booked_prop)
         if property_id and property_id != booking.property_id:
             raise BadRequest("This booking belongs to a different property")

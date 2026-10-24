@@ -13,7 +13,7 @@ export default function BookingPanel({ property }) {
   const { id, price, rental_type, listing_type } = property;
   const { user, openAuth } = useAuth();
 
-  const now = new Date();
+  const now = new Date(Date.now() + 60 * 60 * 1000);
   const tomorrow = new Date(now);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
@@ -126,11 +126,11 @@ export default function BookingPanel({ property }) {
       <form onSubmit={handleBook} className="bp-form">
         <div className="bp-field">
           <label>Check-in</label>
-          <input type="datetime-local" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} required />
+          <input aria-label="Check-in" type="datetime-local" min={toLocalInput(new Date())} value={checkIn} onChange={(e) => setCheckIn(e.target.value)} required />
         </div>
         <div className="bp-field">
           <label>Check-out</label>
-          <input type="datetime-local" value={checkOut} min={checkIn} onChange={(e) => setCheckOut(e.target.value)} required />
+          <input aria-label="Check-out" type="datetime-local" value={checkOut} min={checkIn} onChange={(e) => setCheckOut(e.target.value)} required />
         </div>
 
         {total !== null ? (

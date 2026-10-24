@@ -14,7 +14,7 @@ REVIEW_FIELDS = {"title", "description", "owner_name", "owner_phone", "owner_ema
 
 def locked(db, property_id):
     prop = db.query(Property).filter_by(id=property_id).with_for_update().populate_existing().first()
-    if not prop:
+    if not prop or prop.archived_at is not None:
         raise NotFound("Property not found")
     return prop
 

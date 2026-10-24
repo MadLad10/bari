@@ -25,6 +25,15 @@ beforeEach(() => {
 });
 afterEach(() => { cleanup(); vi.clearAllMocks(); });
 
+it("retains archived listing details in booking history without a broken public listing link", async () => {
+  const archived = { ...booking, property: { ...booking.property, status: "inactive", archived_at: "2026-10-24T12:00:00Z" } };
+  api.fetchBooking.mockResolvedValue(archived);
+  mount("/bookings/41");
+  expect(await screen.findByText("This listing was archived by its owner. Your booking details, dates and recorded total remain available here.")).toBeTruthy();
+  expect(screen.getByText(/House 14, Road 2, Gulshan/)).toBeTruthy();
+  expect(screen.queryByRole("link", { name: /View property & chat/ })).toBeNull();
+});
+
 it("shows booking history and separates completed stays and owner rejections", async () => {
   api.fetchMyBookings.mockResolvedValue([
     booking,
